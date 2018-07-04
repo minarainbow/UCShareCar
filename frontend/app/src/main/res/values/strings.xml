@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">UCShareCar</string>
+    <string name="login_button">Log in with Google</string>
+</resources>
