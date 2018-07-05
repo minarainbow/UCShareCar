@@ -12,12 +12,12 @@ db.once('open', () => {
 
 // GET request for users
 app.get('/users', (req, res) => {
-	//res.json('This is where users will be GET')
+	res.json('This is where users will be GET')
 });
 
 // PUT request to create/register a new user
 app.put('/users/register', (req, res) => {
-	//res.json({'success': true})
+	res.json({'success': true})
 });
 
 app.listen(port, (err) => {
