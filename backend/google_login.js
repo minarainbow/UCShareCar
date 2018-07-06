@@ -21,6 +21,7 @@ async function verify(token) {
 			console.log("Not a valid UCSC email!")
 			return undefined
 		}
+		// Success
 		return userid
 	} catch(err) {
 		console.log("Failed to verify user.", err)
