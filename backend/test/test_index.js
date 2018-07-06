@@ -43,7 +43,4 @@ describe('POST /users/register', function(){
 				done()
 			});
 	})
-	it('fails catastrophically', function(done) {
-		throw "Boy I sure hope the CI fails this!"
-	})
 });
