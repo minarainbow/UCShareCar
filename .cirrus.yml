@@ -1,0 +1,8 @@
+container:
+    image: node:latest
+check_task:
+    node_modules_cache:
+        folder: backend/node_modules
+        fingerprint_script: cat backend/package-lock.json
+        populate_script: cd backend; npm install package.json
+    script: cd backend; npm test
