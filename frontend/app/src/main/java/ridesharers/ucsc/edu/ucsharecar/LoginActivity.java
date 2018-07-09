@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String URL = "http://169.233.230.209:8000/";
 
     private GoogleSignInClient mGoogleSignInClient;
-    private RequestQueue queue;
+    private BackendClient backend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +47,26 @@ public class LoginActivity extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        // Set up the request queue
-        queue = Volley.newRequestQueue(this);
+        // Get the BackendClient singleton
+        backend = BackendClient.GetSingleton(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // On activity start, we'll check for an existing signed in account. If there is one, we can
+        // go ahead and send it straight to the server and get started.
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if (account != null) {
+            handleSignInAccount(account);
+        }
     }
 
     public void onClickLogin(View view) {
         Log.w(TAG, "Log in button clicked; opening login activity");
+
+        // Straightforward -- clicking the login button sets off the login stuff
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -66,72 +80,61 @@ public class LoginActivity extends AppCompatActivity {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
+
+            // Now try to extract the GoogleSignInAccount variable to validate w/ server.
+            final GoogleSignInAccount account;
+            try {
+                account = task.getResult(ApiException.class);
+            } catch (ApiException e) {
+                // The ApiException status code indicates the detailed failure reason.
+                // Please refer to the GoogleSignInStatusCodes class reference for more information.
+                Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+                dispToast("Log in failed. Try again.");
+                // TODO Failed sign in route
+                return;
+            }
+
+            // Deal with that sign in result elsewhere
+            handleSignInAccount(account);
         }
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        final GoogleSignInAccount account;
-        try {
-            account = completedTask.getResult(ApiException.class);
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            dispToast("Log in failed. Try again.");
-            // TODO Failed sign in route
-            return;
-        }
-
+    private void handleSignInAccount(final GoogleSignInAccount account) {
         // Log in was successful at this point
         Log.w(TAG, "Got a successful login client-side from "+account.getEmail());
 
         // Now check it was valid with the server.
-
-        // First we need to make a JSON data object
-        JSONObject jsonPostParamaters = new JSONObject();
-        try {
-            jsonPostParamaters = new JSONObject();
-            jsonPostParamaters.put("token", account.getIdToken());
-        } catch (JSONException e) {
-            Log.w(TAG, "Failed to create JSON object to validate login");
-            // TODO Failed sign in route
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                URL+"users/register",
-                jsonPostParamaters,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        boolean success = false;
-                        try {
-                            success = response.getBoolean("success");
-                        }
-                        catch (Exception e) {
-                            Log.w(TAG, "Failed to parse JSON result for login validation");
-                            // We can pass on this since success starts as false.
-                        }
-
-                        if (success) {
-                            dispToast("Successfully logged in " + account.getEmail());
-                        }
-                        else {
-                            dispToast("Log in failed. Try again.");
-                            Log.w(TAG, "Server rejected log in");
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        dispToast("Log in failed. Try again.");
-                        Log.w(TAG, "Error occurred when validating login: "+error);
-                    }
-                });
-
-        // Send the POST request to validate the user
-        queue.add(request);
+        backend.SignIn(account, new Response.Listener<BackendClient.SignInResult>() {
+            @Override
+            public void onResponse(BackendClient.SignInResult response) {
+                if (response.Succeeded()) {
+                    // Got a valid login with the server!
+                    Log.w(TAG, "Successfully logged in with server");
+                    dispToast("Successfully logged in " + account.getEmail());
+                    // TODO go to the main app
+                }
+                else if (response.notRegistered()) {
+                    // The google token was valid, but the user needs to be registered.
+                    Log.w(TAG, "User is not registered");
+                    dispToast("You need to register");
+                    // TODO start the register activity?
+                }
+                else {
+                    Log.w(TAG, "Server rejected sign in with no recourse");
+                    dispToast("There was an error. You could not be signed in.");
+                    // This result will probably be either one of two things.
+                    // 1. The google sign in result was invalid, or
+                    // 2. The user has been banned.
+                    // Either way, the ball is out of our court.
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.w(TAG, "Error occurred when validating login: "+error);
+                dispToast("Log in failed. Try again.");
+            }
+        });
     }
 
     private void dispToast(String message) {
