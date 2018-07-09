@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                     dispToast("Successfully logged in " + account.getEmail());
                     // TODO go to the main app
                 }
-                else if (response.notRegistered()) {
+                else if (response.needsRegister()) {
                     // The google token was valid, but the user needs to be registered.
                     Log.w(TAG, "User is not registered");
                     dispToast("You need to register");
@@ -132,7 +132,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void startRegister() {
         Intent intent = new Intent(this, RegisterActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
         startActivity(intent);
     }
 

@@ -37,7 +37,7 @@ app.post('/users/login', async (req, res) => {
 	const user = await google_login.verify(req.body.token)
 	if (!user) {
 		console.log("Could not verify user, returning fail")
-		res.json({'success': false, 'not_registered': true})
+		res.json({'success': false, 'needs_register': false})
 	}
 	else if (!(user.sub in fake_db && 'phnum' in fake_db[user.sub])) {
 		// TODO look them up in the real database
@@ -59,12 +59,12 @@ app.post('/users/login', async (req, res) => {
 			'email': user.email,
 		}
 
-		res.json({'success': false, 'not_registered': true});
+		res.json({'success': false, 'needs_register': true});
 	}
 	else {
 		console.log("Verified login from", user.sub)
 		sessions.create(res, user.sub)
-		res.json({'success': true, 'not_registered': true})
+		res.json({'success': true, 'needs_register': true})
 	}
 })
 

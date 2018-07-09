@@ -9,7 +9,6 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,11 +19,9 @@ import java.net.CookiePolicy;
 
 public class BackendClient {
 
-    private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "UCShareCar_BackendCli";
-    private static final String URL = "http://10.0.1.39:8000/";
+    private static final String URL = "http://169.233.230.209:8000/";
 
-    private GoogleSignInClient mGoogleSignInClient;
     private RequestQueue queue;
 
     // Instance is just the reference to the only instance of this class that will ever exist
@@ -121,9 +118,9 @@ public class BackendClient {
                 return false;
             }
         }
-        public boolean notRegistered() {
+        public boolean needsRegister() {
             try {
-                return data.getBoolean("not_registered");
+                return data.getBoolean("needs_register");
             } catch (Exception e) {
                 return false;
             }
