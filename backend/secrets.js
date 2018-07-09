@@ -8,4 +8,5 @@
  */
 module.exports = {
 	CLIENT_ID: "long string of numbers for the google login service goes here",
+	COOKIE: "arbitrary random string for cookie signing here",
 }

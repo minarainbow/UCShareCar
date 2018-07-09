@@ -7,21 +7,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -48,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Get the BackendClient singleton
-        backend = BackendClient.GetSingleton(this);
+        backend = BackendClient.getSingleton(this);
     }
 
     @Override
@@ -117,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                     // The google token was valid, but the user needs to be registered.
                     Log.w(TAG, "User is not registered");
                     dispToast("You need to register");
-                    // TODO start the register activity?
+                    startRegister();
                 }
                 else {
                     Log.w(TAG, "Server rejected sign in with no recourse");
@@ -135,6 +128,12 @@ public class LoginActivity extends AppCompatActivity {
                 dispToast("Log in failed. Try again.");
             }
         });
+    }
+
+    private void startRegister() {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        startActivity(intent);
     }
 
     private void dispToast(String message) {
