@@ -6,11 +6,12 @@ const postSchema = new Schema({
 	start: String,
 	end: String,
 	departtime: Date,
-	driver: {
-		email: String
-	},
+	driver: String,
 	totalseats: Number,
 	passengers: [String],
+	memo: String,
+	uploader: String,
+	driverneeded: Boolean,	
 })
 
 module.exports = mongoose.model('post', postSchema)

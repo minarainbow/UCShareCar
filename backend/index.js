@@ -12,7 +12,7 @@ const port = 8000
 
 // Mongo
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/test')
+mongoose.connect('mongodb://localhost:27017/test', { useNewUrlParser : true} )
 const db = mongoose.connection
 db.on('error', console.error)
 db.once('open', () => {
@@ -26,6 +26,10 @@ fake_db = {}
 const google_login = require('./google_login')
 // Session helpers
 const sessions = require('./session_helpers')
+
+app.get('/', ()=>{
+	console.log('Hello')
+})
 
 // GET request for users
 app.get('/users', (req, res) => {
