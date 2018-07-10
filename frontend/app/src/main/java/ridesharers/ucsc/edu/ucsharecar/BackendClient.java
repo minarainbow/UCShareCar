@@ -52,7 +52,7 @@ public class BackendClient {
     // Returns true if there is a session with the server.
     public boolean hasSession() {
         for (HttpCookie cookie : cookieManager.getCookieStore().getCookies()) {
-            if (cookie.getName().equals("session")) {
+            if (cookie.getName().equals("session") && !cookie.hasExpired()) {
                 return true;
             }
         }
