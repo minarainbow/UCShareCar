@@ -217,3 +217,9 @@ fastlane/readme.md
 
 # The IntelliJ idea crap
 .idea
+
+#######
+# Secret files that should not be committed
+#######
+secrets.xml
+secrets.js
