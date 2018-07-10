@@ -15,5 +15,7 @@
         completions."
     </string>
     <string name="register_text">It looks like you haven\'t used our service before. To complete your registration, please provide your phone number. Your phone number will only be shared with people your ride with.</string>
-    <string name="register_button" >Register</string>
+    <string name="register_button">Register</string>
+    <string name="title_post_list">Posts</string>
+    <string name="title_post_detail">Post Detail</string>
 </resources>

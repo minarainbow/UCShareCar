@@ -1,5 +1,6 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
                 else if (response.Succeeded()){
                     Log.w(TAG, "Successfully registered!");
                     dispToast("You are now registered!");
-                    // TODO go to the main activity!
+                    goToPostList();
                 } else {
                     Log.w(TAG, "Mystery failure");
                     dispToast("The registration failed. Try again.");
@@ -61,6 +62,12 @@ public class RegisterActivity extends AppCompatActivity {
                 dispToast("The registration failed. Try again.");
             }
         });
+    }
+
+    private void goToPostList() {
+        Intent intent = new Intent(this, PostListActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void dispToast(String message) {

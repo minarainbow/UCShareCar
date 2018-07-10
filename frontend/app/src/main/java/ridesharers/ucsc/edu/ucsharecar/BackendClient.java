@@ -16,13 +16,16 @@ import org.json.JSONObject;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.HttpCookie;
 
+// TODO this class should detect authorization errors and start the login window accordddingly
 public class BackendClient {
 
     private static final String TAG = "UCShareCar_BackendCli";
     private static final String URL = "http://169.233.230.209:8000/";
 
     private RequestQueue queue;
+    private CookieManager cookieManager;
 
     // Instance is just the reference to the only instance of this class that will ever exist
     private static BackendClient instance = null;
@@ -34,7 +37,7 @@ public class BackendClient {
         queue = Volley.newRequestQueue(context);
 
         // Store the cookies! They store the session information from the server.
-        CookieManager cookieManager = new CookieManager();
+        cookieManager = new CookieManager();
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
     }
@@ -44,6 +47,16 @@ public class BackendClient {
             instance = new BackendClient(context);
         }
         return instance;
+    }
+
+    // Returns true if there is a session with the server.
+    public boolean hasSession() {
+        for (HttpCookie cookie : cookieManager.getCookieStore().getCookies()) {
+            if (cookie.getName().equals("session")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // SignIn tries to sign an account with the backend server, calling the given response listener

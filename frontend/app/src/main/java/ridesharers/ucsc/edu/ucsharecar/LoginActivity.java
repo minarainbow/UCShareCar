@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                     // Got a valid login with the server!
                     Log.w(TAG, "Successfully logged in with server");
                     dispToast("Successfully logged in " + account.getEmail());
-                    // TODO go to the main app
+                    goToPostList();
                 }
                 else if (response.needsRegister()) {
                     // The google token was valid, but the user needs to be registered.
@@ -132,6 +132,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void startRegister() {
         Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
+
+    private void goToPostList() {
+        Intent intent = new Intent(this, PostListActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
