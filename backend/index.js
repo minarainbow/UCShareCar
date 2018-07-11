@@ -19,6 +19,9 @@ db.once('open', () => {
 	console.log('Connected to MongoDB Server')
 });
 
+var Post = require('/models/post')
+var Report = require('/models/report')
+
 // TODO this is a very fake DB for testing only
 fake_db = {}
 
@@ -82,6 +85,98 @@ app.post('/users/register', async (req, res) => {
 	// TODO use actual database
 	fake_db[req.signedCookies.session.userid]['phnum'] = req.body.phnum
 	res.json({'success': true})
+})
+
+app.get('/post_list', (req, res) => {
+	Post.find((err, posts) => {
+		if(err){ 
+			return res.status(500).send({error: 'database failure'});
+		}
+        res.json(posts);	
+	})	
+})
+
+app.get('/api/books/:post_id', (req, res) => {
+    Post.findOne({_id: req.params.post_id}, (err, post) => {
+        if(err){
+			return res.status(500).json({error: err});
+		}
+        if(!post){
+			return res.status(404).json({error: 'post not found'});
+		}
+        res.json(post);
+    })
+});
+
+app.post('/create_post', (req, res) => {
+	var post = new Post()
+	const user = await google_login.verify(req.body.token)
+	post.uploader = user.sub
+	post.start = req.start
+	post.end = req.end
+	post.driver = req.driver
+	post.driverneeded = req.driverneeded
+	post.totalseats = req.totalseats
+	if(req.driverneeded){
+		post.passengers = [user.sub] 
+	}
+	else{
+		post.passengers = [ ]
+	}
+	post.memo = req.memo
+	post.departtime = new ISODate(req.departtime)
+
+	post.save((err) => {
+		if(err){
+			console.log(err)
+			res.json({result : 0})
+		}
+		else{
+			res.json({result : 1})
+		}
+	})	
+})
+
+app.put('/api/update/:post_id', function(req, res){
+	const user = await google_login.verify(req.body.token)
+    Post.findById(req.params.post_id, function(err, post){
+        if(err) return res.status(500).json({ error: 'database failure' });
+        if(!post) return res.status(404).json({ error: 'post not found' });
+
+		if(post.driverneeded){
+			post.driver = user.sub
+			post.driverneeded = false
+		}
+		else{
+			post.passengers.push(user.sub)
+		}
+		post.totalseats -= 1
+
+        post.save(function(err){
+            if(err) res.status(500).json({error: 'failed to update'});
+            res.json({message: 'post updated'});
+        });
+    });
+});
+
+app.post('/report', (req, res) => {
+	var report = new Report()
+	const user = await google_login.verify(req.body.token)
+	report.uploader = user.sub
+	report.reported = req.reported
+	report.title = req.title
+	report.body = req.body
+	//reporttime file is deafult
+	
+	report.save((err) => {
+		if(err){
+			console.log(err)
+			res.json({result : 0})
+		}
+		else{
+			res.json({result : 1})
+		}
+	})	
 })
 
 app.listen(port, (err) => {
