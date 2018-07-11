@@ -34,26 +34,25 @@ app.post('/users/login', async (req, res) => {
 		res.json({'success': false, 'needs_register': false})
 		return
 	}
-	db.user.cond_registered(user.sub, () => {
+	db.user.cond_registered(user.email, (id) => {
 		// Execued if the user is verified
 
-		console.log("Verified login from", user.sub)
-		sessions.create(res, user.sub)
+		console.log("Verified login from", id)
+		sessions.create(res, id)
 		res.json({'success': true, 'needs_register': true})
 	},
 	() => {
 		// Executed if the user is not in the database
 		console.log("Recieved a login from unregistered user. Setting cookies and saving their info.")
 
-		// Set their cookie so we can remember them
-		sessions.create(res, user.sub)
-
 		// Save their information (w/o phnum)
-		db.user.new({
-			'guserid': user.sub,
+		const id = db.user.new({
 			'name': user.name,
 			'email': user.email,
 		})
+
+		// Set their cookie so we can remember them
+		sessions.create(res, id)
 
 		res.json({'success': false, 'needs_register': true});
 	})
@@ -69,8 +68,8 @@ app.post('/users/register', async (req, res) => {
 	}
 
 	// Save the phnum
-	console.log("Successfully saving phone number to register", req.signedCookies.session.userid)
-	db.user.add_phnum(req.signedCookies.session.userid, req.body.phnum)
+	console.log("Successfully saving phone number to register", req.signedCookies.session.id)
+	db.user.add_phnum(req.signedCookies.session.id, req.body.phnum)
 	// TODO this success should probably be sent from a callback in the database
 	res.json({'success': true})
 })
