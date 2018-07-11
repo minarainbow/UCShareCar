@@ -2,12 +2,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const reportSchema = new Schema({
-	reporter: {
-		email: String
-	},
-	reported: {
-		email: String
-	},
+	uploader: String,
+	reported: String
 	title: String,
 	body: String,
 	reporttime: {type: Date, default: Date.now},
