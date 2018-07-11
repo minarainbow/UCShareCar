@@ -37,7 +37,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ridesharers.ucsc.edu.ucsharecar.PostListActivity" />
         </activity>
-        <activity android:name=".NewPostActivity"></activity>
+        <activity android:name=".CreatePostActivity"/>
     </application>
 
 </manifest>
