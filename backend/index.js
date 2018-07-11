@@ -97,7 +97,7 @@ app.get('/api/books/:post_id', (req, res) => {
 app.post('/create_post', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	is_created = db.post.create_post(req.signedCookies.session.user_id, req)
+	is_created = db.post.create_post(req.signedCookies.session.id, req)
 	if(is_created) {
 		res.json({result : 1})
 	}
@@ -109,7 +109,7 @@ app.post('/create_post', (req, res) => {
 app.put('/api/update/:post_id', function(req, res){
 	if (!sessions.validate(req, res)) return
 
-	is_updated = db.post.update_post(req.signedCookies.session.user_id, req)
+	is_updated = db.post.update_post(req.signedCookies.session.id, req)
 	if(is_updated) {
 		res.json({result : 1})
 	}
@@ -121,7 +121,7 @@ app.put('/api/update/:post_id', function(req, res){
 app.post('/report', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	is_created = db.report.create_post(req.signedCookies.session.user_id, req)
+	is_created = db.report.create_post(req.signedCookies.session.id, req)
 	if(is_created) {
 		res.json({result : 1})
 	}
