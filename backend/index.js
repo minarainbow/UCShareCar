@@ -10,22 +10,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const port = 8000
 
-// Mongo
-const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/test', { useNewUrlParser : true} )
-const db = mongoose.connection
-db.on('error', console.error)
-db.once('open', () => {
-	console.log('Connected to MongoDB Server')
-});
-
-// TODO this is a very fake DB for testing only
-fake_db = {}
-
 // Google login service helpers
 const google_login = require('./google_login')
 // Session helpers
 const sessions = require('./session_helpers')
+// Database interactions
+const db = require('./db.js')
 
 app.get('/', ()=>{
 	console.log('Hello')
@@ -42,34 +32,31 @@ app.post('/users/login', async (req, res) => {
 	if (!user) {
 		console.log("Could not verify user, returning fail")
 		res.json({'success': false, 'needs_register': false})
+		return
 	}
-	else if (!(user.sub in fake_db && 'phnum' in fake_db[user.sub])) {
-		// TODO look them up in the real database
-		// For now, I am interepreting a lack of a user OR simply that their
-		// phone number is missing as an *unregistered user*. Note I am doing
-		// this because the phone number is the only thing that we don't get
-		// from google.
+	db.user.cond_registered(user.sub, () => {
+		// Execued if the user is verified
 
+		console.log("Verified login from", user.sub)
+		sessions.create(res, user.sub)
+		res.json({'success': true, 'needs_register': true})
+	},
+	() => {
+		// Executed if the user is not in the database
 		console.log("Recieved a login from unregistered user. Setting cookies and saving their info.")
 
 		// Set their cookie so we can remember them
 		sessions.create(res, user.sub)
 
 		// Save their information (w/o phnum)
-		// TODO use the real database
-		fake_db[user.sub] = {
-			'userid': user.sub,
+		db.user.new({
+			'guserid': user.sub,
 			'name': user.name,
 			'email': user.email,
-		}
+		})
 
 		res.json({'success': false, 'needs_register': true});
-	}
-	else {
-		console.log("Verified login from", user.sub)
-		sessions.create(res, user.sub)
-		res.json({'success': true, 'needs_register': true})
-	}
+	})
 })
 
 app.post('/users/register', async (req, res) => {
@@ -83,8 +70,8 @@ app.post('/users/register', async (req, res) => {
 
 	// Save the phnum
 	console.log("Successfully saving phone number to register", req.signedCookies.session.userid)
-	// TODO use actual database
-	fake_db[req.signedCookies.session.userid]['phnum'] = req.body.phnum
+	db.user.add_phnum(req.signedCookies.session.userid, req.body.phnum)
+	// TODO this success should probably be sent from a callback in the database
 	res.json({'success': true})
 })
 
