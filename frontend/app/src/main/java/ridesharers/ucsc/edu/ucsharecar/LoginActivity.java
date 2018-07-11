@@ -20,7 +20,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "UCShareCar_Login";
-    private static final String URL = "http://169.233.230.209:8000/";
 
     private GoogleSignInClient mGoogleSignInClient;
     private BackendClient backend;
