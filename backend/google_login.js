@@ -11,7 +11,7 @@ const oauth_client = new OAuth2Client(secrets.CLIENT_ID);
 
 // Verifies a token with the google servers. Returns the payload. If there is an
 // error, then the payload is undefined.
-// The payload items we want are .sub (the user id), .name, and .email
+// The payload items we want are .name, and .email
 async function verify(token) {
 	console.log("Verifying a token...")
 	try {
