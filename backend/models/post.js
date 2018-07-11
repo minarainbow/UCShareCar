@@ -6,11 +6,11 @@ const postSchema = new Schema({
 	start: String,
 	end: String,
 	departtime: Date,
-	driver: String,
+	driver: Number,
 	totalseats: Number,
-	passengers: [String],
+	passengers: [Number],
 	memo: String,
-	uploader: String,
+	uploader: Number,
 	driverneeded: Boolean,	
 })
 

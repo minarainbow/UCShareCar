@@ -17,7 +17,7 @@ const sessions = require('./session_helpers')
 // Database interactions
 const db = require('./db.js')
 
-app.get('/', ()=>{
+app.get('/', () => {
 	console.log('Hello')
 })
 
@@ -72,6 +72,62 @@ app.post('/users/register', async (req, res) => {
 	db.user.add_phnum(req.signedCookies.session.id, req.body.phnum)
 	// TODO this success should probably be sent from a callback in the database
 	res.json({'success': true})
+})
+
+app.get('/post_list', (req, res) => {
+	if (!sessions.validate(req, res)) return
+
+	posts = db.posts.find_all_posts()
+	if(posts == null) {
+		return res.status(500).send({error: 'database failure'});
+	}
+	res.json(posts)	
+})
+
+app.get('/api/books/:post_id', (req, res) => {
+	if (!sessions.validate(req, res)) return
+
+	post = db.post.find_with_id(req.params.post_id)
+	if(post == null){
+		return res.status(404).send({error: 'failed'})
+	}
+	res.json(post)
+});
+
+app.post('/create_post', (req, res) => {
+	if (!sessions.validate(req, res)) return
+
+	is_created = db.post.create_post(req.signedCookies.session.user_id, req)
+	if(is_created) {
+		res.json({result : 1})
+	}
+	else {
+		res.json({result : 0})
+	}
+})
+
+app.put('/api/update/:post_id', function(req, res){
+	if (!sessions.validate(req, res)) return
+
+	is_updated = db.post.update_post(req.signedCookies.session.user_id, req)
+	if(is_updated) {
+		res.json({result : 1})
+	}
+	else {
+		res.json({result : 0})
+	}
+});
+
+app.post('/report', (req, res) => {
+	if (!sessions.validate(req, res)) return
+
+	is_created = db.report.create_post(req.signedCookies.session.user_id, req)
+	if(is_created) {
+		res.json({result : 1})
+	}
+	else {
+		res.json({result : 0})
+	}
 })
 
 app.listen(port, (err) => {
