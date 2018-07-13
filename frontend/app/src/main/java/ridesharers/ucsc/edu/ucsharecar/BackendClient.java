@@ -22,7 +22,7 @@ import java.net.HttpCookie;
 public class BackendClient {
 
     private static final String TAG = "UCShareCar_BackendCli";
-    private static final String URL = "http://169.233.230.209:8000/";
+    private static final String URL = "http://18.220.253.162:8000";
 
     private RequestQueue queue;
     private CookieManager cookieManager;
@@ -75,7 +75,7 @@ public class BackendClient {
 
         // Create the whole post request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                URL + "users/login", jsonPostParamaters,
+                URL + "/users/login", jsonPostParamaters,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -103,7 +103,7 @@ public class BackendClient {
 
         // Create the whole post request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                URL + "users/register", jsonPostParamaters,
+                URL + "/users/register", jsonPostParamaters,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
