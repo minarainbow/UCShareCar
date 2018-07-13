@@ -77,57 +77,64 @@ app.post('/users/register', async (req, res) => {
 app.get('/post_list', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	posts = db.posts.find_all_posts()
-	if(posts == null) {
-		return res.status(500).send({error: 'database failure'});
-	}
-	res.json(posts)	
+	db.post.find_all_posts().then((posts) => {
+		res.json(posts)
+	}, (err) => {
+		return res.status(500).send({error : 'database failure'})
+	})
 })
 
-app.get('/api/books/:post_id', (req, res) => {
+app.get('/post/:post_id', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	post = db.post.find_with_id(req.params.post_id)
-	if(post == null){
-		return res.status(404).send({error: 'failed'})
-	}
-	res.json(post)
+	db.post.find_with_id(req.params.post_id).then((post) => {
+		if(post == null) {
+			return res.status(404).json({error: 'post not found'})
+		}
+		else {
+			res.json(post)
+		}
+	}, (err) => {
+		return res.status(500).json({error : err})
+	})
 });
 
 app.post('/create_post', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	is_created = db.post.create_post(req.signedCookies.session.id, req)
-	if(is_created) {
-		res.json({result : 1})
-	}
-	else {
-		res.json({result : 0})
-	}
+	db.post.create_post(req.signedCookies.session.id, req.body).then((post) => {
+	//db.post.create_post(0x5b47e4068f0c2cf5fd5b785a, req.body).then((post) => {
+		res.json({result: 1})
+	}, (err) => {
+		res.json({result: 0})
+	})
 })
 
-app.put('/api/update/:post_id', function(req, res){
+app.put('/update/:post_id', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	is_updated = db.post.update_post(req.signedCookies.session.id, req)
-	if(is_updated) {
-		res.json({result : 1})
-	}
-	else {
-		res.json({result : 0})
-	}
-});
+	db.post.update_post(req.signedCookies.session.id, req).then((post) => {
+	//db.post.update_post(0x5b47e4068f0c2cf5fd5b785a, req).then((post) => {
+		if(post == null) {
+			return res.status(404).json({error: 'post not found'})
+		}
+		else {
+			res.json({result: 1})
+		}
+	}, (err) => {
+		res.json({result: 0})
+	})
+})
 
 app.post('/report', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	is_created = db.report.create_post(req.signedCookies.session.id, req)
-	if(is_created) {
-		res.json({result : 1})
-	}
-	else {
-		res.json({result : 0})
-	}
+	db.report.create_report(req.signedCookies.session.id, req.body).then((report) => {
+	//db.report.create_report(0x5b47e4068f0c2cf5fd5b785a, req.body).then((report) => {	
+		res.json({result: 1})
+	}, (err) => {
+		res.json({result: 0})
+	})
 })
 
 app.listen(port, (err) => {

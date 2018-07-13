@@ -7,6 +7,8 @@ db.once('open', () => {
 	console.log('Connected to MongoDB Server')
 });
 
+const Promise = require('promise')
+
 // Load the schemas
 const User = require('./models/user.js')
 const Post = require('./models/post')
@@ -57,109 +59,122 @@ module.exports = {
 
 		// Returns all posts in the db now
 		find_all_posts: () => {
-			Post.find((err, posts) => {
-				if(err) { 
-					return null;
-				}
-				return posts;	
-			})	
+			return new Promise((resolve, reject) => {
+				Post.find((err, posts) => {
+					if(err) { 
+						reject(err)
+					}
+					resolve(posts)
+				})	
+			})
 		},
 
 		// Returns the specific post with post_id 
 		find_with_id: (post_id) => {
-			Post.findOne({_id: post_id}, (err, post) => {
-				if(err) {
-					console.log('error occurred while finding the post with id')
-					return null;
-				}
-				if(!post) {
-					console.log('post not found')
-					return null;
-				}
-				return post;
+			return new Promise((resolve, reject) => {
+				Post.findOne({_id: post_id}, (err, post) => {
+					if(err) {
+						console.log('error occurred while finding the post with id')
+						reject(err)
+					}
+					if(!post) {
+						console.log('post not found')
+						resolve(null)
+					}
+					resolve(post)
+				})
 			})
 		},
 
 		// Create new post
 		create_post: (user_id, req) => {
-			var post = new Post()
-			post.uploader = user_id
-			post.start = req.start
-			post.end = req.end
-			post.driver = req.driver
-			post.driverneeded = req.driverneeded
-			post.totalseats = req.totalseats
-			if(req.driverneeded) { 
-				post.passengers = [user_id] 
-			}
-			else {
-				post.passengers = [ ]
-			}
-			post.memo = req.memo
-			post.departtime = new ISODate(req.departtime)
-
-			post.save((err) => {
-				if(err) {
-					console.log(err)
-					return false
+			return new Promise((resolve, reject) => {
+				var post = new Post()
+				post.uploader = user_id
+				post.start = req.start
+				post.end = req.end
+				// req.driver comes as hexstring
+				post.driver = parseInt(req.driver)
+				post.driverneeded = req.driverneeded
+				post.totalseats = req.totalseats
+				if(req.driverneeded) { 
+					post.passengers = [user_id] 
 				}
 				else {
-					return true
+					post.passengers = [ ]
 				}
-			})	
+				post.memo = req.memo
+				post.departtime = new Date(req.departtime)
+			
+				is_success = false
+				post.save((err) => {
+					if(err) {
+						reject(err)
+					}
+					else {
+						resolve(post)
+					}
+				})
+			})
 		},
  		
 		// Updates the driver or passenger status in the db
 		update_post: (user_id, req) => {
-			Post.findById(req.params.post_id, (err, post) => {
-				if(err) {
-					console.log('database failure')
-					return false;
-				}
-				if(!post) {
-					console.log('post not found')
-					return false;
-				}
-
-				if(post.driverneeded) {
-					post.driver = user_id
-					post.driverneeded = false
-				}
-				else {
-					post.passengers.push(user_id)
-				}
-				post.totalseats -= 1
-
-				post.save((err) => {
+			return new Promise((resolve, reject) => {
+				Post.findById(req.params.post_id, (err, post) => {
 					if(err) {
-						console.log('failed to update')
-						return false;
+						console.log('database failure')
+						reject(err)
 					}
-					return true;
+					if(!post) {
+						console.log('post not found')
+						resolve(null)
+					}
+
+					if(post.driverneeded) {
+						post.driver = user_id
+						post.driverneeded = false
+					}
+					else {
+						post.passengers.push(user_id)
+					}
+					post.totalseats -= 1
+	
+					post.save((err) => {
+						if(err) {
+							console.log('failed to update')
+							reject(err)
+						}
+						else {
+							resolve(post)
+						}			
+					});
 				});
-			});
+			})
 		},	
 	},
 
 	report : {
-		crete_post: (user_id, req) => {
-			var report = new Report()
+		create_report: (user_id, req) => {
+			return new Promise((resolve, reject) => {
+				var report = new Report()
 
-			report.uploader = user_id
-			report.reported = req.reported
-			report.title = req.title
-			report.body = req.body
-			//reporttime file is deafult
+				report.uploader = user_id
+				report.reported = req.reported
+				report.title = req.title
+				report.body = req.body
+				//reporttime file is deafult
 	
-			report.save((err) => {
-				if(err) {
-					console.log(err)
-					return false;
-				}
-				else {
-					return true;
-				}
-			})	
+				report.save((err) => {
+					if(err) {
+						console.log(err)
+						reject(err)
+					}
+					else {
+						resolve(report)
+					}
+				})	
+			})
 		},
 	},	
 }
