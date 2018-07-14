@@ -1,17 +1,24 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+var ObjectId = mongoose.Schema.Types.ObjectId
 
 const postSchema = new Schema({
 	posttime: {type: Date, default: Date.now},
 	start: String,
 	end: String,
 	departtime: Date,
-	driver: Number,
+	driver: ObjectId,
 	totalseats: Number,
-	passengers: [Number],
+	passengers: {
+		type: [ObjectId],
+		default: [],
+	},
 	memo: String,
-	uploader: Number,
-	driverneeded: Boolean,	
+	uploader: ObjectId,
+	driverneeded: {
+		type: Boolean,
+		default: true,
+	}
 })
 
 module.exports = mongoose.model('post', postSchema)
