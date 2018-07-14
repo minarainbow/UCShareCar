@@ -18,7 +18,8 @@ const sessions = require('./session_helpers')
 const db = require('./db.js')
 
 app.get('/', () => {
-	console.log('Hello')
+	console.log('Requested index')
+	res.json({result: 1})
 })
 
 // GET request for users
