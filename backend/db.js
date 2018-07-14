@@ -1,11 +1,5 @@
 // Set up mongoose
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/ucsharecar', { useNewUrlParser : true} )
-const db = mongoose.connection
-db.on('error', console.error)
-db.once('open', () => {
-	console.log('Connected to MongoDB Server')
-});
 
 const Promise = require('promise')
 
@@ -16,20 +10,40 @@ const Report = require('./models/report')
 
 module.exports = {
 
+	connect: (url) => {
+		url = url || 'mongodb://localhost:27017/ucsharecar'
+		mongoose.connect(url, { useNewUrlParser : true} )
+		const db = mongoose.connection
+		db.on('error', console.error)
+		db.once('open', () => {
+			console.log('Connected to MongoDB Server')
+		})
+	},
+
 	user: {
 		// Creates a new user. user_info must follow the form defined by
-		// models/user.js. Returns the id.
-		new: (user_info) => {
+		// models/user.js. Returns a promise. The promise will recieve the new
+		// user id on the happy route, and an error in the error route.
+		create: (user_info) => {
 			const user = new User(user_info)
-			user.save().then(() => console.log("Saved new user", user_info.email, "to DB"))
-			return user.id
+			return user.save().then((doc) => {
+				console.log("Saved new user", user_info.email, "to DB")
+				return doc._id
+			}, (err) => {
+				console.log("Failed to save new user", user_info.email)
+				console.log(err)
+				throw err
+			})
 		},
 
 		// Args should be self explanatory.
 		add_phnum: (id, phnum) => {
-			User.findByIdAndUpdate(id, { phnum: phnum }, {}, (err, raw) => {
-				if (err) console.log("For user", id, "add phnum error:", err)
-				else console.log("Updated phnum for", id)
+			return User.findByIdAndUpdate(id, { phnum: phnum }).then((doc) => {
+				console.log("Successfully updated phnum for", id)
+				return doc
+			}, (err) => {
+				console.log("For user", id, "add phnum error:", err)
+				throw err
 			})
 		},
 
@@ -37,22 +51,17 @@ module.exports = {
 		// the user is registered and reject if the user is not registered.
 		// Resolve will get one argument, the user's id, if they are registered.
 		check_registered: (email) => {
-			return new Promise((resolve, reject) => {
-				User.findOne({ email: email }, (err, doc) => {
-					if (err) {
-						console.log("Can't check if", email, "is registered")
-						console.log(err)
-						reject()
-						return
-					}
-
-					if (!doc || !doc.phnum) {
-						reject()
-						return
-					}
-
-					resolve(doc.id)
-				})
+			return User.findByEmail(email).then((doc) => {
+				if (!doc || !doc.phnum) {
+					throw new Error("User not registered")
+				}
+				else {
+					return doc.id
+				}
+			}, (err) => {
+				console.log("Can't check if", email, "is registered")
+				console.log(err)
+				throw err
 			})
 		},
 	},

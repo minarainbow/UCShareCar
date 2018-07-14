@@ -18,17 +18,17 @@ async function verify(token) {
 		const ticket = await oauth_client.verifyIdToken({
 			idToken: token,
 			audience: secrets.CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
-		});
-		const payload = ticket.getPayload();
-		const domain = payload['hd'];
+		})
+		const payload = ticket.getPayload()
+		const domain = payload['hd']
 		if (domain !== "ucsc.edu") {
 			console.log("Not a valid UCSC email!")
-			return undefined
+			throw new Error("Email not from UCSC")
 		}
 		// Success
 		return payload
 	} catch(err) {
 		console.log("Failed to verify user.", err)
-		return undefined
+		throw(err)
 	}
 }

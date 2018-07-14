@@ -14,4 +14,8 @@ const userSchema = new Schema({
 	},
 })
 
+userSchema.statics.findByEmail = function(email) {
+	return this.findOne({ email: email })
+}
+
 module.exports = mongoose.model('user', userSchema)

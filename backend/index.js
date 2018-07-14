@@ -2,12 +2,12 @@ const secrets = require('./secrets')
 
 // Express
 const express = require('express')
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const app = express()
 app.use(cookieParser(secrets.COOKIE))
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 const port = 8000
 
 // Google login service helpers
@@ -16,6 +16,7 @@ const google_login = require('./google_login')
 const sessions = require('./session_helpers')
 // Database interactions
 const db = require('./db.js')
+db.connect()
 
 app.get('/', () => {
 	console.log('Requested index')
@@ -41,18 +42,13 @@ app.post('/users/login', async (req, res) => {
 		res.json({success: false, needs_register: false})
 	}
 
-	// Verify with google
-	const user = await google_login.verify(req.body.token)
-	if (!user) {
-		console.log("Could not verify user, returning fail")
-		res.json({success: false, needs_register: false})
-		return
-	}
+	// TODO Despite using promises, I seem to have not avoided callback hell.
 
-	// If verified, check if they are registered or not
-	else {
+	// Verify with google
+	google_login.verify(req.body.token).then((user) => {
+		// If verified, check if they are registered or not
 		db.user.check_registered(user.email).then((id) => {
-			// Execued if the user is verified
+			// Executed if the user is verified
 
 			console.log("Verified login from", id)
 			sessions.create(res, id)
@@ -63,17 +59,23 @@ app.post('/users/login', async (req, res) => {
 			console.log("Recieved a login from unregistered user. Setting cookies and saving their info.")
 
 			// Save their information (w/o phnum)
-			const id = db.user.new({
+			db.user.create({
 				'name': user.name,
 				'email': user.email,
+			}).then((id) => {
+				// If we succeeded, then set their session cookie (save their
+				// user id) and tell them to register
+				sessions.create(res, id)
+				res.json({success: false, needs_register: true})
+			}, (err) => {
+				// If they were not saved, send a failure
+				res.json({success: false, needs_register: false})
 			})
-
-			// Set their cookie so we can remember them
-			sessions.create(res, id)
-
-			res.json({success: false, needs_register: true});
 		})
-	}
+	}, (err) => {
+		console.log("Could not verify user, returning fail:", err)
+		res.json({success: false, needs_register: false})
+	})
 })
 
 /*
@@ -96,10 +98,12 @@ app.post('/users/register', async (req, res) => {
 	}
 
 	// Save the phnum
-	console.log("Successfully saving phone number to register", req.signedCookies.session.id)
-	db.user.add_phnum(req.signedCookies.session.id, req.body.phnum)
-	// TODO this success should probably be sent from a callback in the database
-	res.json({success: true})
+	console.log("Saving phnum for", req.signedCookies.session.id)
+	db.user.add_phnum(req.signedCookies.session.id, req.body.phnum).then(() => {
+		res.json({success: true})
+	}, () => {
+		res.json({success: false})
+	})
 })
 
 app.get('/post_list', (req, res) => {
@@ -167,10 +171,10 @@ app.post('/report', (req, res) => {
 
 app.listen(port, (err) => {
 	if (err) {
-		return console.log('Failed to start:', err);
+		return console.log('Failed to start:', err)
 	}
 
-	console.log('Running server on', port);
+	console.log('Running server on', port)
 })
 
 module.exports = app
