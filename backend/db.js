@@ -33,24 +33,26 @@ module.exports = {
 			})
 		},
 
-		// Takes an email and two callbacks. If the user is registered, then the
-		// is_registered callback is conditionally called, with the id of the
-		// existing user. Otherwise, is_not_registered gets called.
-		cond_registered: (email, is_registered, is_not_registered) => {
-			User.findOne({ email: email }, (err, doc) => {
-				if (err) {
-					console.log("Can't check if", email, "is registered")
-					console.log(err)
-					is_not_registered()
-					return
-				}
+		// Takes an email. Returns a promise. The promise will call resolve if
+		// the user is registered and reject if the user is not registered.
+		// Resolve will get one argument, the user's id, if they are registered.
+		check_registered: (email) => {
+			return new Promise((resolve, reject) => {
+				User.findOne({ email: email }, (err, doc) => {
+					if (err) {
+						console.log("Can't check if", email, "is registered")
+						console.log(err)
+						reject()
+						return
+					}
 
-				if (!doc || !doc.phnum) {
-					is_not_registered()
-					return
-				}
+					if (!doc || !doc.phnum) {
+						reject()
+						return
+					}
 
-				is_registered(doc.id)
+					resolve(doc.id)
+				})
 			})
 		},
 	},

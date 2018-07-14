@@ -51,7 +51,7 @@ app.post('/users/login', async (req, res) => {
 
 	// If verified, check if they are registered or not
 	else {
-		db.user.cond_registered(user.email, (id) => {
+		db.user.check_registered(user.email).then((id) => {
 			// Execued if the user is verified
 
 			console.log("Verified login from", id)
