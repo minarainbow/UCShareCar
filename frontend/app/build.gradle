@@ -44,4 +44,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.android.volley:volley:1.0.0'
+    //Dependencies for circle image view
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 }
