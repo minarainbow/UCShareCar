@@ -15,6 +15,9 @@ module.exports = {
 				signed: true,
 			})
 	},
+	destroy: (res) => {
+		res.clearCookie('session')
+	},
 	validate: (req, res) => {
 		// validate writes an error and returns false if the session was not
 		// valid. Use a pattern like "if (!session.validate(...)) return".

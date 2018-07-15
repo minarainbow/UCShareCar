@@ -62,6 +62,25 @@ describe('server handlers', function() {
 					done()
 				})
 		})
+		it('logs users out', function(done) {
+			var agent = request.agent(app)
+			google_login.verify = async () => { return {name: 'Joe', email: 'joe@x.com'}}
+			agent
+				.post('/users/login')
+				.send({token: 'bad_token'})
+				.set('Accept', 'application/json')
+				.expect(200, {
+					success: false,
+					needs_register: true,
+				}).end(function(err, res) {
+					agent
+						.post('/users/logout')
+						.set('Accept', 'application/json')
+						.expect('set-cookie',
+							'session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+							done)
+				})
+		})
 	})
 
 	describe('handles post creation and retrieval', function() {

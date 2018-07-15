@@ -77,6 +77,19 @@ app.post('/users/login', async (req, res) => {
 })
 
 /*
+ * Logs out the user by deleting their session.
+ * Takes no arguments. Always returns {result: 1}, if you already have a
+ * session.
+ */
+app.post('/users/logout', (req, res) => {
+	if (!sessions.validate(req, res)) return
+
+	console.log("Logging out user", req.signedCookies.session.id)
+	sessions.destroy(res)
+	res.json({result: 1})
+})
+
+/*
  * Registers a user. Users should have already attempted a login -- this handler
  * only completes the process of setting up a user. It essentially only adds the
  * phone number.
@@ -86,7 +99,7 @@ app.post('/users/login', async (req, res) => {
  *	"success": true if user successfully registered, else false
  *	"error": an error if there was one, o/w undefined
  */
-app.post('/users/register', async (req, res) => {
+app.post('/users/register', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
 	// Check for the phone number actually being passed
