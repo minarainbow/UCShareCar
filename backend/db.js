@@ -10,13 +10,17 @@ const Report = require('./models/report')
 
 module.exports = {
 
-	connect: (url) => {
+	connect: (url, callback) => {
 		url = url || 'mongodb://localhost:27017/ucsharecar'
 		mongoose.connect(url, { useNewUrlParser : true} )
 		const db = mongoose.connection
-		db.on('error', console.error)
+		db.on('error', () => {
+			console.error
+			if (callback) callback()
+		})
 		db.once('open', () => {
 			console.log('Connected to MongoDB Server')
+			if (callback) callback()
 		})
 	},
 
@@ -64,71 +68,117 @@ module.exports = {
 				throw err
 			})
 		},
+
+		find_with_id: (userid) => {
+			return User.findById(userid).then((doc) => {
+				if (!doc) {
+					console.log("Could not find user", userid)
+					throw new Error("Could not find user by id")
+				}
+				return doc
+			}, (err) => {
+				console.log("Error trying to find user", userid)
+				console.log(err)
+				throw err
+			})
+		}
 	},
 
 	post: {
 
 		// Returns all posts in the db now
-		find_all_posts: () => {
+		find_all: () => {
 			return new Promise((resolve, reject) => {
 				Post.find((err, posts) => {
-					if(err) { 
+					if(err) {
+						console.log("Could not get all posts")
+						console.log(err)
 						reject(err)
 					}
-					resolve(posts)
-				})	
+					else {
+						resolve(posts)
+					}
+				})
 			})
 		},
 
-		// Returns the specific post with post_id 
+		// Returns the specific post with post_id
 		find_with_id: (post_id) => {
-			return new Promise((resolve, reject) => {
-				Post.findOne({_id: post_id}, (err, post) => {
-					if(err) {
-						console.log('error occurred while finding the post with id')
-						reject(err)
-					}
-					if(!post) {
-						console.log('post not found')
-						resolve(null)
-					}
-					resolve(post)
-				})
+			return Post.findById(post_id).then((post) => {
+				if (!post) {
+					console.log("Failed to find post with id", post_id)
+					throw new Error("Could not find post with id="+post_id)
+				}
+				else {
+					return post
+				}
+			}, (err) => {
+				consoe.log("Failed to find post with id", post_id)
+				console.log(err)
+				throw err
 			})
 		},
 
 		// Create new post
-		create_post: (user_id, req) => {
-			return new Promise((resolve, reject) => {
-				var post = new Post()
-				post.uploader = user_id
-				post.start = req.start
-				post.end = req.end
-				// req.driver comes as hexstring
-				post.driver = parseInt(req.driver)
-				post.driverneeded = req.driverneeded
-				post.totalseats = req.totalseats
-				if(req.driverneeded) { 
-					post.passengers = [user_id] 
-				}
-				else {
-					post.passengers = [ ]
-				}
-				post.memo = req.memo
-				post.departtime = new Date(req.departtime)
-			
-				is_success = false
-				post.save((err) => {
-					if(err) {
-						reject(err)
-					}
-					else {
-						resolve(post)
-					}
-				})
+		create: (post_data) => {
+			if (post_data.driver) {
+				post_data.driverneeded = false
+			}
+
+			const post = new Post(post_data)
+			return post.save().then((doc) => {
+				console.log("Created post w/ id", doc.id)
+				return doc.id
+			}, (err) => {
+				console.log("Failed to save post to DB")
+				console.log(err)
+				throw err
 			})
 		},
- 		
+
+		add_driver: (post_id, user_id) => {
+			return Post.findByIdAndUpdate(post_id, {
+				driver: user_id,
+				driverneeded: false,
+			}).then(() => {
+				console.log("Successfully added driver", user_id, "to", post_id)
+			}, (err) => {
+				console.log("Could not add driver", user_id, "to", post_id)
+				console.log(err)
+				throw err
+			})
+		},
+
+		add_passenger: (post_id, user_id) => {
+
+			return Post.findById(post_id).then((post) => {
+				// If there is no driver yet, don't add passengers
+				if (post.driverneeded) {
+					console.log("No driver, cannot add", user_id, "to", post_id)
+					throw new Error("No driver, cannot add passenger")
+				}
+				// If the passengers + 1 driver exceed seats, fail
+				if (post.passengers.length+1 >= post.totalseats) {
+					console.log("Not enough seats to add", user_id, "to", post_id)
+					throw new Error("Not enough seats to add passenger")
+				}
+
+				post.passengers.push(user_id)
+				return post.save().then(() => {
+					console.log("Successfully added", user_id, "to", post_id, "as a passenger")
+				}, (err) => {
+					console.log("Could not add passenger", user_id, "to", post_id)
+					console.log(err)
+					throw err
+				})
+			}, (err) => {
+				console.log("Could not add passenger", user_id, "to", post_id)
+				console.log(err)
+				throw err
+			})
+
+		},
+
 		// Updates the driver or passenger status in the db
 		update_post: (user_id, req) => {
 			return new Promise((resolve, reject) => {
@@ -150,7 +200,7 @@ module.exports = {
 						post.passengers.push(user_id)
 					}
 					post.totalseats -= 1
-	
+
 					post.save((err) => {
 						if(err) {
 							console.log('failed to update')
@@ -158,11 +208,11 @@ module.exports = {
 						}
 						else {
 							resolve(post)
-						}			
-					});
-				});
+						}
+					})
+				})
 			})
-		},	
+		},
 	},
 
 	report : {
@@ -175,7 +225,7 @@ module.exports = {
 				report.title = req.title
 				report.body = req.body
 				//reporttime file is deafult
-	
+
 				report.save((err) => {
 					if(err) {
 						console.log(err)
@@ -184,8 +234,8 @@ module.exports = {
 					else {
 						resolve(report)
 					}
-				})	
+				})
 			})
 		},
-	},	
+	},
 }
