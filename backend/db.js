@@ -10,13 +10,17 @@ const Report = require('./models/report')
 
 module.exports = {
 
-	connect: (url) => {
+	connect: (url, callback) => {
 		url = url || 'mongodb://localhost:27017/ucsharecar'
 		mongoose.connect(url, { useNewUrlParser : true} )
 		const db = mongoose.connection
-		db.on('error', console.error)
+		db.on('error', () => {
+			console.error
+			if (callback) callback()
+		})
 		db.once('open', () => {
 			console.log('Connected to MongoDB Server')
+			if (callback) callback()
 		})
 	},
 

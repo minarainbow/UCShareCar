@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const db = require('../db.js')
 
 describe('database manages users', function(){
-	before(function() {
-		db.connect('mongodb://localhost:27017/ucsharecar_test')
+	before(function(done) {
+		db.connect('mongodb://localhost:27017/ucsharecar_test', done)
 	})
 	after(function() {
 		mongoose.connection.db.dropDatabase();
@@ -83,8 +83,8 @@ describe('database manages users', function(){
 })
 
 describe('database stores and retrieves posts', function() {
-	before(function() {
-		db.connect('mongodb://localhost:27017/ucsharecar_test')
+	before(function(done) {
+		db.connect('mongodb://localhost:27017/ucsharecar_test', done)
 	})
 	after(function() {
 		mongoose.connection.db.dropDatabase();

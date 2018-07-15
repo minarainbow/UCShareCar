@@ -6,8 +6,8 @@ const google_login = require('../google_login')
 const session = require('../session_helpers')
 
 describe('server handlers', function() {
-	before(function() {
-		db.connect('mongodb://localhost:27017/ucsharecar_test')
+	before(function(done) {
+		db.connect('mongodb://localhost:27017/ucsharecar_test', done)
 		app.listen(8000, (err) => {
 			if (err) {
 				return console.log('Failed to start:', err)
