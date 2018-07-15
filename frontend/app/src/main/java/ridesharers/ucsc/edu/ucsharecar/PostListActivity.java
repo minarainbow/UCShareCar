@@ -37,6 +37,7 @@ public class PostListActivity extends AppCompatActivity {
     private ArrayList<PostInfo> postList = new ArrayList<>();
 
     private BackendClient backend;
+    private Context postListContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,15 @@ public class PostListActivity extends AppCompatActivity {
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(postListContext, CreatePostActivity.class);
+                postListContext.startActivity(intent);
+            }
+        });
 
 
             /*
