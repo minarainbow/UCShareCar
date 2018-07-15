@@ -10,6 +10,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,6 +18,7 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpCookie;
+import java.util.ArrayList;
 
 // TODO this class should detect authorization errors and start the login window accordddingly
 public class BackendClient {
@@ -114,6 +116,42 @@ public class BackendClient {
                 }, errorCallback);
 
         // Send the POST request to register the user
+        queue.add(request);
+    }
+
+    public void getAllPosts(final Response.Listener<ArrayList<PostInfo>> responseCallback,
+                            final Response.ErrorListener errorCallback) {
+
+        // Set up request and callbacks
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
+                URL + "/posts/all", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    // Check for valid response
+                    if (response.getInt("result") != 1) {
+                        Log.w(TAG, "Got a bad result: "+response.getString("error"));
+                        errorCallback.onErrorResponse(null);
+                    }
+
+                    // Parse posts
+                    ArrayList<PostInfo> posts = new ArrayList<PostInfo>();
+                    JSONArray jsonArray = response.getJSONArray("posts");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        posts.add(new PostInfo(jsonArray.getJSONObject(i)));
+                    }
+
+                    // Send posts to callee
+                    responseCallback.onResponse(posts);
+                } catch (JSONException e) {
+                    // If parsing fails, we fail
+                    Log.w(TAG, "Could not parse posts from /posts/all: "+e.toString());
+                    errorCallback.onErrorResponse(null);
+                }
+            }
+        }, errorCallback);
+
+        // Send request
         queue.add(request);
     }
 
