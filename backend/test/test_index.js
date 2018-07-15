@@ -81,6 +81,40 @@ describe('server handlers', function() {
 							done)
 				})
 		})
+		it('retrieves users by id', function(done) {
+			var agent = request.agent(app)
+			db.user.create({
+				name: "John Smith",
+				email: "jsmith@example.com",
+			}).then((lookup_id) => {
+				agent
+					.post('/users/login')
+					.send({token: 'bad_token'})
+					.set('Accept', 'application/json')
+					.expect(200, {
+						success: false,
+						needs_register: true,
+					})
+					.end(function(err, res){
+						agent
+							.get('/users/by_id')
+							.send({user_id: lookup_id})
+							.set('Accept', 'application/json')
+							.expect(200)
+							.end(function(err, res) {
+								if (err) return done(err)
+								if (res.body.result !== 1) {
+									return done(new Error("Result was not 1: "+res.body.error))
+								}
+								if (res.body.user._id != lookup_id) {
+									return done(new Error("Got wrong user, wanted "
+										+lookup_id+" but got "+res.body.user._id))
+								}
+								done()
+							})
+					})
+			}).catch(done)
+		})
 	})
 
 	describe('handles post creation and retrieval', function() {

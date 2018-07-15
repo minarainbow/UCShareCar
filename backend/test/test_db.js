@@ -18,6 +18,19 @@ describe('database manages users', function(){
 			done(err)
 		})
 	})
+	it('retrieves a user by id', function(done) {
+		db.user.create({
+			name: "John Smith",
+			email: "jsmith@example.com",
+		}).then((id) => {
+			return db.user.find_with_id(id)
+		}).then((user) => {
+			if (!user || user.name !== "John Smith" || user.email !== "jsmith@example.com") {
+				return done(new Error("Got the wrong user: "+user))
+			}
+			done()
+		}).catch(done)
+	})
 	it('adds a phone number to a user', function(done) {
 		db.user.create({
 			name: "John Smith",

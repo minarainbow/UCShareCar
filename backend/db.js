@@ -64,6 +64,20 @@ module.exports = {
 				throw err
 			})
 		},
+
+		find_with_id: (userid) => {
+			return User.findById(userid).then((doc) => {
+				if (!doc) {
+					console.log("Could not find user", userid)
+					throw new Error("Could not find user by id")
+				}
+				return doc
+			}, (err) => {
+				console.log("Error trying to find user", userid)
+				console.log(err)
+				throw err
+			})
+		}
 	},
 
 	post: {
