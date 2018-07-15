@@ -162,14 +162,15 @@ app.get('/posts/all', (req, res) => {
  *	result: 1 if success, else 0
  *	post: the post whose id was requested
  */
-app.get('/posts/by_id', (req, res) => {
+app.get('/posts/by_id/:post_id', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	if (!req.body.post_id) {
-		res.json({result: 0})
+	if (!req.params.post_id) {
+		res.json({result: 0, error: 'No post_id passed'})
+		return
 	}
 
-	db.post.find_with_id(req.body.post_id).then((post) => {
+	db.post.find_with_id(req.params.post_id).then((post) => {
 		if (post == null) {
 			return res.status(404).json({result: 0, error: 'post not found'})
 		}
@@ -191,7 +192,7 @@ app.post('/posts/create', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
 	if (!req.body.post) {
-		res.json({result: 0})
+		res.json({result: 0, error: 'No post passed to create'})
 		return
 	}
 
@@ -201,7 +202,7 @@ app.post('/posts/create', (req, res) => {
 	db.post.create(req.body.post).then((id) => {
 		res.json({result: 1, post_id: id})
 	}, (err) => {
-		res.json({result: 0})
+		res.json({result: 0, error: err})
 	})
 })
 
