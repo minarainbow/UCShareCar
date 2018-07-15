@@ -97,8 +97,7 @@ describe('server handlers', function() {
 					})
 					.end(function(err, res){
 						agent
-							.get('/users/by_id')
-							.send({user_id: lookup_id})
+							.get('/users/by_id/'+lookup_id)
 							.set('Accept', 'application/json')
 							.expect(200)
 							.end(function(err, res) {

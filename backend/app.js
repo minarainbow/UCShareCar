@@ -124,16 +124,16 @@ app.post('/users/register', (req, res) => {
  *	error: an error string if result was 0
  *	user: the user document if successful
  */
-app.get('/users/by_id', (req, res) => {
+app.get('/users/by_id/:user_id', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
 	// Check user_id was sent
-	if (req.body.user_id === undefined) {
+	if (req.params.user_id === undefined) {
 		console.log("Missing user id to find user by id")
 		res.json({result: 0, error: 'Did not recieve an ID'})
 	}
 
-	db.user.find_with_id(req.body.user_id).then((user) => {
+	db.user.find_with_id(req.params.user_id).then((user) => {
 		res.json({result: 1, user: user})
 	}, (err) => {
 		res.json({result: 0, error: err})
