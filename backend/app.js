@@ -16,7 +16,7 @@ const sessions = require('./session_helpers')
 // Database interactions
 const db = require('./db.js')
 
-app.get('/', () => {
+app.get('/', (req, res) => {
 	console.log('Requested index')
 	res.json({result: 1})
 })
