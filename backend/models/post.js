@@ -3,10 +3,10 @@ const Schema = mongoose.Schema
 var ObjectId = mongoose.Schema.Types.ObjectId
 
 const postSchema = new Schema({
-	posttime: {type: Date, default: Date.now},
+	posttime: {type: Number, default: Date.now},
 	start: String,
 	end: String,
-	departtime: Date,
+	departtime: Number,
 	driver: ObjectId,
 	totalseats: Number,
 	passengers: {

@@ -8,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import ridesharers.ucsc.edu.ucsharecar.dummy.RecyclerViewAdapter;
 
