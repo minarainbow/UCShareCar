@@ -1,30 +1,18 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import ridesharers.ucsc.edu.ucsharecar.dummy.DummyContent;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ridesharers.ucsc.edu.ucsharecar.dummy.RecyclerViewAdapter;
-import ridesharers.ucsc.edu.ucsharecar.PostDefinition;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 
 /**
@@ -46,7 +34,7 @@ public class PostListActivity extends AppCompatActivity {
     private final String TAG = "UCShareCar_PostList";
 
     //vars
-    private ArrayList<PostDefinition> postList = new ArrayList<>();
+    private ArrayList<PostInfo> postList = new ArrayList<>();
 
     private BackendClient backend;
 
@@ -110,14 +98,14 @@ public class PostListActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         Log.d(TAG, "setupRecyclerView: init recycleview.");
         //These are just test code, but the app should be able to get the info from the data base
-        postList.add(new PostDefinition("Science Hill", "Beach Boardwalk","2:30","4",null, "Freshmen only", true));
-        postList.add(new PostDefinition("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
-        postList.add(new PostDefinition("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
-        postList.add(new PostDefinition("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
-        postList.add(new PostDefinition("Science Hill", "Beach Boardwalk","2:30","4",null, "Freshmen only", true));
-        postList.add(new PostDefinition("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
-        postList.add(new PostDefinition("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
-        postList.add(new PostDefinition("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
+        postList.add(new PostInfo(new Date(), new Date(), "start", "end", "memo", true, null, null, null, 5));
+//        postList.add(new PostInfo("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
+//        postList.add(new PostInfo("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
+//        postList.add(new PostInfo("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
+//        postList.add(new PostInfo("Science Hill", "Beach Boardwalk","2:30","4",null, "Freshmen only", true));
+//        postList.add(new PostInfo("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
+//        postList.add(new PostInfo("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
+//        postList.add(new PostInfo("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, postList);

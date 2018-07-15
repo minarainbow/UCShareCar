@@ -15,19 +15,18 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ridesharers.ucsc.edu.ucsharecar.PostDefinition;
 import ridesharers.ucsc.edu.ucsharecar.PostDetailActivity;
-import ridesharers.ucsc.edu.ucsharecar.PostListActivity;
+import ridesharers.ucsc.edu.ucsharecar.PostInfo;
 import ridesharers.ucsc.edu.ucsharecar.R;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = "RecyclerViewAdapter";
 
-    private ArrayList<PostDefinition> mpostList = new ArrayList<PostDefinition>();
+    private ArrayList<PostInfo> mpostList = new ArrayList<PostInfo>();
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, ArrayList<PostDefinition> postList){
+    public RecyclerViewAdapter(Context context, ArrayList<PostInfo> postList){
         mpostList = postList;
         mContext = context;
     }
@@ -47,23 +46,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //                    .asBitmap()
 //                    .load(mImages.get(position))
 //                    .into(holder.image);
-        holder.origin.setText(mpostList.get(position).getmStart());
-        holder.destination.setText(mpostList.get(position).getmEnd());
-        holder.departureTime.setText(mpostList.get(position).getmDepartureTime());
+        holder.origin.setText(mpostList.get(position).getStart());
+        holder.destination.setText(mpostList.get(position).getEnd());
+        holder.departureTime.setText(mpostList.get(position).getDeparttime().toString());
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: clicked on: " + mpostList.get(position).getmDepartureTime());
-                Toast.makeText(mContext, mpostList.get(position).getmDepartureTime(), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onClick: clicked on: " + mpostList.get(position).getDriver());
+                Toast.makeText(mContext, mpostList.get(position).getDeparttime().toString(), Toast.LENGTH_SHORT).show();
                 //Making posts clickable
                 Intent intent = new Intent(mContext, PostDetailActivity.class);
-                intent.putExtra("starting_loc", mpostList.get(position).getmStart());
-                intent.putExtra("ending_loc", mpostList.get(position).getmEnd());
-                intent.putExtra("leaving_time", mpostList.get(position).getmDepartureTime());
-                intent.putExtra("avail_seats", mpostList.get(position).getmTotalSeats());
-                intent.putExtra("passenger_names", mpostList.get(position).getmPassengers());
-                intent.putExtra("notes", mpostList.get(position).getmMemo());
-                intent.putExtra("driver_status", mpostList.get(position).ismDriverNeeded() ? "Yes" : "No");
+                intent.putExtra("starting_loc", mpostList.get(position).getStart());
+                intent.putExtra("ending_loc", mpostList.get(position).getEnd());
+                intent.putExtra("leaving_time", mpostList.get(position).getDeparttime());
+                intent.putExtra("avail_seats", mpostList.get(position).getTotalseats());
+                intent.putExtra("passenger_names", mpostList.get(position).getPassengers());
+                intent.putExtra("notes", mpostList.get(position).getMemo());
+                intent.putExtra("driver_status", mpostList.get(position).isDriverneeded() ? "Yes" : "No");
                 mContext.startActivity(intent);
             }
         });
