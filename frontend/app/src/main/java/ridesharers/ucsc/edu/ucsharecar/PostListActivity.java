@@ -21,9 +21,11 @@ import android.widget.Toast;
 import ridesharers.ucsc.edu.ucsharecar.dummy.DummyContent;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ridesharers.ucsc.edu.ucsharecar.dummy.RecyclerViewAdapter;
+import ridesharers.ucsc.edu.ucsharecar.PostDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * An activity representing a list of Posts. This activity
@@ -44,9 +46,7 @@ public class PostListActivity extends AppCompatActivity {
     private final String TAG = "UCShareCar_PostList";
 
     //vars
-    private ArrayList<String> mTempDestinations = new ArrayList<>();
-    private ArrayList<String> mTempArrivals = new ArrayList<>();
-    private ArrayList<String> mTempDepartures = new ArrayList<>();
+    private ArrayList<PostDefinition> postList = new ArrayList<>();
 
     private BackendClient backend;
 
@@ -54,6 +54,10 @@ public class PostListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_list);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+
 
             /*
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -68,7 +72,7 @@ public class PostListActivity extends AppCompatActivity {
                 Intent intent = new Intent(PostListActivity.this, CreatePostActivity.class);
                 startActivity(intent);
             }
-        });
+        });/*
 
         if (findViewById(R.id.post_detail_container) != null) {
             // The detail container view will be present only in the
@@ -106,33 +110,17 @@ public class PostListActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         Log.d(TAG, "setupRecyclerView: init recycleview.");
         //These are just test code, but the app should be able to get the info from the data base
-        mTempDestinations.add("Beach Boardwalk");
-        mTempDestinations.add("Woodstock's Pizza");
-        mTempDestinations.add("Penny's Ice Creamery");
-        mTempDestinations.add("San Jose Bart Station");
-        mTempDestinations.add("Beach Boardwalk");
-        mTempDestinations.add("Woodstock's Pizza");
-        mTempDestinations.add("Penny's Ice Creamery");
-        mTempDestinations.add("San Jose Bart Station");
-        mTempArrivals.add("2:30");
-        mTempArrivals.add("3:00");
-        mTempArrivals.add("3:00");
-        mTempArrivals.add("3:50");
-        mTempArrivals.add("2:30");
-        mTempArrivals.add("3:00");
-        mTempArrivals.add("3:00");
-        mTempArrivals.add("3:50");
-        mTempDepartures.add("5:00");
-        mTempDepartures.add("5:30");
-        mTempDepartures.add("6:20");
-        mTempDepartures.add("5:20");
-        mTempDepartures.add("5:00");
-        mTempDepartures.add("5:30");
-        mTempDepartures.add("6:20");
-        mTempDepartures.add("5:20");
+        postList.add(new PostDefinition("Science Hill", "Beach Boardwalk","2:30","4",null, "Freshmen only", true));
+        postList.add(new PostDefinition("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
+        postList.add(new PostDefinition("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
+        postList.add(new PostDefinition("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
+        postList.add(new PostDefinition("Science Hill", "Beach Boardwalk","2:30","4",null, "Freshmen only", true));
+        postList.add(new PostDefinition("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
+        postList.add(new PostDefinition("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
+        postList.add(new PostDefinition("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mTempDestinations, mTempDepartures, mTempArrivals);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, postList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
