@@ -3,13 +3,48 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PostListActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:title="Search Rides" />
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Post"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"/>
+
+    <Button
+        android:id="@+id/report_button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Report"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"/>
+
+    <Button
+        android:id="@+id/profile_button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Profile"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"/>
+
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recycler_view"/>
+        android:layout_below="@id/toolbar"
+        android:paddingBottom="48dp"
+        android:clipToPadding="true"/>
 
 </RelativeLayout>
