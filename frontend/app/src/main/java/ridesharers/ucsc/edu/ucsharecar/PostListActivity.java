@@ -67,11 +67,11 @@ public class PostListActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        if (!backend.hasSession()) {
-            Log.w(TAG, "Sending user to login page");
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
+//        if (!backend.hasSession()) {
+//            Log.w(TAG, "Sending user to login page");
+//            Intent intent = new Intent(this, LoginActivity.class);
+//            startActivity(intent);
+//        }
     }
 
     private void setupRecyclerView() {

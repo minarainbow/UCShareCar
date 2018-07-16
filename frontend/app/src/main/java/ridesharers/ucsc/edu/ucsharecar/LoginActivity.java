@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         // Make the google login button bigger
         SignInButton signInButton = findViewById(R.id.login_button);
         signInButton.setSize(SignInButton.SIZE_WIDE);
+        //signInButton.setOnClickListener(this);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -60,6 +61,13 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.login_button:
+                onClickLogin(view);
+                break;
+        }
+    }
     public void onClickLogin(View view) {
         Log.w(TAG, "Log in button clicked; opening login activity");
 
