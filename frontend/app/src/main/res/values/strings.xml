@@ -27,4 +27,13 @@
         <item>Woodstock's Pizza</item>
         <item>San Jose Diridon Station</item>
     </string-array>
+    <string-array name="EndingLocations">
+        <item>College Nine</item>
+        <item>College Ten</item>
+        <item>McHenry Library</item>
+        <item>Science Hill</item>
+        <item>Beach Boardwalk</item>
+        <item>Woodstock's Pizza</item>
+        <item>San Jose Diridon Station</item>
+    </string-array>
 </resources>

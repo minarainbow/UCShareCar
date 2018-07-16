@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -74,7 +73,5 @@ public class PostDetailActivity extends AppCompatActivity {
 
         TextView driver_status = findViewById(R.id.driver_status);
         driver_status.setText(driverStatus);
-
-        ImageView image = findViewById(R.id.post_pic);
     }
 }

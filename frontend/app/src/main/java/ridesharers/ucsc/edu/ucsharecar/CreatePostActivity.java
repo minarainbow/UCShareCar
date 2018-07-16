@@ -21,6 +21,11 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
         originSpinner.setAdapter(originAdapter);
         originSpinner.setOnItemSelectedListener(this);
 
+        Spinner destinationSpinner = findViewById(R.id.destination_spinner);
+        ArrayAdapter<CharSequence> destinationAdapter = ArrayAdapter.createFromResource(this, R.array.EndingLocations, android.R.layout.simple_spinner_item);
+        destinationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        destinationSpinner.setAdapter(destinationAdapter);
+        destinationSpinner.setOnItemSelectedListener(this);
 
     }
 
@@ -28,6 +33,9 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String origin = parent.getItemAtPosition(position).toString();
         Toast.makeText(parent.getContext(), origin, Toast.LENGTH_SHORT).show();
+
+        String destination = parent.getItemAtPosition(position).toString();
+        Toast.makeText(parent.getContext(), destination, Toast.LENGTH_SHORT);
     }
 
     @Override
