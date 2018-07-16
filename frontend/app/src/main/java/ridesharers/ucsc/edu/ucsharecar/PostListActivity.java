@@ -59,38 +59,6 @@ public class PostListActivity extends AppCompatActivity {
         });
 
 
-            /*
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        toolbar.setTitle(getTitle());
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.w(TAG, "User clicked FAB, going to CreatePostActivity");
-                Intent intent = new Intent(PostListActivity.this, CreatePostActivity.class);
-                startActivity(intent);
-            }
-        });/*
-
-        if (findViewById(R.id.post_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }*/
-
-//        View recyclerView = findViewById(R.id.post_list);
-//        assert recyclerView != null;
-//        setupRecyclerView((RecyclerView) recyclerView);
-
-//        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-//        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mDestinations, mDepartureTimes, mArrivalTimes);
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         // Get the backend object
         backend = BackendClient.getSingleton(this);
         setupRecyclerView();
