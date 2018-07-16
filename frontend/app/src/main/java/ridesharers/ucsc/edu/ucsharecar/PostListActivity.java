@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 
 import ridesharers.ucsc.edu.ucsharecar.dummy.RecyclerViewAdapter;
 
@@ -49,7 +50,7 @@ public class PostListActivity extends AppCompatActivity {
 //        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(myToolbar);
 
-        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+        ImageButton fab = findViewById(R.id.add_request);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
