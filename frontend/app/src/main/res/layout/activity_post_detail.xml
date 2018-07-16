@@ -1,84 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="100">
-
-    <ImageView
+    adb kill-server    <ImageView
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_weight="50"
         android:id="@+id/post_pic"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher"/>
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/starting_loc"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="72dp"
         android:text="Origin:"
-        android:textSize="20dp"
-        android:textColor="#000"/>
-    <TextView
+        android:textColor="#000"
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/EditOrigin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/starting_loc"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="93dp"
+        android:hint="Enter a origin"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
+    <TextView
         android:id="@+id/ending_loc"
-        android:layout_below="@+id/starting_loc"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/starting_loc"
+        android:layout_marginTop="122dp"
         android:text="Destination:"
-        android:textSize="20dp"
-        android:textColor="#000"/>
-    <TextView
-        android:layout_width="wrap_content"
+        android:textColor="#000"
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/EditDest"
+        android:layout_width="229dp"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/ending_loc"
+        android:layout_marginTop="-11dp"
+        android:layout_toEndOf="@+id/driver_status"
+        android:hint="Enter Destination"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
+    <TextView
         android:id="@+id/leaving_time"
-        android:layout_below="@+id/ending_loc"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/starting_loc"
+        android:layout_marginTop="175dp"
         android:text="Departure Time:"
-        android:textSize="20dp"
-        android:textColor="#000"/>
-    <TextView
+        android:textColor="#000"
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/EditDepartTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/leaving_time"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="100dp"
+        android:hint="Enter Time"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
+    <TextView
         android:id="@+id/avail_seats"
-        android:layout_below="@+id/leaving_time"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/starting_loc"
+        android:layout_marginTop="221dp"
         android:text="Seats:"
-        android:textSize="20dp"
-        android:textColor="#000"/>
-    <TextView
+        android:textColor="#000"
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/EditSeats"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="37dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/avail_seats"
+        android:layout_marginStart="81dp"
+        android:hint="No.of seats"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
+    <TextView
         android:id="@+id/passenger_names"
-        android:layout_below="@+id/avail_seats"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/starting_loc"
+        android:layout_marginBottom="217dp"
         android:text="Passengers:"
-        android:textSize="20dp"
-        android:textColor="#000"/>
+        android:textColor="#000"
+        android:textSize="20dp" />
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/notes"
-        android:layout_below="@+id/passenger_names"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
-        android:text="Notes:"
-        android:textSize="20dp"
-        android:textColor="#000"/>
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/starting_loc"
+        android:layout_marginBottom="163dp"
+        android:text="Notes:"
+        android:textColor="#000"
+        android:textSize="20dp" />
+
+    <TextView
         android:id="@+id/driver_status"
-        android:layout_below="@+id/notes"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/starting_loc"
+        android:layout_marginBottom="114dp"
         android:text="Driver Status:"
-        android:textSize="20dp"
-        android:textColor="#000"/>
-</LinearLayout>
+        android:textColor="#000"
+        android:textSize="20dp" />
+</RelativeLayout>

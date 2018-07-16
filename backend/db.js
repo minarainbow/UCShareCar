@@ -89,6 +89,7 @@ module.exports = {
 		// Returns all posts in the db now
 		find_all: () => {
 			return new Promise((resolve, reject) => {
+				var timeSort = { departtime : 1}
 				Post.find((err, posts) => {
 					if(err) {
 						console.log("Could not get all posts")
@@ -98,7 +99,7 @@ module.exports = {
 					else {
 						resolve(posts)
 					}
-				})
+				}).sort(timeSort)
 			})
 		},
 
