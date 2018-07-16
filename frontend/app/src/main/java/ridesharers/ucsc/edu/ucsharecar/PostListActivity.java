@@ -58,7 +58,6 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
 
-
         // Get the backend object
         backend = BackendClient.getSingleton(this);
         setupRecyclerView();
