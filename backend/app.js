@@ -250,7 +250,7 @@ app.post('/posts/add_driver', (req, res) => {
 	})
 })
 
-app.put('/posts/update', (req, res) => {
+app.put('/posts/update/:post_id', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
 	db.post.update_post(req.signedCookies.session.id, req).then((post) => {
