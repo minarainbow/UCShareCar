@@ -147,7 +147,7 @@ app.get('/users/by_id/:user_id', (req, res) => {
  *	posts: an array of all posts.
  */
 app.get('/posts/all', (req, res) => {
-	if (!sessions.validate(req, res)) return
+	//if (!sessions.validate(req, res)) return
 
 	db.post.find_all().then((posts) => {
 		res.json({result: 1, posts: posts})
@@ -183,13 +183,41 @@ app.get('/posts/by_id/:post_id', (req, res) => {
 })
 
 /*
+ * Returns posts which the start value matches with request's start value by departtime ordering
+ * If start value and end value is same, then it is shown on the top
+ */
+app.get('/posts/by_start', (req, res) => {
+	if (!sessions.validate(req, res)) return
+	
+	db.post.find_start(req.body).then((posts) => {
+		res.json({result: 1, posts: posts})
+	}, (err) => {
+		return res.status(500).send({result: 0, error : 'database failure'})
+	})
+})
+
+/*
+ * Returns posts which the end value matches with request's end value by departtime ordering
+ * If start value and end value is same, then it is shown on the top
+ */
+app.get('/posts/by_end', (req, res) => {
+	if (!sessions.validate(req, res)) return
+	
+	db.post.find_end(req.body).then((posts) => {
+		res.json({result: 1, posts: posts})
+	}, (err) => {
+		return res.status(500).send({result: 0, error : 'database failure'})
+	})
+})
+
+/*
  * Creates a new post. All the data associated with the post must be in the
  * field "post" in the request body. The return value has two fields:
  *	result: 1 if good, else 0
  *	post_id: the ID of the post that was created, otherwise undefined
  */
 app.post('/posts/create', (req, res) => {
-	if (!sessions.validate(req, res)) return
+	//if (!sessions.validate(req, res)) return
 
 	if (!req.body.post) {
 		res.json({result: 0, error: 'No post passed to create'})
