@@ -1,17 +1,9 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
-import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -81,7 +73,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
         TextView driver_status = findViewById(R.id.driver_status);
         driver_status.setText(driverStatus);
+<<<<<<< HEAD
 
         //ImageView image = findViewById(R.id.post_pic);
+=======
+>>>>>>> 6c7777f177ec30c8aefebed1f6dc99ea8e5fc254
     }
 }

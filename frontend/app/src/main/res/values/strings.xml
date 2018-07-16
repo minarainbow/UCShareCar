@@ -18,4 +18,22 @@
     <string name="register_button">Register</string>
     <string name="title_post_list">Posts</string>
     <string name="title_post_detail">Post Detail</string>
+    <string-array name="StartingLocations">
+        <item>College Nine</item>
+        <item>College Ten</item>
+        <item>McHenry Library</item>
+        <item>Science Hill</item>
+        <item>Beach Boardwalk</item>
+        <item>Woodstock's Pizza</item>
+        <item>San Jose Diridon Station</item>
+    </string-array>
+    <string-array name="EndingLocations">
+        <item>College Nine</item>
+        <item>College Ten</item>
+        <item>McHenry Library</item>
+        <item>Science Hill</item>
+        <item>Beach Boardwalk</item>
+        <item>Woodstock's Pizza</item>
+        <item>San Jose Diridon Station</item>
+    </string-array>
 </resources>

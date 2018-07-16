@@ -1,14 +1,16 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import ridesharers.ucsc.edu.ucsharecar.dummy.RecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class PostListActivity extends AppCompatActivity {
     private ArrayList<PostInfo> postList = new ArrayList<>();
 
     private BackendClient backend;
+    private Context postListContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,38 +49,14 @@ public class PostListActivity extends AppCompatActivity {
 //        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(myToolbar);
 
-
-            /*
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        toolbar.setTitle(getTitle());
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.w(TAG, "User clicked FAB, going to CreatePostActivity");
-                Intent intent = new Intent(PostListActivity.this, CreatePostActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent(postListContext, CreatePostActivity.class);
+                postListContext.startActivity(intent);
             }
-        });/*
-
-        if (findViewById(R.id.post_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }*/
-
-//        View recyclerView = findViewById(R.id.post_list);
-//        assert recyclerView != null;
-//        setupRecyclerView((RecyclerView) recyclerView);
-
-//        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-//        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mDestinations, mDepartureTimes, mArrivalTimes);
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        });
 
         // Get the backend object
         backend = BackendClient.getSingleton(this);

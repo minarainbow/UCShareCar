@@ -89,7 +89,8 @@ module.exports = {
 		// Returns all posts in the db now
 		find_all: () => {
 			return new Promise((resolve, reject) => {
-				Post.find((err, posts) => {
+				const timeSort = {departtime : 1}
+				Post.find().sort(timeSort).exec((err, posts) => {
 					if(err) {
 						console.log("Could not get all posts")
 						console.log(err)
@@ -116,6 +117,66 @@ module.exports = {
 				consoe.log("Failed to find post with id", post_id)
 				console.log(err)
 				throw err
+			})
+		},
+
+		// Returns posts which the start value matches
+		find_start: (start_end) => {
+			return new Promise((resolve, reject) => {
+				const timeSort = {departtime : 1}
+				var start_val = [ ]
+
+				Post.find({"$and" : [{start : start_end.start}, {end : start_end.end}]}).sort(timeSort).exec((err, posts) => {
+					if(err) {
+						console.log("Could not get all posts")
+						console.log(err)
+						reject(err)
+					}
+					else {
+						start_val.push(posts)
+						Post.find({"$and" : [{start : start_end.start}, {end : {"$ne" : start_end.end}}]}).sort(timeSort).exec((err, posts) => {
+							if(err) {
+								console.log("Could not get all posts")
+								console.log(err)
+								reject(err)
+							}
+							else {
+								start_val.push(posts)
+								resolve(start_val)
+							}
+						})
+					}
+				})
+			})
+		},
+
+		// Returns posts which the end value matches
+		find_end: (start_end) => {
+			return new Promise((resolve, reject) => {
+				const timeSort = {departtime : 1}
+				var start_val = [ ]
+
+				Post.find({"$and" : [{start : start_end.start}, {end: start_end.end}]}).sort(timeSort).exec((err, posts) => {
+					if(err) {
+						console.log("Could not get all posts")
+						console.log(err)
+						reject(err)
+					}
+					else {
+						start_val.push(posts)
+						Post.find({"$and" : [{start : {"$ne" : start_end.start}}, {end : start_end.end}]}).sort(timeSort).exec((err, posts) => {
+							if(err) {
+								console.log("Could not get all posts")
+								console.log(err)
+								reject(err)
+							}
+							else {
+								start_val.concat(posts)
+								resolve(start_val)
+							}
+						})
+					}
+				})
 			})
 		},
 

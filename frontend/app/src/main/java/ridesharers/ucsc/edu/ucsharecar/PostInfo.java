@@ -19,10 +19,11 @@ public class PostInfo {
     private String driver, uploader;
     private ArrayList<String> passengers;
     private int totalseats;
+    private String id;
 
-    public PostInfo(Date posttime, Date departtime, String start, String end, String memo,
-                    boolean driverneeded, String driver, String uploader,
-                    ArrayList<String> passengers, int totalseats) {
+    PostInfo(Date posttime, Date departtime, String start, String end, String memo,
+             boolean driverneeded, String driver, String uploader,
+             ArrayList<String> passengers, int totalseats) {
         this.posttime = posttime;
         this.departtime = departtime;
         this.start = start;
@@ -33,10 +34,12 @@ public class PostInfo {
         this.uploader = uploader;
         this.passengers = passengers;
         this.totalseats = totalseats;
+        this.id = null;
     }
 
-    public PostInfo(JSONObject raw) throws JSONException {
+    PostInfo(JSONObject raw) throws JSONException {
         // First get fields that we know should be there
+        this.id = raw.getString("_id");
         this.posttime = new Date(raw.getLong("posttime"));
         this.departtime = new Date(raw.getLong("departtime"));
         this.start = raw.getString("start");
@@ -64,6 +67,21 @@ public class PostInfo {
             this.driver = null;
         }
 
+    }
+
+    public JSONObject getJSON() throws JSONException {
+        JSONObject res = new JSONObject();
+        res.put("driverneeded", driverneeded);
+        res.put("driver", driver);
+        res.put("posttime", posttime.getTime());
+        res.put("departtime", departtime.getTime());
+        res.put("start", start);
+        res.put("end", end);
+        res.put("totalseats", totalseats);
+        res.put("memo", memo);
+        res.put("uploader", uploader);
+        res.put("passengers", new JSONArray(passengers));
+        return res;
     }
 
     public String getUploader() {
@@ -144,5 +162,13 @@ public class PostInfo {
 
     public void setDeparttime(Date departtime) {
         this.departtime = departtime;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

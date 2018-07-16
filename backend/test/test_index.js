@@ -97,8 +97,7 @@ describe('server handlers', function() {
 					})
 					.end(function(err, res){
 						agent
-							.get('/users/by_id')
-							.send({user_id: lookup_id})
+							.get('/users/by_id/'+lookup_id)
 							.set('Accept', 'application/json')
 							.expect(200)
 							.end(function(err, res) {
@@ -138,6 +137,7 @@ describe('server handlers', function() {
 				.set('Accept', 'application/json')
 				.expect(200, {
 					result: 0,
+					error: "No post passed to create",
 				})
 				.end(function(err, res) {
 					if (err) return done(err)
@@ -169,8 +169,7 @@ describe('server handlers', function() {
 				.expect(200)
 				.then((res) => {
 					agent
-						.get('/posts/by_id')
-						.send({post_id: res.body.post_id})
+						.get('/posts/by_id/'+res.body.post_id)
 						.set('Accept', 'application/json')
 						.expect(200)
 						.end(function(err, res) {
@@ -220,8 +219,7 @@ describe('server handlers', function() {
 								return done(new Error("Result was not 1 when adding passenger"))
 							else {
 								agent
-									.get('/posts/by_id')
-									.send({post_id: post_id})
+									.get('/posts/by_id/'+post_id)
 									.set('Accept', 'application/json')
 									.expect(200)
 									.end(function(err, res) {
@@ -263,8 +261,7 @@ describe('server handlers', function() {
 								return done(new Error("Result was not 0 when adding passenger over limit"))
 							else {
 								agent
-									.get('/posts/by_id')
-									.send({post_id: post_id})
+									.get('/posts/by_id/'+post_id)
 									.set('Accept', 'application/json')
 									.expect(200)
 									.end(function(err, res) {
@@ -302,8 +299,7 @@ describe('server handlers', function() {
 								return done(new Error("Result was not 0 when adding passenger w/o driver"))
 							else {
 								agent
-									.get('/posts/by_id')
-									.send({post_id: post_id})
+									.get('/posts/by_id/'+post_id)
 									.set('Accept', 'application/json')
 									.expect(200)
 									.end(function(err, res) {
@@ -341,8 +337,7 @@ describe('server handlers', function() {
 								return done(new Error("Result was not 1 when adding driver"))
 							else {
 								agent
-									.get('/posts/by_id')
-									.send({post_id: post_id})
+									.get('/posts/by_id/'+post_id)
 									.set('Accept', 'application/json')
 									.expect(200)
 									.end(function(err, res) {
