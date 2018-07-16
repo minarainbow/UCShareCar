@@ -1,17 +1,16 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import ridesharers.ucsc.edu.ucsharecar.dummy.RecyclerViewAdapter;
 
 import java.util.ArrayList;
