@@ -73,8 +73,8 @@ public class PostDetailActivity extends AppCompatActivity {
         TextView avail_seats = findViewById(R.id.avail_seats);
         avail_seats.setText(seats);
 
-        TextView passenger_names = findViewById(R.id.passenger_names);
-        passenger_names.setText(names);
+        //TextView passenger_names = findViewById(R.id.passenger_names);
+        //passenger_names.setText(names);
 
         TextView notes = findViewById(R.id.notes);
         notes.setText(memos);
@@ -82,6 +82,6 @@ public class PostDetailActivity extends AppCompatActivity {
         TextView driver_status = findViewById(R.id.driver_status);
         driver_status.setText(driverStatus);
 
-        ImageView image = findViewById(R.id.post_pic);
+        //ImageView image = findViewById(R.id.post_pic);
     }
 }
