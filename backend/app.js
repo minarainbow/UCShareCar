@@ -147,7 +147,7 @@ app.get('/users/by_id/:user_id', (req, res) => {
  *	posts: an array of all posts.
  */
 app.get('/posts/all', (req, res) => {
-	//if (!sessions.validate(req, res)) return
+	if (!sessions.validate(req, res)) return
 
 	db.post.find_all().then((posts) => {
 		res.json({result: 1, posts: posts})
@@ -217,7 +217,7 @@ app.get('/posts/by_end', (req, res) => {
  *	post_id: the ID of the post that was created, otherwise undefined
  */
 app.post('/posts/create', (req, res) => {
-	//if (!sessions.validate(req, res)) return
+	if (!sessions.validate(req, res)) return
 
 	if (!req.body.post) {
 		res.json({result: 0, error: 'No post passed to create'})

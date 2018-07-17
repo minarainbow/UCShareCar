@@ -16,7 +16,7 @@ describe('server handlers', function() {
 		})
 	})
 	after(function() {
-		mongoose.connection.db.dropDatabase();
+		mongoose.connection.db.dropDatabase()
 	})
 
 	describe('handles user login', function(){
@@ -352,5 +352,31 @@ describe('server handlers', function() {
 						})
 				})
 		})
+	})
+	describe('rejects requests with no session', function() {
+		const agent = request.agent(app)
+		const validated_get_endpoints = [
+			'/users/by_id/5', '/posts/all', '/posts/by_start', '/posts/by_end',
+		]
+		const validated_post_endpoints = [
+			'/users/logout', '/users/register', '/posts/create',
+			'/posts/add_passenger', '/posts/add_driver', '/report',
+		]
+		const check = function(endpoint, method) {
+			it('refuses '+endpoint, function(done) {
+				agent[method](endpoint)
+					.set('Accept', 'application/json')
+					.expect(200, {
+						error: "Not a valid session"
+					}, done)
+
+			})
+		}
+		for (endpoint of validated_get_endpoints) {
+			check(endpoint, "get")
+		}
+		for (endpoint of validated_post_endpoints) {
+			check(endpoint, "post")
+		}
 	})
 })
