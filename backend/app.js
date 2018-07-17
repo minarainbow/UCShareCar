@@ -50,7 +50,7 @@ app.post('/users/login', async (req, res) => {
 
 			console.log("Verified login from", id)
 			sessions.create(res, id)
-			res.json({success: true, needs_register: true})
+			res.json({success: true, needs_register: false, user_id: id})
 		},
 		() => {
 			// Executed if the user is not in the database
@@ -64,7 +64,7 @@ app.post('/users/login', async (req, res) => {
 				// If we succeeded, then set their session cookie (save their
 				// user id) and tell them to register
 				sessions.create(res, id)
-				res.json({success: false, needs_register: true})
+				res.json({success: false, needs_register: true, user_id: id})
 			}, (err) => {
 				// If they were not saved, send a failure
 				res.json({success: false, needs_register: false})
