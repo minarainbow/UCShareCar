@@ -251,8 +251,8 @@ app.post('/post/update', (req, res) => {
 	db.post.update(req.body.post).then(() => {
 		res.json({result: 1})
 	}, (err) => {
-		res.json(result: 0, error: err)
-	}
+		res.json({result: 0, error: err})
+	})
 })
 
 /*
