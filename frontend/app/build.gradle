@@ -42,7 +42,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     // Dependencies for Google Sign-In
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
-    implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.android.volley:volley:1.0.0'
     //Dependencies for circle image view
     implementation 'de.hdodenhof:circleimageview:2.2.0'

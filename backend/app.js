@@ -235,6 +235,27 @@ app.post('/posts/create', (req, res) => {
 })
 
 /*
+ * Updates a post with whatever is passed to it. This relies on some serious
+ * trust the the frontend will not mangle posts.
+ * Send the updated post as "post" in the JSON request body. Returns:
+ *	result: 1 if success, 0 o/w
+ *	error: an error if one occurred.
+ */
+app.post('/post/update', (req, res) => {
+	if (!sessions.validate(req, res)) return
+	
+	if (!req.body.post) {
+		res.json({result: 0, error: "no post passed"})
+	}
+
+	db.post.update(req.body.post).then(() => {
+		res.json({result: 1})
+	}, (err) => {
+		res.json(result: 0, error: err)
+	}
+})
+
+/*
  * Adds a passenger to a given post. The post to be added to is passed by ID in
  * post_id, in the request body. The user that will be added as a passenger is
  * the user that is making this request. The user will NOT be added as the
@@ -297,9 +318,9 @@ app.put('/posts/update/:post_id', (req, res) => {
 app.post('/report', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	db.report.create_report(req.signedCookies.session.id, req.body).then((report) => {
+	db.report.create_report(req.signedCookies.session.id, req.body.report).then((report) => {
 	//db.report.create_report(0x5b47e4068f0c2cf5fd5b785a, req.body).then((report) => {
-		res.json({result: 1})
+		res.json({result: 1, report_id: report._id})
 	}, (err) => {
 		res.json({result: 0})
 	})

@@ -208,4 +208,34 @@ describe('database stores and retrieves posts', function() {
 			done(err)
 		})
 	})
+	it('updates posts', function(done) {
+		var post_id
+		var fake_passenger = "5b4a39ff74a2d138b93b2273"
+		var fake_driver = "5b4a39ff74a2d138b93b9291"
+		post = {
+			start: 'start',
+			end: 'end',
+			departtime: Date.now(),
+			totalseats: 5,
+			memo: 'Meaningless memo',
+		}
+		db.post.create(post).then((id) => {
+			post_id = id
+			return db.post.find_with_id(id)
+		}).then((post) => {
+			post.passengers.push(fake_passenger)
+			post.driver = fake_driver
+			return db.post.update(post)
+		}).then(() => {
+			return db.post.find_with_id(post_id)
+		}).then((post) => {
+			if (post.passengers.length !== 1 || post.passengers[0] != fake_passenger)
+				throw new Error("Passengers is not ["+fake_passenger+"], got: "+post.passengers)
+			if (post.driverneeded)
+				throw new Error("Added a driver, but still needs a driver")
+			if (post.driver != fake_driver)
+				throw new Error("Expected driver to be "+fake_driver+", but got: "+post.driver)
+			done()
+		}).catch(done)
+	})
 })

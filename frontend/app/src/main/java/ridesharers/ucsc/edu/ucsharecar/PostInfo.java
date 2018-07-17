@@ -84,6 +84,28 @@ public class PostInfo {
         return res;
     }
 
+    // Please see BackendClient.updatePost() to save these changes online!
+    public void offlineAddDriver(String driver) throws IllegalStateException {
+        if (this.driver != null) {
+            throw new IllegalStateException("A driver already exists");
+        }
+
+        this.driver = driver;
+        this.driverneeded = false;
+    }
+
+    // See BackendClient.updatePost() to save changes on the network.
+    public void offlineAddPassenger(String passenger) throws IllegalStateException {
+        if (this.driverneeded) {
+            throw new IllegalStateException("Cannot add passenger before a driver is added");
+        }
+        if (this.passengers.size() >= this.totalseats) {
+            throw new IllegalStateException("No space for more passengers");
+        }
+
+        this.passengers.add(passenger);
+    }
+
     public String getUploader() {
         return uploader;
     }

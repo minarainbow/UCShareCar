@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+var ObjectId = mongoose.Schema.Types.ObjectId
 
 const reportSchema = new Schema({
-	uploader: Number,
-	reported: Number,
+	uploader: ObjectId,
+	reported: ObjectId,
 	title: String,
 	body: String,
 	reporttime: {type: Date, default: Date.now},
