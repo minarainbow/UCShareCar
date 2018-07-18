@@ -52,23 +52,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:context=".PostListActivity">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="3"
-                    android:text="Posts"
-                    android:background="@drawable/gradientbackground"
-                    android:textColor="#FFF"
-                    android:typeface="monospace"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:layout_gravity="center_horizontal"
-                    android:paddingBottom="3dp"
-                    android:paddingTop="3dp"/>
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="350dp"
@@ -164,16 +148,5 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <ImageButton
-        android:id="@+id/add_post"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="6dp"
-        android:background="@drawable/oval"
-        android:elevation="10dp"
-        android:src="@mipmap/ic_launcher_foreground"  />
 
 </RelativeLayout>

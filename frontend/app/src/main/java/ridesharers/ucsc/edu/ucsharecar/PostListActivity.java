@@ -52,15 +52,6 @@ public class PostListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_list);
 
-        ImageButton add_post = findViewById(R.id.add_post);
-        add_post.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(postListContext, CreatePostActivity.class);
-                postListContext.startActivity(intent);
-            }
-        });
-
         ImageButton my_page = findViewById(R.id.my_page);
         my_page.setOnClickListener(new View.OnClickListener() {
             @Override
