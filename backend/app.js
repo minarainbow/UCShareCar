@@ -50,7 +50,7 @@ app.post('/users/login', async (req, res) => {
 
 			console.log("Verified login from", id)
 			sessions.create(res, id)
-			res.json({success: true, needs_register: true})
+			res.json({success: true, needs_register: false, user_id: id})
 		},
 		() => {
 			// Executed if the user is not in the database
@@ -64,7 +64,7 @@ app.post('/users/login', async (req, res) => {
 				// If we succeeded, then set their session cookie (save their
 				// user id) and tell them to register
 				sessions.create(res, id)
-				res.json({success: false, needs_register: true})
+				res.json({success: false, needs_register: true, user_id: id})
 			}, (err) => {
 				// If they were not saved, send a failure
 				res.json({success: false, needs_register: false})
@@ -147,7 +147,7 @@ app.get('/users/by_id/:user_id', (req, res) => {
  *	posts: an array of all posts.
  */
 app.get('/posts/all', (req, res) => {
-	//if (!sessions.validate(req, res)) return
+	if (!sessions.validate(req, res)) return
 
 	db.post.find_all().then((posts) => {
 		res.json({result: 1, posts: posts})
@@ -217,7 +217,7 @@ app.get('/posts/by_end', (req, res) => {
  *	post_id: the ID of the post that was created, otherwise undefined
  */
 app.post('/posts/create', (req, res) => {
-	//if (!sessions.validate(req, res)) return
+	if (!sessions.validate(req, res)) return
 
 	if (!req.body.post) {
 		res.json({result: 0, error: 'No post passed to create'})
@@ -229,6 +229,27 @@ app.post('/posts/create', (req, res) => {
 
 	db.post.create(req.body.post).then((id) => {
 		res.json({result: 1, post_id: id})
+	}, (err) => {
+		res.json({result: 0, error: err})
+	})
+})
+
+/*
+ * Updates a post with whatever is passed to it. This relies on some serious
+ * trust the the frontend will not mangle posts.
+ * Send the updated post as "post" in the JSON request body. Returns:
+ *	result: 1 if success, 0 o/w
+ *	error: an error if one occurred.
+ */
+app.post('/post/update', (req, res) => {
+	if (!sessions.validate(req, res)) return
+	
+	if (!req.body.post) {
+		res.json({result: 0, error: "no post passed"})
+	}
+
+	db.post.update(req.body.post).then(() => {
+		res.json({result: 1})
 	}, (err) => {
 		res.json({result: 0, error: err})
 	})
@@ -297,9 +318,9 @@ app.put('/posts/update/:post_id', (req, res) => {
 app.post('/report', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	db.report.create_report(req.signedCookies.session.id, req.body).then((report) => {
+	db.report.create_report(req.signedCookies.session.id, req.body.report).then((report) => {
 	//db.report.create_report(0x5b47e4068f0c2cf5fd5b785a, req.body).then((report) => {
-		res.json({result: 1})
+		res.json({result: 1, report_id: report._id})
 	}, (err) => {
 		res.json({result: 0})
 	})

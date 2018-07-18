@@ -240,6 +240,21 @@ module.exports = {
 
 		},
 
+		update: (post) => {
+			// Make sure it's an actual mongoose object
+			post = new Post(post)
+			if (post.driver) {
+				post.driverneeded = false
+			}
+			return post.save().then(() => {
+				console.log("Updated post", post._id)
+			}, (err) => {
+				console.log("Failed to update post", post._id)
+				console.log(err)
+				throw err
+			})
+		},
+
 		// Updates the driver or passenger status in the db
 		update_post: (user_id, req) => {
 			return new Promise((resolve, reject) => {
@@ -277,14 +292,12 @@ module.exports = {
 	},
 
 	report : {
-		create_report: (user_id, req) => {
+		create_report: (user_id, report_info) => {
+			// report_info should have the fields reported, title, and body.
 			return new Promise((resolve, reject) => {
-				var report = new Report()
+				var report = new Report(report_info)
 
 				report.uploader = user_id
-				report.reported = req.reported
-				report.title = req.title
-				report.body = req.body
 				//reporttime file is deafult
 
 				report.save((err) => {

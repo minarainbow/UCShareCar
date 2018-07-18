@@ -16,7 +16,7 @@ describe('server handlers', function() {
 		})
 	})
 	after(function() {
-		mongoose.connection.db.dropDatabase();
+		mongoose.connection.db.dropDatabase()
 	})
 
 	describe('handles user login', function(){
@@ -53,11 +53,13 @@ describe('server handlers', function() {
 				.post('/users/login')
 				.send({token: 'bad_token'})
 				.set('Accept', 'application/json')
-				.expect(200, {
-					success: false,
-					needs_register: true,
-				})
+				.expect(200)
 				.end(function(err, res){
+					if (res.body.success !== false ||
+						res.body.needs_register !== true) {
+						return done(new Error("Got response "+res.body+
+							", but wanted {success: false, needs_register: true}"))
+					}
 					if (err) return done(err)
 					done()
 				})
@@ -114,6 +116,58 @@ describe('server handlers', function() {
 					})
 			}).catch(done)
 		})
+		it('tells users their id when not registered', function(done) {
+			google_login.verify = async () => {
+				return {
+					name: 'Joe',
+					email: 'unregistered@hypercam.com',
+				}
+			}
+			request(app)
+				.post('/users/login')
+				.send({token: 'mocked :)'})
+				.set('Accept', 'application/json')
+				.expect(200)
+				.end(function(err, res) {
+					if (err)
+						return done(err)
+					if (res.body.success !== false)
+						return done(new Error('Did not get a successful login'))
+					if (res.body.needs_register !== true)
+						return done(new Error('Not asked to register'))
+					if (!res.body.user_id)
+						return done(new Error('Did not recieve a user_id!'))
+					done()
+				})
+		})
+		it('tells users their id when already registered', function(done) {
+			const user = {
+				name: 'Joe',
+				email: 'i_really_exist@x.com',
+				phnum: '867-5309',
+			}
+			google_login.verify = async () => user
+			db.user.create(user).then((created_id) => {
+				request(app)
+					.post('/users/login')
+					.send({token: 'mocked :)'})
+					.set('Accept', 'application/json')
+					.expect(200)
+					.end(function(err, res) {
+						if (err)
+							return done(err)
+						if (res.body.success !== true)
+							return done(new Error('Did not get a successful login'))
+						if (res.body.needs_register !== false)
+							return done(new Error('Asked to register'))
+						if (res.body.user_id != created_id)
+							return done(new Error('Did not recieve correct user_id: '+
+								res.body.user_id+" instead of "+created_id))
+						done()
+					})
+			})
+		})
+
 	})
 
 	describe('handles post creation and retrieval', function() {
@@ -125,10 +179,7 @@ describe('server handlers', function() {
 				.post('/users/login')
 				.send({token: 'bad_token'})
 				.set('Accept', 'application/json')
-				.expect(200, {
-					success: false,
-					needs_register: true,
-				}, done)
+				.expect(200, done)
 		})
 		it('fails when no post is sent to save', function(done) {
 			agent
@@ -352,5 +403,31 @@ describe('server handlers', function() {
 						})
 				})
 		})
+	})
+	describe('rejects requests with no session', function() {
+		const agent = request.agent(app)
+		const validated_get_endpoints = [
+			'/users/by_id/5', '/posts/all', '/posts/by_start', '/posts/by_end',
+		]
+		const validated_post_endpoints = [
+			'/users/logout', '/users/register', '/posts/create',
+			'/posts/add_passenger', '/posts/add_driver', '/report',
+		]
+		const check = function(endpoint, method) {
+			it('refuses '+endpoint, function(done) {
+				agent[method](endpoint)
+					.set('Accept', 'application/json')
+					.expect(200, {
+						error: "Not a valid session"
+					}, done)
+
+			})
+		}
+		for (endpoint of validated_get_endpoints) {
+			check(endpoint, "get")
+		}
+		for (endpoint of validated_post_endpoints) {
+			check(endpoint, "post")
+		}
 	})
 })
