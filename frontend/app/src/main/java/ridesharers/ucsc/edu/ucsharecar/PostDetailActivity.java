@@ -73,10 +73,5 @@ public class PostDetailActivity extends AppCompatActivity {
 
         TextView driver_status = findViewById(R.id.driver_status);
         driver_status.setText(driverStatus);
-<<<<<<< HEAD
-
-        //ImageView image = findViewById(R.id.post_pic);
-=======
->>>>>>> 6c7777f177ec30c8aefebed1f6dc99ea8e5fc254
     }
 }
