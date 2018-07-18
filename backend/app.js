@@ -211,6 +211,19 @@ app.get('/posts/by_end', (req, res) => {
 })
 
 /*
+ * Returns posts for My Page in the application
+ */ 
+app.get('/posts/my_page', (req, res) => {
+	if(!sessions.validate(req, res)) return
+
+	db.post.my_page(req.signedCookies.session.id).then((posts) => {
+		res.json({result: 1, posts: posts})
+	}, (err) => {
+		res.json({result: 0, error: err})
+	})
+})
+
+/*
  * Creates a new post. All the data associated with the post must be in the
  * field "post" in the request body. The return value has two fields:
  *	result: 1 if good, else 0

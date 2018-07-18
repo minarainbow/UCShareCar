@@ -180,6 +180,50 @@ module.exports = {
 			})
 		},
 
+		/*
+		 * Returns posts which is needed for my page
+		 * no_matches is JSON array that current user is an uploader but there is no passenger
+		 * matches is JSON array that current user is an uploader and there are at least one passengers
+		 *  or user is participated as a passenger
+		 */
+		my_page: (user_id) => {
+			return new Promise((resolve, reject) => {
+				const timeSort = {departtime : 1}
+				var no_matches = [ ]
+				var matches = [ ]
+
+				Post.find().sort(timeSort).exec((err, posts) => {
+					if(err) {
+						console.log("Could not get all posts")
+						console.log(err)
+						reject(err)
+					}
+					else {
+						for(post in posts) {
+							if(post.passengers.length === 0) {
+								if(post.uploader === user_id)
+									no_matches.push(post)
+								else continue
+							}
+							else {
+								if(post.uploader === user_id)
+									matches.push(post)
+								else {
+									for(passenger in post.passengers) {
+										if(passenger === user_id) {
+											matches.push(post)
+											break
+										}
+									}	
+								}
+							}
+						}			
+						resolve({no_matches : no_matches, matches : matches})
+					}
+				})
+			})
+		},	
+
 		// Create new post
 		create: (post_data) => {
 			if (post_data.driver) {
