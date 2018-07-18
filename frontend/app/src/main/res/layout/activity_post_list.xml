@@ -84,8 +84,10 @@
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     tools:context="com.cs496.project1.Bucketlist">
 
-                    <ListView
-                        android:id="@+id/listView"
+                    <android.support.v7.widget.RecyclerView
+                        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+
+                        android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="#FFFFFFFF"
@@ -99,7 +101,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/LinearLayoutQuestList"
                         app:layout_constraintVertical_bias="1.0">
 
-                    </ListView>
+                    </android.support.v7.widget.RecyclerView>
 
 
 
