@@ -73,6 +73,15 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
 
+
+        ImageButton search = findViewById(R.id.search);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         // Get the backend object
         backend = BackendClient.getSingleton(this);
         setupRecyclerView();
