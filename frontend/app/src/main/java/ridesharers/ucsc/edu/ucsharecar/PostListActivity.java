@@ -105,6 +105,12 @@ public class PostListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final PostListAdapter adapter = new PostListAdapter(this, postList);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         Log.d(TAG, "setupRecyclerView: init recycleview.");
         //These are just test code, but the app should be able to get the info from the data base
         postList.add(new PostInfo(new Date(), new Date(), "start", "end", "memo", true, null, null, null, 5));
@@ -112,23 +118,15 @@ public class PostListActivity extends AppCompatActivity {
         backend.getAllPosts(new Response.Listener<ArrayList<PostInfo>>() {
             @Override
             public void onResponse(ArrayList<PostInfo> response) {
-                for(PostInfo postInfo : response) {
-                    postList.add(new PostInfo(postInfo.getPosttime(), postInfo.getDeparttime(), postInfo.getStart(), postInfo.getEnd(),
-                            postInfo.getMemo(), postInfo.isDriverneeded(), postInfo.getDriver(), postInfo.getUploader(), postInfo.getPassengers(), postInfo.getTotalseats()));
-                }
+                postList.addAll(response);
+                adapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, error.toString());
+                Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
             }
         });
-
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        PostListAdapter adapter = new PostListAdapter(this, postList);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-
 }
