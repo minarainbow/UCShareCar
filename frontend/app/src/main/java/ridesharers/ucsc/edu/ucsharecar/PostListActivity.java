@@ -52,11 +52,16 @@ public class PostListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_list);
 
+<<<<<<< HEAD
+        ImageButton add_post = findViewById(R.id.add_post);
+        add_post.setOnClickListener(new View.OnClickListener() {
+=======
 //        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(myToolbar);
 
         ImageButton fab = findViewById(R.id.add_post);
         fab.setOnClickListener(new View.OnClickListener() {
+>>>>>>> d5bc746327c9b99f5334e5855f54fd719c0977f0
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(postListContext, CreatePostActivity.class);
@@ -69,6 +74,15 @@ public class PostListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PostListActivity.this, MyPage.class);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton add_report = findViewById(R.id.add_report);
+        my_page.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PostListActivity.this, CreateReportActivity.class);
                 startActivity(intent);
             }
         });
@@ -118,21 +132,11 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
 
-        //postList.add(new PostInfo("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
-//        postList.add(new PostInfo("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
-//        postList.add(new PostInfo("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
-//        postList.add(new PostInfo("Science Hill", "Beach Boardwalk","2:30","4",null, "Freshmen only", true));
-//        postList.add(new PostInfo("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
-//        postList.add(new PostInfo("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
-//        postList.add(new PostInfo("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
-
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         PostListAdapter adapter = new PostListAdapter(this, postList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        //recyclerView.setAdapter(new RecyclerViewAdapter(this,tempDestinations, tempDepartureTimes, tempArrivalTimes));
     }
 
 }
