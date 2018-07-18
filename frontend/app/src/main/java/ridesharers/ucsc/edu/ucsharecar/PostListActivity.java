@@ -9,14 +9,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import ridesharers.ucsc.edu.ucsharecar.dummy.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 
 /**
  * An activity representing a list of Posts. This activity
@@ -79,7 +84,23 @@ public class PostListActivity extends AppCompatActivity {
         Log.d(TAG, "setupRecyclerView: init recycleview.");
         //These are just test code, but the app should be able to get the info from the data base
         postList.add(new PostInfo(new Date(), new Date(), "start", "end", "memo", true, null, null, null, 5));
-//        postList.add(new PostInfo("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
+
+        backend.getAllPosts(new Response.Listener<ArrayList<PostInfo>>() {
+            @Override
+            public void onResponse(ArrayList<PostInfo> response) {
+                for(PostInfo postInfo : response) {
+                    postList.add(new PostInfo(postInfo.getPosttime(), postInfo.getDeparttime(), postInfo.getStart(), postInfo.getEnd(),
+                            postInfo.getMemo(), postInfo.isDriverneeded(), postInfo.getDriver(), postInfo.getUploader(), postInfo.getPassengers(), postInfo.getTotalseats()));
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        //postList.add(new PostInfo("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
 //        postList.add(new PostInfo("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
 //        postList.add(new PostInfo("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
 //        postList.add(new PostInfo("Science Hill", "Beach Boardwalk","2:30","4",null, "Freshmen only", true));
@@ -88,7 +109,8 @@ public class PostListActivity extends AppCompatActivity {
 //        postList.add(new PostInfo("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, postList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        PostListAdapter adapter = new PostListAdapter(this, postList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
