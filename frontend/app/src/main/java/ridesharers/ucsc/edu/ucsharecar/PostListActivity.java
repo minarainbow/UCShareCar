@@ -52,23 +52,20 @@ public class PostListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_list);
 
-//        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(myToolbar);
-
-        ImageButton fab = findViewById(R.id.add_post);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(postListContext, CreatePostActivity.class);
-                postListContext.startActivity(intent);
-            }
-        });
-
         ImageButton my_page = findViewById(R.id.my_page);
         my_page.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PostListActivity.this, MyPage.class);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton add_report = findViewById(R.id.add_report);
+        add_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PostListActivity.this, CreateReportActivity.class);
                 startActivity(intent);
             }
         });
@@ -99,6 +96,12 @@ public class PostListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final PostListAdapter adapter = new PostListAdapter(this, postList);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         Log.d(TAG, "setupRecyclerView: init recycleview.");
         //These are just test code, but the app should be able to get the info from the data base
         postList.add(new PostInfo(new Date(), new Date(), "start", "end", "memo", true, null, null, null, 5));
@@ -106,33 +109,15 @@ public class PostListActivity extends AppCompatActivity {
         backend.getAllPosts(new Response.Listener<ArrayList<PostInfo>>() {
             @Override
             public void onResponse(ArrayList<PostInfo> response) {
-                for(PostInfo postInfo : response) {
-                    postList.add(new PostInfo(postInfo.getPosttime(), postInfo.getDeparttime(), postInfo.getStart(), postInfo.getEnd(),
-                            postInfo.getMemo(), postInfo.isDriverneeded(), postInfo.getDriver(), postInfo.getUploader(), postInfo.getPassengers(), postInfo.getTotalseats()));
-                }
+                postList.addAll(response);
+                adapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, error.toString());
+                Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
             }
         });
-
-        //postList.add(new PostInfo("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
-//        postList.add(new PostInfo("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
-//        postList.add(new PostInfo("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
-//        postList.add(new PostInfo("Science Hill", "Beach Boardwalk","2:30","4",null, "Freshmen only", true));
-//        postList.add(new PostInfo("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
-//        postList.add(new PostInfo("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
-//        postList.add(new PostInfo("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
-
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        PostListAdapter adapter = new PostListAdapter(this, postList);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        //recyclerView.setAdapter(new RecyclerViewAdapter(this,tempDestinations, tempDepartureTimes, tempArrivalTimes));
     }
-
 }
