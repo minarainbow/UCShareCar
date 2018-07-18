@@ -55,7 +55,7 @@ public class PostListActivity extends AppCompatActivity {
 //        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(myToolbar);
 
-        ImageButton fab = findViewById(R.id.add_request);
+        ImageButton fab = findViewById(R.id.add_post);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -57,7 +57,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="3"
                     android:text="Posts"
-                    android:background="#21B684"
+                    android:background="@drawable/gradientbackground"
                     android:textColor="#FFF"
                     android:typeface="monospace"
                     android:textSize="20dp"
