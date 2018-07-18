@@ -6,6 +6,7 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -20,7 +21,7 @@ import java.net.CookiePolicy;
 import java.net.HttpCookie;
 import java.util.ArrayList;
 
-// TODO this class should detect authorization errors and start the login window accordddingly
+// TODO this class should detect authorization errors and start the login window accordingly
 public class BackendClient {
 
     private static final String TAG = "UCShareCar_BackendCli";
@@ -74,9 +75,9 @@ public class BackendClient {
     public void SignIn(GoogleSignInAccount account, final Response.Listener<SignInResult> responseCallback,
                        Response.ErrorListener errorCallback) {
         // First we need to make a JSON data object for the POST arguments
-        JSONObject jsonPostParamaters = new JSONObject();
+        JSONObject jsonPostParameters = new JSONObject();
         try {
-            jsonPostParamaters.put("token", account.getIdToken());
+            jsonPostParameters.put("token", account.getIdToken());
         } catch (JSONException e) {
             Log.w(TAG, "Failed to create JSON object to validate login");
             errorCallback.onErrorResponse(null);
@@ -85,7 +86,7 @@ public class BackendClient {
 
         // Create the whole post request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                URL + "/users/login", jsonPostParamaters,
+                URL + "/users/login", jsonPostParameters,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -110,9 +111,9 @@ public class BackendClient {
     public void Register(String phnum, final Response.Listener<RegisterResult> responseCallback,
                        Response.ErrorListener errorCallback) {
         // First we need to make a JSON data object for the POST arguments
-        JSONObject jsonPostParamaters = new JSONObject();
+        JSONObject jsonPostParameters = new JSONObject();
         try {
-            jsonPostParamaters.put("phnum", phnum);
+            jsonPostParameters.put("phnum", phnum);
         } catch (JSONException e) {
             Log.w(TAG, "Failed to create JSON object to register phone #");
             errorCallback.onErrorResponse(null);
@@ -121,7 +122,7 @@ public class BackendClient {
 
         // Create the whole post request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                URL + "/users/register", jsonPostParamaters,
+                URL + "/users/register", jsonPostParameters,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -138,83 +139,51 @@ public class BackendClient {
 
     // Gets all of the posts from the server. Returns a PostInfo array to the callback if it is
     // successful, otherwise the errorCallback is called (likely with a null error, check the logs)
-    public void getAllPosts(final Response.Listener<ArrayList<PostInfo>> responseCallback,
-                            final Response.ErrorListener errorCallback) {
+    public void getAllPosts(Response.Listener<ArrayList<PostInfo>> responseCallback,
+                            Response.ErrorListener errorCallback) {
 
-        // Set up request and callbacks
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
-                URL + "/posts/all", null, new Response.Listener<JSONObject>() {
+        GenericRequest<ArrayList<PostInfo>> request = new GenericRequest<ArrayList<PostInfo>>(
+                "/posts/all", Request.Method.GET, responseCallback, errorCallback) {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    // Check for valid response
-                    if (hasError(response)) {
-                        Log.w(TAG, "Got a bad result: "+response.getString("error"));
-                        errorCallback.onErrorResponse(null);
-                        return;
-                    }
+            void buildParameters(JSONObject args) throws JSONException {}
 
-                    // Parse posts
-                    ArrayList<PostInfo> posts = new ArrayList<PostInfo>();
-                    JSONArray jsonArray = response.getJSONArray("posts");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        posts.add(new PostInfo(jsonArray.getJSONObject(i)));
-                    }
-
-                    // Send posts to callee
-                    responseCallback.onResponse(posts);
-                } catch (JSONException e) {
-                    // If parsing fails, we fail
-                    Log.w(TAG, "Could not parse posts from /posts/all: "+e.toString());
-                    errorCallback.onErrorResponse(null);
+            @Override
+            ArrayList<PostInfo> parseResponse(JSONObject response) throws JSONException {
+                // Parse posts
+                ArrayList<PostInfo> posts = new ArrayList<PostInfo>();
+                JSONArray jsonArray = response.getJSONArray("posts");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    posts.add(new PostInfo(jsonArray.getJSONObject(i)));
                 }
-            }
-        }, errorCallback);
 
-        // Send request
-        queue.add(request);
+                return posts;
+            }
+        };
+
+        request.run();
     }
 
     // Saves a PostInfo object to the database. responseCallback will always be called with the
     // ID of the new post.
-    public void createPost(PostInfo post, final Response.Listener<String> responseCallback,
-                           final Response.ErrorListener errorCallback) {
+    public void createPost(final PostInfo post, Response.Listener<String> responseCallback,
+                           Response.ErrorListener errorCallback) {
 
-        // First we need to make a JSON data object for the POST arguments
-        JSONObject jsonPostParamaters = new JSONObject();
-        try {
-            jsonPostParamaters.put("post", post.getJSON());
-        } catch (JSONException e) {
-            Log.w(TAG, "Failed to create JSON object to upload post:" +e.toString());
-            errorCallback.onErrorResponse(null);
-            return;
-        }
-
-        // Set up request and callbacks
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                URL + "/posts/create", jsonPostParamaters, new Response.Listener<JSONObject>() {
+        // Build request object. We have to pass the post as "post" in the request JSON. Then we get
+        // post_id back in the response.
+        GenericRequest<String> request = new GenericRequest<String>("/posts/create",
+                Request.Method.POST, responseCallback, errorCallback) {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    // Check for valid response
-                    if (hasError(response)) {
-                        Log.w(TAG, "Got a bad result for post creation: "+response.getString("error"));
-                        errorCallback.onErrorResponse(null);
-                        return;
-                    }
-
-                    // Send success to callee
-                    responseCallback.onResponse(response.getString("post_id"));
-                } catch (JSONException e) {
-                    // If parsing fails, we fail
-                    Log.w(TAG, "Could not send post to create: "+e.toString());
-                    errorCallback.onErrorResponse(null);
-                }
+            void buildParameters(JSONObject args) throws JSONException {
+                args.put("post", post.getJSON());
             }
-        }, errorCallback);
 
-        // Send request
-        queue.add(request);
+            @Override
+            String parseResponse(JSONObject response) throws JSONException {
+                return response.getString("post_id");
+            }
+        };
+
+        request.run();
     }
 
     // This method will send a PostInfo object to the server to *update*. Whatver is in the PostInfo
@@ -244,31 +213,20 @@ public class BackendClient {
     public void getPostById(String id, final Response.Listener<PostInfo> responseCallback,
                            final Response.ErrorListener errorCallback) {
 
-        // Set up request and callbacks
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
-                URL + "/posts/by_id/"+id, null, new Response.Listener<JSONObject>() {
+        // Set up gen. request object. Post id goes in URL, so no arg building.
+        GenericRequest<PostInfo> request = new GenericRequest<PostInfo>("/posts/by_id/"+id,
+                Request.Method.GET, responseCallback, errorCallback) {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    // Check for valid response
-                    if (hasError(response)) {
-                        Log.w(TAG, "Got a bad result for post by id: "+response.getString("error"));
-                        errorCallback.onErrorResponse(null);
-                        return;
-                    }
+            void buildParameters(JSONObject args) throws JSONException {}
 
-                    // Send success to callee
-                    responseCallback.onResponse(new PostInfo(response.getJSONObject("post")));
-                } catch (JSONException e) {
-                    // If parsing fails, we fail
-                    Log.w(TAG, "Could not get post by id: "+e.toString());
-                    errorCallback.onErrorResponse(null);
-                }
+            @Override
+            PostInfo parseResponse(JSONObject response) throws JSONException {
+                return new PostInfo(response.getJSONObject("post"));
             }
-        }, errorCallback);
+        };
 
-        // Send request
-        queue.add(request);
+        // Send the request
+        request.run();
     }
 
     // This is very similar to getPostById. Accepts a string argument (the ObjectId of the user you
@@ -277,31 +235,20 @@ public class BackendClient {
     public void getUserById(String id, final Response.Listener<UserInfo> responseCallback,
                             final Response.ErrorListener errorCallback) {
 
-        // Set up request and callbacks
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
-                URL + "/users/by_id/"+id, null, new Response.Listener<JSONObject>() {
+        // Build the request. User id is URL argument.
+        GenericRequest<UserInfo> request = new GenericRequest<UserInfo>("/users/by_id"+id,
+                Request.Method.GET, responseCallback, errorCallback) {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    // Check for valid response
-                    if (hasError(response)) {
-                        Log.w(TAG, "Got a bad result for user by id: "+response.getString("error"));
-                        errorCallback.onErrorResponse(null);
-                        return;
-                    }
-
-                    // Send success to callee
-                    responseCallback.onResponse(new UserInfo(response.getJSONObject("user")));
-                } catch (JSONException e) {
-                    // If parsing fails, we fail
-                    Log.w(TAG, "Could not get user by id: "+e.toString());
-                    errorCallback.onErrorResponse(null);
-                }
+            void buildParameters(JSONObject args) throws JSONException {}
+            @Override
+            UserInfo parseResponse(JSONObject response) throws JSONException {
+                // User should be the field in the response object
+                return new UserInfo(response.getJSONObject("user"));
             }
-        }, errorCallback);
+        };
 
-        // Send request
-        queue.add(request);
+        // Run the request
+        request.run();
     }
 
     public void createReport(final ReportInfo report, final Response.Listener<String> responseCallback,
@@ -310,11 +257,11 @@ public class BackendClient {
         // Build the request
         GenericRequest<String> request = new GenericRequest<String>("/report/create",
                 Request.Method.POST, responseCallback, errorCallback) {
-            void buildParameters(JSONObject object) throws JSONException {
-                object.put("report", report.getJSON());
+            void buildParameters(JSONObject args) throws JSONException {
+                args.put("report", report.getJSON());
             }
-            String parseResponse(JSONObject object) throws JSONException {
-                return object.getString("report_id");
+            String parseResponse(JSONObject response) throws JSONException {
+                return response.getString("report_id");
             }
         };
 
@@ -324,8 +271,8 @@ public class BackendClient {
 
     // GenericRequest attempts to make generic the code to write new requests.
     abstract class GenericRequest<T> {
-        abstract void buildParameters(JSONObject object) throws JSONException;
-        abstract T parseResponse(JSONObject object) throws JSONException;
+        abstract void buildParameters(JSONObject args) throws JSONException;
+        abstract T parseResponse(JSONObject response) throws JSONException;
 
         String endpoint;
         int method;
@@ -341,33 +288,34 @@ public class BackendClient {
         }
 
         void run() {
-            JSONObject jsonPostParamaters = null;
+            JSONObject jsonPostParameters = null;
 
             // If the method is POST, then we construct the arguments. Otherwise we can skip it.
             if (method == Request.Method.POST) {
 
                 // To construct the arguments, create the object and have our builder put the
                 // callee's info in it
-                jsonPostParamaters = new JSONObject();
+                jsonPostParameters = new JSONObject();
                 try {
-                    buildParameters(jsonPostParamaters);
+                    buildParameters(jsonPostParameters);
                 } catch (JSONException e) {
                     Log.w(TAG, "Failed to create JSON object for " + endpoint + "'s args:" + e.toString());
-                    errorCallback.onErrorResponse(null);
+                    errorCallback.onErrorResponse(new VolleyError(e));
                     return;
                 }
             }
 
             // Set up request and callbacks
             JsonObjectRequest request = new JsonObjectRequest(method,
-                    URL + endpoint, jsonPostParamaters, new Response.Listener<JSONObject>() {
+                    URL + endpoint, jsonPostParameters, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
                         // Check for valid response
                         if (hasError(response)) {
-                            Log.w(TAG, "Got a bad result for " + endpoint + ": " + response.getString("error"));
-                            errorCallback.onErrorResponse(null);
+                            String error = response.getString("error");
+                            Log.w(TAG, "Got a bad result for " + endpoint + ": " + error);
+                            errorCallback.onErrorResponse(new VolleyError(error));
                             return;
                         }
 
@@ -376,7 +324,7 @@ public class BackendClient {
                     } catch (JSONException e) {
                         // If parsing fails, we fail
                         Log.w(TAG, "Request to " + endpoint + " failed: " + e.toString());
-                        errorCallback.onErrorResponse(null);
+                        errorCallback.onErrorResponse(new VolleyError(e));
                     }
                 }
             }, errorCallback);
