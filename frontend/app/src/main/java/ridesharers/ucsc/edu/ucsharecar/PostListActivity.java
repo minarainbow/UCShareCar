@@ -71,7 +71,7 @@ public class PostListActivity extends AppCompatActivity {
         });
 
         ImageButton add_report = findViewById(R.id.add_report);
-        my_page.setOnClickListener(new View.OnClickListener() {
+        add_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PostListActivity.this, CreateReportActivity.class);
