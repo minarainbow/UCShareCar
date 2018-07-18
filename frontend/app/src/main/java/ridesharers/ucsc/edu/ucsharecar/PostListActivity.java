@@ -64,6 +64,15 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
 
+        ImageButton my_page = findViewById(R.id.my_page);
+        my_page.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PostListActivity.this, MyPage.class);
+                startActivity(intent);
+            }
+        });
+
         // Get the backend object
         backend = BackendClient.getSingleton(this);
         setupRecyclerView();
@@ -96,7 +105,7 @@ public class PostListActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
             }
         });
 
