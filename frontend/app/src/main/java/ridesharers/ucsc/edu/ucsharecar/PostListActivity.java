@@ -84,7 +84,7 @@ public class PostListActivity extends AppCompatActivity {
         Log.d(TAG, "setupRecyclerView: init recycleview.");
         //These are just test code, but the app should be able to get the info from the data base
         postList.add(new PostInfo(new Date(), new Date(), "start", "end", "memo", true, null, null, null, 5));
-        /*
+
         backend.getAllPosts(new Response.Listener<ArrayList<PostInfo>>() {
             @Override
             public void onResponse(ArrayList<PostInfo> response) {
@@ -99,7 +99,7 @@ public class PostListActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
             }
         });
-        */
+
         //postList.add(new PostInfo("McHenry Library", "Woodstock's Pizza","4:00", "3", null, "No baggage", false));
 //        postList.add(new PostInfo("Porter College","Penny's Ice Creamery","12:00", "4",null, "No alcohol",false));
 //        postList.add(new PostInfo("Crown College","San Jose Diridon Station","1:30","2",null,"No music/radio",false));
