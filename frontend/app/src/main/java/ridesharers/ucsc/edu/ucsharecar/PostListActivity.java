@@ -12,7 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -31,7 +34,7 @@ import java.util.Date;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class PostListActivity extends AppCompatActivity {
+public class PostListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -52,12 +55,36 @@ public class PostListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_list);
 
+        //Spinners
+        Spinner originSpinner = findViewById(R.id.start_spinner);
+        ArrayAdapter<CharSequence> originAdapter = ArrayAdapter.createFromResource(PostListActivity.this, R.array.StartingLocations, android.R.layout.simple_spinner_item);
+        originAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        originSpinner.setAdapter(originAdapter);
+        originSpinner.setOnItemSelectedListener(PostListActivity.this);
+
+        Spinner destinationSpinner = findViewById(R.id.destination_spinner);
+        ArrayAdapter<CharSequence> destinationAdapter = ArrayAdapter.createFromResource(PostListActivity.this, R.array.EndingLocations, android.R.layout.simple_spinner_item);
+        destinationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        destinationSpinner.setAdapter(destinationAdapter);
+        destinationSpinner.setOnItemSelectedListener(PostListActivity.this);
+
         ImageButton my_page = findViewById(R.id.my_page);
         my_page.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PostListActivity.this, MyPage.class);
-                startActivity(intent);
+                Log.d(TAG, "clicked my_page button");
+                Intent my_page_intent = new Intent(getApplicationContext(), MyPage.class);
+                startActivity(my_page_intent);
+            }
+        });
+
+        ImageButton add_post = findViewById(R.id.add_post);
+        add_post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "clicked add_post button");
+                Intent add_intent = new Intent(getApplicationContext(), CreatePostActivity.class);
+                startActivity(add_intent);
             }
         });
 
@@ -65,8 +92,9 @@ public class PostListActivity extends AppCompatActivity {
         add_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PostListActivity.this, CreateReportActivity.class);
-                startActivity(intent);
+                Log.d(TAG,"clicked add_report button");
+                Intent this_intent = new Intent(getApplicationContext(), CreateReportActivity.class);
+                startActivity(this_intent);
             }
         });
 
@@ -75,7 +103,9 @@ public class PostListActivity extends AppCompatActivity {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Log.d(TAG, "clicked search button");
+                Intent search_intent = new Intent (getApplicationContext(), PostListActivity.class);
+                startActivity(search_intent);
             }
         });
 
@@ -117,5 +147,19 @@ public class PostListActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String origin = parent.getItemAtPosition(position).toString();
+        Toast.makeText(parent.getContext(), origin, Toast.LENGTH_SHORT).show();
+
+        String destination = parent.getItemAtPosition(position).toString();
+        Toast.makeText(parent.getContext(), destination, Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

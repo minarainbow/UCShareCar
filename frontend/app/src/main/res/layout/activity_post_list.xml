@@ -6,29 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".PostListActivity">
 
-    <ImageButton
-        android:id="@+id/add_report"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/oval"
-        android:elevation="10dp"
-        android:src="@drawable/sad_face3" />
-    <ImageButton
-        android:id="@+id/my_page"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:background="@drawable/oval"
-        android:elevation="10dp"
-        android:src="@drawable/profile" />
-
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
@@ -166,6 +143,29 @@
         </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/add_report"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/oval"
+        android:elevation="10dp"
+        android:src="@drawable/sad_face3" />
+
+    <ImageButton
+        android:id="@+id/my_page"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/oval"
+        android:elevation="10dp"
+        android:src="@drawable/profile" />
 
     <ImageButton
         android:id="@+id/add_post"
