@@ -19,7 +19,9 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public class PostListViewHolder extends RecyclerView.ViewHolder {
         public TextView origin_text, destination_text, departure_time_text, driver_status_text;
-        public String origin, destination, departure_time, driver_status, posttime, memo, driver, uploader, totalseats;
+        public String origin, destination, departure_time, posttime, memo, driver, uploader;
+        public int totalseats;
+        public boolean driver_status;
         public ArrayList<String> passengers = new ArrayList<String>();
 
         public PostListViewHolder(View view) {
@@ -53,15 +55,22 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         post_holder.destination = postInfo.getEnd().toString();
         post_holder.departure_time = postInfo.getDeparttime().toString();
 
+        post_holder.driver_status = postInfo.isDriverneeded();
         post_holder.posttime = postInfo.getPosttime().toString();
         post_holder.memo = postInfo.getMemo().toString();
         post_holder.uploader = postInfo.getUploader().toString();
-        post_holder.totalseats = "" + postInfo.getTotalseats();
+        post_holder.totalseats = postInfo.getTotalseats();
         post_holder.passengers = postInfo.getPassengers();
 
         post_holder.origin_text.setText(post_holder.origin);
         post_holder.destination_text.setText(post_holder.destination);
         post_holder.departure_time_text.setText(post_holder.departure_time);
+        if(post_holder.driver_status) {
+            post_holder.driver_status_text.setText("needed");
+        }
+        else {
+            post_holder.driver_status_text.setText("");
+        }
 
         holder.itemView.setOnClickListener(
             new View.OnClickListener() {
@@ -72,7 +81,10 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     intent.putExtra("starting_loc", post_holder.origin);
                     intent.putExtra("ending_loc", post_holder.destination);
                     intent.putExtra("leaving_time", post_holder.departure_time);
-                    intent.putExtra("avail_seats", post_holder.totalseats);
+                    intent.putExtra("avail_seats", post_holder.totalseats - post_holder.passengers.size());
+                    intent.putExtra("notes", post_holder.memo);
+                    intent.putExtra("driver_status", post_holder.driver_status);
+
                     mContext.startActivity(intent);
                 }
             }

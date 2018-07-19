@@ -340,6 +340,7 @@ public class BackendClient {
                 // Parse posts
                 ArrayList<PostInfo> posts = new ArrayList<PostInfo>();
                 JSONArray jsonArray = response.getJSONArray("posts");
+                Log.e("posts", jsonArray.toString());
                 for (int i = 0; i < jsonArray.length(); i++) {
                     posts.add(new PostInfo(jsonArray.getJSONObject(i)));
                 }

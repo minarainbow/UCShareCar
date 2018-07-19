@@ -16,16 +16,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_create_post);
 
         Spinner originSpinner = findViewById(R.id.start_spinner);
-        ArrayAdapter<CharSequence> originAdapter = ArrayAdapter.createFromResource(this, R.array.StartingLocations, android.R.layout.simple_spinner_item);
-        originAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        originSpinner.setAdapter(originAdapter);
-        originSpinner.setOnItemSelectedListener(this);
-
         Spinner destinationSpinner = findViewById(R.id.destination_spinner);
-        ArrayAdapter<CharSequence> destinationAdapter = ArrayAdapter.createFromResource(this, R.array.EndingLocations, android.R.layout.simple_spinner_item);
-        destinationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        destinationSpinner.setAdapter(destinationAdapter);
-        destinationSpinner.setOnItemSelectedListener(this);
 
     }
 

@@ -149,7 +149,6 @@
                 android:paddingLeft="10dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Join as a Driver"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_toEndOf="@+id/notes" />
             <Button
