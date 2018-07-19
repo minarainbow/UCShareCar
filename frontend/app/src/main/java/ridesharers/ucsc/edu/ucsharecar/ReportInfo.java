@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ReportInfo {
-    String reported, title, body;
+    private String reported, title, body;
 
     ReportInfo(String reported_user, String title, String body) {
         this.reported = reported_user;

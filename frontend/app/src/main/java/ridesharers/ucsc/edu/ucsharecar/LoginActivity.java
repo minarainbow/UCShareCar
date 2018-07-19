@@ -1,6 +1,9 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,11 +50,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // Get the BackendClient singleton
         backend = BackendClient.getSingleton(this);
+
+        // Configure notification channels, since this is the launch activity
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create channel to show notifications.
+            String channelId  = getString(R.string.default_notification_channel_id);
+            String channelName = getString(R.string.default_notification_channel_name);
+            NotificationManager notificationManager =
+                    getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(new NotificationChannel(channelId,
+                    channelName, NotificationManager.IMPORTANCE_LOW));
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
+        // If we are already logged in, go straight to posts
+        if (backend.hasSession()) {
+            goToPostList();
+            return;
+        }
 
         // On activity start, we'll check for an existing signed in account. If there is one, we can
         // go ahead and send it straight to the server and get started.

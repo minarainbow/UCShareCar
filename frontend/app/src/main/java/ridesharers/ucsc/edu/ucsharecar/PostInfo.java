@@ -39,7 +39,7 @@ public class PostInfo {
 
     PostInfo(JSONObject raw) throws JSONException {
         // First get fields that we know should be there
-        this.id = raw.getString("_id");
+        this.id = raw.getString("_id"); // There should always be an _id in JSON we get from server
         this.posttime = new Date(raw.getLong("posttime"));
         this.departtime = new Date(raw.getLong("departtime"));
         this.start = raw.getString("start");
@@ -81,6 +81,9 @@ public class PostInfo {
         res.put("memo", memo);
         res.put("uploader", uploader);
         res.put("passengers", new JSONArray(passengers));
+        if (id != null) {
+            res.put("_id", id);
+        }
         return res;
     }
 
