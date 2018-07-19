@@ -207,10 +207,10 @@ app.get('/posts/by_id/:post_id', (req, res) => {
 /*
  * Returns result posts of searching
  */
-app.get('/posts/search', (req, res) => {
-	//if (!sessions.validate(req, res)) return
+app.get('/posts/search/:start/:end', (req, res) => {
+	if (!sessions.validate(req, res)) return
 	
-	db.post.search(req.body).then((posts) => {
+	db.post.search(req.params).then((posts) => {
 		res.json({result: 1, posts: posts})
 	}, (err) => {
 		return res.status(500).send({result: 0, error : 'database failure'})
