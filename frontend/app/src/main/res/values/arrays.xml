@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="location">
+        <item>College 9</item>
+        <item>San Jose</item>
+        <item>Dridon Station</item>
+        <item>Seabright</item>
+    </string-array>
+</resources>

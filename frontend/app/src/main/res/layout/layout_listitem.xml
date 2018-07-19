@@ -77,7 +77,6 @@
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Driver Needed"
                 android:gravity="center"
                 android:id="@+id/driver_status"
                 android:textSize="15dp"/>

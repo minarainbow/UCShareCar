@@ -40,6 +40,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:hint="Origin"
+            android:entries="@array/location"
             />
 
         <Spinner
@@ -48,6 +49,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:hint="Destination"
+            android:entries="@array/location"
             />
     </LinearLayout>
 

@@ -1,6 +1,7 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -19,26 +20,60 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpCookie;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 
 // TODO this class should detect authorization errors and start the login window accordingly
 public class BackendClient {
 
     private static final String TAG = "UCShareCar_BackendCli";
     private static final String URL = "http://18.220.253.162:8000";
+    private static URI URI; // This is set up in the constructor.
+
+    // Shared preferences identifier string
+    private static final String PREFS = "ridesharers.ucsc.edu.ucsharecar.sessions";
+    // Shared preferences keys
+    private static final String USERID_KEY = "userid", CK_VALUE = "sesscookievalue",
+                                CK_DOMAIN = "sesscookiedomain", CK_MAXAGE = "sesscookiemaxage",
+                                CK_SAVED_AT = "sesscookiesavedat", FCM_TOKEN = "fcmtoken",
+                                FCM_REGISTERED = "fcmregistered";
+
+    // Default max cookie age (just in case we lose that info)
+    private static long DEFAULT_MAX_AGE = 30 /*hours*/ * 60 /*minutes*/;
 
     private RequestQueue queue;
     private CookieManager cookieManager;
+    private SharedPreferences sessionSettings;
 
     // The userId field will be set when there is a successful log in request. It can be accessed
     // via the getUserId method. TODO does this make hasSession() redundant?
     private String userId = null;
 
+    // The request that should be sent ASAP to register the user's push notifications.
+    // If this is non-null, it should be called by onStartSession.
+    private GenericRequest<Boolean> queuedFCMRegisterRequest = null;
+
+    // For saving the firebase token if we have connectivity issues.
+    private String fcmToken = null;
+    private boolean fcmRegistered = false;
+
     // Instance is just the reference to the only instance of this class that will ever exist
     private static BackendClient instance = null;
 
-    // The constructor of this class is
+    // The constructor of this class is private to defeat instantiation. You must use the singleton.
     private BackendClient(Context context) {
+        // Set the URI field using the URL. This is required for persisting cookies.
+        try {
+            // The port cannot be in the URI for the cookies, so we strip it out.
+            // TODO if no port is specified, I believe this will fail
+            URI = new URI(URL.substring(0, URL.lastIndexOf(':')));
+        } catch (URISyntaxException e) {
+            Log.w(TAG,"Failed to parse a URI from URL");
+            Log.w(TAG, e);
+        }
+
         // TODO -- is there any downside to using the first context that gets the backend client singleton?
         // Set up the request queue
         queue = Volley.newRequestQueue(context);
@@ -47,6 +82,18 @@ public class BackendClient {
         cookieManager = new CookieManager();
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
+
+        // Set up the SharedPreferences to persist cookies
+        sessionSettings = context.getSharedPreferences(PREFS, 0);
+        // And then retrieve the saved session
+        loadSession();
+
+        // Retrieve FCM token. If necessary, queue up a registration
+        fcmToken = sessionSettings.getString(FCM_TOKEN, null);
+        fcmRegistered = sessionSettings.getBoolean(FCM_REGISTERED, false);
+        if (!fcmRegistered) {
+            registerFCM(fcmToken);
+        }
     }
 
     public static BackendClient getSingleton(Context context) {
@@ -66,8 +113,149 @@ public class BackendClient {
         return false;
     }
 
+    private void onStartSession(String userId) {
+        // Save the session for restarts
+        saveSession(userId);
+
+        // Register with FCM if necessary
+        if (queuedFCMRegisterRequest != null) {
+            queuedFCMRegisterRequest.run();
+            queuedFCMRegisterRequest = null;
+        }
+    }
+
+    private void saveSession(String userId) {
+        Log.d(TAG, "Saving a session to sessionSettings");
+
+        // Open the sessionSettings to edit the fields
+        SharedPreferences.Editor editor = sessionSettings.edit();
+
+        // Save the user ID
+        this.userId = userId;
+        editor.putString(USERID_KEY, userId);
+
+        // Save the cookies to disk for later
+        for (HttpCookie cookie : cookieManager.getCookieStore().getCookies()) {
+            if (cookie.getName().equals("session") && !cookie.hasExpired()) {
+                editor.putString(CK_VALUE, cookie.getValue());
+                editor.putString(CK_DOMAIN, cookie.getDomain());
+                editor.putLong(CK_MAXAGE, cookie.getMaxAge());
+                editor.putLong(CK_SAVED_AT, new Date().getTime());
+            }
+        }
+
+        // Save & close the session settings
+        editor.apply();
+    }
+
+    private void loadSession() {
+        Log.d(TAG, "Loading a session from sessionSettings");
+
+        // We only want to load a session if there is a *cookie* for sure.
+        if (sessionSettings.contains(CK_VALUE)) {
+            String cookieValue = sessionSettings.getString(CK_VALUE, null);
+            Long oldMaxAge = sessionSettings.getLong(CK_MAXAGE, DEFAULT_MAX_AGE);
+            Long createdDateMillis = sessionSettings.getLong(CK_SAVED_AT, 0);
+
+            // Compute the time left. Determine expiration date by converting millis to seconds,
+            // adding the max age. Then we subtract the current time to see how many seconds left.
+            Long timeLeft = ((createdDateMillis/1000)+oldMaxAge) - (new Date().getTime()/1000);
+            if (timeLeft < 0) {
+                // If there is no time left, we cannot use this session.
+                Log.w(TAG, "Old session cookie is probably expired, time left is "+timeLeft);
+                return;
+            }
+
+            // First retrieve user id (or null if not there -- should not happen)
+            userId = sessionSettings.getString(USERID_KEY, null);
+
+            // Rebuild the cookie from the values saved
+            HttpCookie cookie = new HttpCookie("session", cookieValue);
+            cookie.setDomain(sessionSettings.getString(CK_DOMAIN, null));
+            cookie.setMaxAge(timeLeft);
+            cookieManager.getCookieStore().add(URI, cookie);
+        }
+    }
+
+    private void clearSession() {
+        Log.d(TAG, "Deleting session info");
+
+        // Open the sessionSettings to edit the fields
+        SharedPreferences.Editor editor = sessionSettings.edit();
+
+        editor.clear();
+
+        // Save & close the session settings
+        editor.apply();
+    }
+
     public String getUserId() {
         return userId;
+    }
+
+    public void registerFCM(final String token) {
+        Log.d(TAG, "Received a FCM token to send");
+        cacheUnregisteredFCMToken(token);
+
+        // Set up the request to send a token
+        GenericRequest<Boolean> request = new GenericRequest<Boolean>("/users/register_fcm",
+                Request.Method.POST, new Response.Listener<Boolean>() {
+            @Override
+            public void onResponse(Boolean response) {
+                Log.d(TAG, "Successfully sent FCM token to the server");
+                onFCMTokenRegistered();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.w(TAG, "Could not send FCM token to the server");
+            }
+        }) {
+            @Override
+            void buildParameters(JSONObject args) throws JSONException {
+                args.put("token", token);
+            }
+
+            @Override
+            Boolean parseResponse(JSONObject response) throws JSONException {
+                // There is no actual response to parse for this endpoint
+                return true;
+            }
+        };
+
+        // Run the request if we have a valid session currently
+        if (hasSession()) {
+            Log.d(TAG, "Sending FCM token now");
+            request.run();
+        }
+        // If there is no session, we have to queue it.
+        else {
+            Log.d(TAG, "Queuing FCM token send when actually logged in");
+            queuedFCMRegisterRequest = request;
+        }
+    }
+
+    private void cacheUnregisteredFCMToken(String token) {
+        // Open the sessionSettings to edit the fields
+        SharedPreferences.Editor editor = sessionSettings.edit();
+
+        editor.putString(FCM_TOKEN, token);
+        editor.putBoolean(FCM_REGISTERED, false);
+
+        // Save & close the session settings
+        editor.apply();
+    }
+
+    private void onFCMTokenRegistered() {
+        // Open the sessionSettings to edit the fields
+        SharedPreferences.Editor editor = sessionSettings.edit();
+
+        // Mark the registration as complete
+        editor.putBoolean(FCM_REGISTERED, true);
+        fcmRegistered = true;
+
+        // Save & close the session settings
+        editor.apply();
     }
 
     // SignIn tries to sign an account with the backend server, calling the given response listener
@@ -93,7 +281,7 @@ public class BackendClient {
                         // Save the userid if it's in there
                         if (response.has("user_id")) {
                             try {
-                                userId = response.getString("user_id");
+                                onStartSession(response.getString("user_id"));
                             } catch (JSONException e) {
                                 Log.w(TAG, "Response has userid, but failed to read it: "+e);
                             }
@@ -152,10 +340,55 @@ public class BackendClient {
                 // Parse posts
                 ArrayList<PostInfo> posts = new ArrayList<PostInfo>();
                 JSONArray jsonArray = response.getJSONArray("posts");
+                Log.e("posts", jsonArray.toString());
                 for (int i = 0; i < jsonArray.length(); i++) {
                     posts.add(new PostInfo(jsonArray.getJSONObject(i)));
                 }
 
+                return posts;
+            }
+        };
+
+        request.run();
+    }
+
+    public void getSearch(JSONObject start_end, final Response.Listener<ArrayList<PostInfo>> responseCallback,
+                            final Response.ErrorListener errorCallback) {
+
+        String make_url = "/";
+
+        try {
+            make_url += start_end.getString("start") + "/" + start_end.getString("end");
+        }
+        catch(JSONException e) {
+
+        }
+
+        GenericRequest<ArrayList<PostInfo>> request = new GenericRequest<ArrayList<PostInfo>>(
+                "/posts/search" + make_url, Request.Method.GET, responseCallback, errorCallback) {
+            @Override
+            void buildParameters(JSONObject args) throws JSONException {}
+
+            @Override
+            ArrayList<PostInfo> parseResponse(JSONObject response) throws JSONException {
+
+                ArrayList<PostInfo> posts = new ArrayList<PostInfo>();
+                JSONObject post = response.getJSONObject("posts");
+                JSONArray sameArray = post.getJSONArray("same");
+                JSONArray startArray = post.getJSONArray("start");
+                JSONArray endArray = post.getJSONArray("end");
+                Log.e("same", sameArray.toString());
+                Log.e("start", startArray.toString());
+                Log.e("end", endArray.toString());
+                for (int i = 0; i < sameArray.length(); i++) {
+                    posts.add(new PostInfo(sameArray.getJSONObject(i)));
+                }
+                for (int i = 0; i < startArray.length(); i++) {
+                    posts.add(new PostInfo(startArray.getJSONObject(i)));
+                }
+                for (int i = 0; i < endArray.length(); i++) {
+                    posts.add(new PostInfo(endArray.getJSONObject(i)));
+                }
                 return posts;
             }
         };
@@ -320,6 +553,7 @@ public class BackendClient {
                         }
 
                         // Send success to callee
+                        Log.d(TAG, "Generic req to "+endpoint+" successful, handing off to parse");
                         responseCallback.onResponse(parseResponse(response));
                     } catch (JSONException e) {
                         // If parsing fails, we fail

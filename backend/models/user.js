@@ -12,6 +12,7 @@ const userSchema = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	fcm_token: String,
 })
 
 userSchema.statics.findByEmail = function(email) {
