@@ -224,3 +224,4 @@ fastlane/readme.md
 secrets.xml
 secrets.js
 keystore.jks
+serviceAccountKey.json

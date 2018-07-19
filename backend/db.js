@@ -81,7 +81,28 @@ module.exports = {
 				console.log(err)
 				throw err
 			})
-		}
+		},
+
+		set_fcm_token: (userid, token) => {
+			return User.findById(userid).then((doc) => {
+				doc.fcm_token = token
+				return doc.save()
+			}, (err) => {
+				console.log("Error trying to save token for", userid)
+				console.log(err)
+				throw err
+			})
+		},
+
+		all_with_ids: (userids) => {
+			return User.find({"_id": {"$in": userids}}).then((docs) => {
+				return docs.map(doc => doc.fcm_token)
+			}, (err) => {
+				console.log("Could not find many users")
+				console.log(err)
+				throw err
+			})
+		},
 	},
 
 	post: {

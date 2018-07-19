@@ -9,12 +9,11 @@ app.use(cookieParser(secrets.COOKIE))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// Google login service helpers
 const google_login = require('./google_login')
-// Session helpers
 const sessions = require('./session_helpers')
-// Database interactions
 const db = require('./db.js')
+const notifications = require('./notifications')
+
 
 app.get('/', (req, res) => {
 	console.log('Requested index')
@@ -131,10 +130,33 @@ app.get('/users/by_id/:user_id', (req, res) => {
 	if (req.params.user_id === undefined) {
 		console.log("Missing user id to find user by id")
 		res.json({result: 0, error: 'Did not recieve an ID'})
+		return
 	}
 
 	db.user.find_with_id(req.params.user_id).then((user) => {
 		res.json({result: 1, user: user})
+	}, (err) => {
+		res.json({result: 0, error: err})
+	})
+})
+
+/*
+ * Sets a given users FCM token. This allows us to send push notifications to
+ * them. Expects a "token" in the body. Returns the standard {result, error}.
+ */
+app.post('/users/register_fcm', (req, res) => {
+	if (!sessions.validate(req, res)) return
+
+	// Check token was sent
+	if (req.body.token === undefined) {
+		console.log("Missing token to register user with FCM")
+		res.json({result: 0, error: 'Did not recieve token'})
+		return
+	}
+
+	db.user.set_fcm_token(req.signedCookies.session.id, req.body.token).then(() => {
+		console.log("Registered an FCM token for", req.signedCookies.session.id)
+		res.json({result: 1})
 	}, (err) => {
 		res.json({result: 0, error: err})
 	})
@@ -259,9 +281,26 @@ app.post('/post/update', (req, res) => {
 	
 	if (!req.body.post) {
 		res.json({result: 0, error: "no post passed"})
+		return
 	}
 
 	db.post.update(req.body.post).then(() => {
+		// Post was successful, we want to send an update to everyone
+
+		// Find the list of users in this post
+		users = []
+		for (passenger of req.body.post.passengers) {
+			if (req.signedCookies.session.id != passenger) {
+				users.push(passenger)
+			}
+		}
+		if (req.signedCookies.session.id != req.body.post.driver) {
+			users.push(req.body.post.driver)
+		}
+
+		// Send a push notification
+		notifications.send(users, req.body.post._id)
+
 		res.json({result: 1})
 	}, (err) => {
 		res.json({result: 0, error: err})
@@ -281,7 +320,8 @@ app.post('/posts/add_passenger', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
 	if (!req.body.post_id) {
-		res.json({result: 0})
+		res.json({result: 0, error: 'No post id'})
+		return
 	}
 
 	db.post.add_passenger(req.body.post_id, req.signedCookies.session.id).then(() => {
@@ -302,7 +342,8 @@ app.post('/posts/add_driver', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
 	if (!req.body.post_id) {
-		res.json({result: 0})
+		res.json({result: 0, error: 'No post id'})
+		return
 	}
 
 	db.post.add_driver(req.body.post_id, req.signedCookies.session.id).then(() => {

@@ -4,15 +4,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UserInfo {
-    String email, name, phoneNumber, id = null;
-    boolean banned;
+    private String email, name, phoneNumber = null, id = null;
+    private boolean banned;
 
     UserInfo(JSONObject raw) throws JSONException {
         email = raw.getString("email");
         name = raw.getString("raw");
-        phoneNumber = raw.getString("phnum");
         banned = raw.getBoolean("banned");
-        if (raw.has("id")) {
+        if (raw.has("phnum")) {
+            phoneNumber = raw.getString("phnum");
+        }
+        if (raw.has("_id")) {
             id = raw.getString("id");
         }
     }

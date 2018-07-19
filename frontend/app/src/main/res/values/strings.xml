@@ -18,6 +18,8 @@
     <string name="register_button">Register</string>
     <string name="title_post_list">Posts</string>
     <string name="title_post_detail">Post Detail</string>
+    <string name="default_notification_channel_id">ucsharecar_post_updates</string>
+    <string name="default_notification_channel_name">Post Updates</string>
     <string-array name="StartingLocations">
         <item>College Nine</item>
         <item>College Ten</item>
