@@ -351,6 +351,50 @@ public class BackendClient {
         request.run();
     }
 
+    public void getSearch(JSONObject start_end, final Response.Listener<ArrayList<PostInfo>> responseCallback,
+                            final Response.ErrorListener errorCallback) {
+
+        String make_url = "/";
+
+        try {
+            make_url += start_end.getString("start") + "/" + start_end.getString("end");
+        }
+        catch(JSONException e) {
+
+        }
+
+        GenericRequest<ArrayList<PostInfo>> request = new GenericRequest<ArrayList<PostInfo>>(
+                "/posts/search" + make_url, Request.Method.GET, responseCallback, errorCallback) {
+            @Override
+            void buildParameters(JSONObject args) throws JSONException {}
+
+            @Override
+            ArrayList<PostInfo> parseResponse(JSONObject response) throws JSONException {
+
+                ArrayList<PostInfo> posts = new ArrayList<PostInfo>();
+                JSONObject post = response.getJSONObject("posts");
+                JSONArray sameArray = post.getJSONArray("same");
+                JSONArray startArray = post.getJSONArray("start");
+                JSONArray endArray = post.getJSONArray("end");
+                Log.e("same", sameArray.toString());
+                Log.e("start", startArray.toString());
+                Log.e("end", endArray.toString());
+                for (int i = 0; i < sameArray.length(); i++) {
+                    posts.add(new PostInfo(sameArray.getJSONObject(i)));
+                }
+                for (int i = 0; i < startArray.length(); i++) {
+                    posts.add(new PostInfo(startArray.getJSONObject(i)));
+                }
+                for (int i = 0; i < endArray.length(); i++) {
+                    posts.add(new PostInfo(endArray.getJSONObject(i)));
+                }
+                return posts;
+            }
+        };
+
+        request.run();
+    }
+
     // Saves a PostInfo object to the database. responseCallback will always be called with the
     // ID of the new post.
     public void createPost(final PostInfo post, Response.Listener<String> responseCallback,
