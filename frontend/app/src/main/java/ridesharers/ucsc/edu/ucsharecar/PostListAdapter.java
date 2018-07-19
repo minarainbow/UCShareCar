@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private ArrayList<PostInfo> postList = new ArrayList<>();
-    private View.OnClickListener onClickListener;
 
     public class PostListViewHolder extends RecyclerView.ViewHolder {
         public TextView origin_text, destination_text, departure_time_text, driver_status_text;
@@ -35,18 +34,19 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public PostListAdapter(Context context, ArrayList<PostInfo> postInfos) {
         mContext = context;
         postList = postInfos;
+        setHasStableIds(true);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.layout_listitem, parent, false);
-        view.setOnClickListener(onClickListener);
         return new PostListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         PostInfo postInfo = postList.get(position);
+        Log.e("HIHI", "" + position);
         final PostListViewHolder post_holder = (PostListViewHolder) holder;
 
         post_holder.origin = postInfo.getStart().toString();
@@ -63,18 +63,20 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         post_holder.destination_text.setText(post_holder.destination);
         post_holder.departure_time_text.setText(post_holder.departure_time);
 
-        this.onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e("Hello", "" + position);
-                Intent intent = new Intent(mContext, PostDetailActivity.class);
-                intent.putExtra("starting_loc", post_holder.origin);
-                intent.putExtra("ending_loc", post_holder.destination);
-                intent.putExtra("leaving_time", post_holder.departure_time);
-                intent.putExtra("avail_seats", post_holder.totalseats);
-                mContext.startActivity(intent);
+        holder.itemView.setOnClickListener(
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.e("Hello", "" + position);
+                    Intent intent = new Intent(mContext, PostDetailActivity.class);
+                    intent.putExtra("starting_loc", post_holder.origin);
+                    intent.putExtra("ending_loc", post_holder.destination);
+                    intent.putExtra("leaving_time", post_holder.departure_time);
+                    intent.putExtra("avail_seats", post_holder.totalseats);
+                    mContext.startActivity(intent);
+                }
             }
-        };
+        );
     }
 
     @Override
