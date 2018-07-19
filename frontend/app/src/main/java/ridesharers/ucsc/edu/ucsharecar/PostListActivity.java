@@ -103,8 +103,6 @@ public class PostListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Log.d(TAG, "setupRecyclerView: init recycleview.");
-        //These are just test code, but the app should be able to get the info from the data base
-        postList.add(new PostInfo(new Date(), new Date(), "start", "end", "memo", true, null, null, null, 5));
 
         backend.getAllPosts(new Response.Listener<ArrayList<PostInfo>>() {
             @Override
