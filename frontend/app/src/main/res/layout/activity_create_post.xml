@@ -5,14 +5,17 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="20dp"
         android:layout_height="40dp">
+
         <TextView
             android:layout_width="0dp"
+            android:textSize="20dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:hint="origin"
-            android:textSize="20dp"
+            android:text="Origin"
             />
 
         <TextView
@@ -20,14 +23,17 @@
             android:textSize="20dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:hint="destination"
+            android:text="Destination"
             />
     </LinearLayout>
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        >
         <Spinner
             android:id="@+id/start_spinner"
             android:layout_width="0dp"
@@ -50,34 +56,85 @@
         android:id="@+id/title_editor"
         android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:hint="Date &amp; Time"
         tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/details_editor"
         android:layout_width="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_height="180dp"
         android:layout_below="@+id/start_editor"
         android:hint="Memo" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <EditText
-            android:id="@+id/price_editor"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:inputType="number"
-            android:layout_weight="1"
-            android:hint="Join as" />
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:weightSum="2"
+        android:layout_height="130dp">
 
-        <EditText
-            android:id="@+id/tags_editor"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="50dp"
             android:layout_weight="1"
-            android:hint="Seats available"
-            />
+            android:orientation="vertical"
+            android:layout_marginLeft="16dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="Available Seats"
+                android:textSize="20dp"
+                />
+            <Spinner
+                android:id="@+id/seats_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:hint="Available Seats"
+                />
+
+        </LinearLayout>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginRight="16dp"
+            android:layout_height="wrap_content">
+
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/driver"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="I'm a Driver"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/passenger"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="I'm a Passenger"
+                    android:textSize="18sp"/>
+            </RadioGroup>
+
+        </RelativeLayout>
+
     </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
