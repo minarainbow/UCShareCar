@@ -121,10 +121,12 @@ module.exports = {
 		},
 
 		// Returns posts which the start value matches
-		find_start: (start_end) => {
+		search: (start_end) => {
 			return new Promise((resolve, reject) => {
 				const timeSort = {departtime : 1}
+				var same_val = [ ]
 				var start_val = [ ]
+				var end_val = [ ]
 
 				Post.find({"$and" : [{start : start_end.start}, {end : start_end.end}]}).sort(timeSort).exec((err, posts) => {
 					if(err) {
@@ -133,7 +135,7 @@ module.exports = {
 						reject(err)
 					}
 					else {
-						start_val.push(posts)
+						same_val = posts
 						Post.find({"$and" : [{start : start_end.start}, {end : {"$ne" : start_end.end}}]}).sort(timeSort).exec((err, posts) => {
 							if(err) {
 								console.log("Could not get all posts")
@@ -141,38 +143,18 @@ module.exports = {
 								reject(err)
 							}
 							else {
-								start_val.push(posts)
-								resolve(start_val)
-							}
-						})
-					}
-				})
-			})
-		},
-
-		// Returns posts which the end value matches
-		find_end: (start_end) => {
-			return new Promise((resolve, reject) => {
-				const timeSort = {departtime : 1}
-				var start_val = [ ]
-
-				Post.find({"$and" : [{start : start_end.start}, {end: start_end.end}]}).sort(timeSort).exec((err, posts) => {
-					if(err) {
-						console.log("Could not get all posts")
-						console.log(err)
-						reject(err)
-					}
-					else {
-						start_val.push(posts)
-						Post.find({"$and" : [{start : {"$ne" : start_end.start}}, {end : start_end.end}]}).sort(timeSort).exec((err, posts) => {
-							if(err) {
-								console.log("Could not get all posts")
-								console.log(err)
-								reject(err)
-							}
-							else {
-								start_val.concat(posts)
-								resolve(start_val)
+								start_val = posts
+								Post.find({"$and" : [{start : {"$ne" : start_end.start}}, {end : start_end.end}]}).sort(timeSort).exec((err, posts) => {
+									if(err) {
+										console.log("Could not get all posts")
+										console.log(err)
+										reject(err)
+									}
+									else {
+										end_val = posts
+										resolve({same : same_val, start : start_val, end : end_val})
+									}
+								})
 							}
 						})
 					}

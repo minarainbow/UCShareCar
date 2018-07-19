@@ -183,27 +183,12 @@ app.get('/posts/by_id/:post_id', (req, res) => {
 })
 
 /*
- * Returns posts which the start value matches with request's start value by departtime ordering
- * If start value and end value is same, then it is shown on the top
+ * Returns result posts of searching
  */
-app.get('/posts/by_start', (req, res) => {
-	if (!sessions.validate(req, res)) return
+app.get('/posts/search', (req, res) => {
+	//if (!sessions.validate(req, res)) return
 	
-	db.post.find_start(req.body).then((posts) => {
-		res.json({result: 1, posts: posts})
-	}, (err) => {
-		return res.status(500).send({result: 0, error : 'database failure'})
-	})
-})
-
-/*
- * Returns posts which the end value matches with request's end value by departtime ordering
- * If start value and end value is same, then it is shown on the top
- */
-app.get('/posts/by_end', (req, res) => {
-	if (!sessions.validate(req, res)) return
-	
-	db.post.find_end(req.body).then((posts) => {
+	db.post.search(req.body).then((posts) => {
 		res.json({result: 1, posts: posts})
 	}, (err) => {
 		return res.status(500).send({result: 0, error : 'database failure'})
