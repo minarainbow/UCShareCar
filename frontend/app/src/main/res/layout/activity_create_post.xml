@@ -54,21 +54,55 @@
     </LinearLayout>
 
 
-    <EditText
-        android:id="@+id/title_editor"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:hint="Date &amp; Time"
-        tools:ignore="HardcodedText" />
+        android:layout_height="100dp">
+
+        <EditText
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:id="@+id/in_date"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:id="@+id/btn_date"
+            android:layout_alignBottom="@+id/in_date"
+            android:layout_toRightOf="@+id/in_date"
+            android:layout_toEndOf="@+id/in_date" />
+
+        <EditText
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/in_time"
+            android:layout_below="@+id/in_date"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:id="@+id/btn_time"
+            android:layout_below="@+id/btn_date"
+            android:layout_alignLeft="@+id/btn_date"
+            android:layout_alignStart="@+id/btn_date" />
+
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/details_editor"
         android:layout_width="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_height="180dp"
+        android:layout_height="170dp"
         android:layout_below="@+id/start_editor"
         android:hint="Memo" />
 
@@ -77,7 +111,7 @@
         android:orientation="horizontal"
         android:layout_marginTop="10dp"
         android:weightSum="2"
-        android:layout_height="130dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="0dp"
