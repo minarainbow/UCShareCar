@@ -47,7 +47,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        PostInfo postInfo = postList.get(position);
+        final PostInfo postInfo = postList.get(position);
         Log.e("HIHI", "" + position);
         final PostListViewHolder post_holder = (PostListViewHolder) holder;
 
@@ -84,6 +84,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     intent.putExtra("avail_seats", post_holder.totalseats - post_holder.passengers.size());
                     intent.putExtra("notes", post_holder.memo);
                     intent.putExtra("driver_status", post_holder.driver_status);
+                    intent.putExtra("post_id", postInfo.getId());
 
                     mContext.startActivity(intent);
                 }

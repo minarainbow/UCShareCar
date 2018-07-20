@@ -502,6 +502,42 @@ public class BackendClient {
         request.run();
     }
 
+    public void addDriver(final String post_id, final Response.Listener<String> responseCallback,
+                          final Response.ErrorListener errorCallback) {
+
+        // Build the request
+        GenericRequest<String> request = new GenericRequest<String>("/posts/add_driver",
+                Request.Method.POST, responseCallback, errorCallback) {
+            void buildParameters(JSONObject args) throws JSONException {
+                args.put("post_id", post_id);
+            }
+            String parseResponse(JSONObject response) throws JSONException {
+                return "" + response.getInt("result");
+            }
+        };
+
+        // Run it
+        request.run();
+    }
+
+    public void addPassenger(final String post_id, final Response.Listener<String> responseCallback,
+                          final Response.ErrorListener errorCallback) {
+
+        // Build the request
+        GenericRequest<String> request = new GenericRequest<String>("/posts/add_passenger",
+                Request.Method.POST, responseCallback, errorCallback) {
+            void buildParameters(JSONObject args) throws JSONException {
+                args.put("post_id", post_id);
+            }
+            String parseResponse(JSONObject response) throws JSONException {
+                return "" + response.getInt("result");
+            }
+        };
+
+        // Run it
+        request.run();
+    }
+
     // GenericRequest attempts to make generic the code to write new requests.
     abstract class GenericRequest<T> {
         abstract void buildParameters(JSONObject args) throws JSONException;

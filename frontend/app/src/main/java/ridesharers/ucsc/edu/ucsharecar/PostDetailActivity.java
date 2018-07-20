@@ -4,7 +4,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import java.util.ArrayList;
 
 /**
  * An activity representing a single Post detail screen. This
@@ -16,6 +24,11 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "PostDetailActivity";
 
+    String startingLocation, endingLocation, departureTime, names, memos, post_id;
+    int seats;
+    boolean driver_status;
+    private BackendClient backend;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +36,42 @@ public class PostDetailActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: started.");
 
         getIncomingIntent();
+        backend = BackendClient.getSingleton(this);
+
+        Button join = (Button) findViewById(R.id.fab);
+        join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(driver_status) {
+                    backend.addDriver(post_id, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.e("driver", "added well");
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, error.toString());
+                            Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                else {
+                    backend.addPassenger(post_id, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.e("passenger", "added well");
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, error.toString());
+                            Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void getIncomingIntent(){
@@ -34,13 +83,14 @@ public class PostDetailActivity extends AppCompatActivity {
                 getIntent().hasExtra("notes")) {
 
             Log.d(TAG, "getIncomingIntent: found intent extras.");
-            String startingLocation = getIntent().getStringExtra("starting_loc");
-            String endingLocation = getIntent().getStringExtra("ending_loc");
-            String departureTime = getIntent().getStringExtra("leaving_time");
-            int seats = getIntent().getIntExtra("avail_seats", 0);
-            String names = getIntent().getStringExtra("passenger_names");
-            String memos = getIntent().getStringExtra("notes");
-            boolean driver_status = getIntent().getBooleanExtra("driver_status", true);
+            startingLocation = getIntent().getStringExtra("starting_loc");
+            endingLocation = getIntent().getStringExtra("ending_loc");
+            departureTime = getIntent().getStringExtra("leaving_time");
+            names = getIntent().getStringExtra("passenger_names");
+            memos = getIntent().getStringExtra("notes");
+            seats = getIntent().getIntExtra("avail_seats", 0);
+            driver_status = getIntent().getBooleanExtra("driver_status", true);
+            post_id = getIntent().getStringExtra("post_id");
 
             setPostDetails(startingLocation, endingLocation, departureTime, seats, names, memos, driver_status);
         }

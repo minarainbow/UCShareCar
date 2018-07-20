@@ -62,6 +62,10 @@ public class PostListActivity extends AppCompatActivity {
         final Spinner originSpinner = findViewById(R.id.start_spinner);
         final Spinner destinationSpinner = findViewById(R.id.destination_spinner);
 
+        // Get the backend object
+        backend = BackendClient.getSingleton(this);
+        setupRecyclerView();
+
         ImageButton my_page = findViewById(R.id.my_page);
         my_page.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,10 +129,6 @@ public class PostListActivity extends AppCompatActivity {
                 }
             }
         });
-
-        // Get the backend object
-        backend = BackendClient.getSingleton(this);
-        setupRecyclerView();
     }
 
     @Override
