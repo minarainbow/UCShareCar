@@ -61,7 +61,7 @@
         android:layout_height="100dp">
 
         <EditText
-            android:layout_width="230dp"
+            android:layout_width="210dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:id="@+id/in_date"
@@ -70,16 +70,21 @@
             android:layout_alignParentStart="true" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="Date"
             android:id="@+id/btn_date"
             android:layout_alignBottom="@+id/in_date"
             android:layout_toRightOf="@+id/in_date"
-            android:layout_toEndOf="@+id/in_date" />
+            android:layout_toEndOf="@+id/in_date"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:background="@drawable/roundedbutton"/>
+
 
         <EditText
-            android:layout_width="230dp"
+            android:layout_width="210dp"
             android:layout_height="wrap_content"
             android:id="@+id/in_time"
             android:layout_below="@+id/in_date"
@@ -87,13 +92,18 @@
             android:layout_alignParentStart="true" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="Time"
             android:id="@+id/btn_time"
             android:layout_below="@+id/btn_date"
             android:layout_alignLeft="@+id/btn_date"
-            android:layout_alignStart="@+id/btn_date" />
+            android:layout_alignStart="@+id/btn_date"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:background="@drawable/roundedbutton"/>
+
 
     </RelativeLayout>
 
