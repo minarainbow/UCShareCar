@@ -270,21 +270,9 @@ app.post('/post/update', (req, res) => {
 	}
 
 	db.post.update(req.body.post).then(() => {
-		// Post was successful, we want to send an update to everyone
-
-		// Find the list of users in this post
-		users = []
-		for (passenger of req.body.post.passengers) {
-			if (req.signedCookies.session.id != passenger) {
-				users.push(passenger)
-			}
-		}
-		if (req.signedCookies.session.id != req.body.post.driver) {
-			users.push(req.body.post.driver)
-		}
-
-		// Send a push notification
-		notifications.send(users, req.body.post._id)
+		// Post was successful, we want to send an update to everyone except for
+		// the current user making this request
+		notifications.send_by_postid(req.body.post._id, req.signedCookies.session.id)
 
 		res.json({result: 1})
 	}, (err) => {
@@ -310,6 +298,10 @@ app.post('/posts/add_passenger', (req, res) => {
 	}
 
 	db.post.add_passenger(req.body.post_id, req.signedCookies.session.id).then(() => {
+		// Post was successful, we want to send an update to everyone except for
+		// the current user making this request
+		notifications.send_by_postid(req.body.post_id, req.signedCookies.session.id)
+
 		res.json({result: 1})
 	}, (err) => {
 		res.json({result: 0, error: err})
@@ -332,6 +324,10 @@ app.post('/posts/add_driver', (req, res) => {
 	}
 
 	db.post.add_driver(req.body.post_id, req.signedCookies.session.id).then(() => {
+		// Post was successful, we want to send an update to everyone except for
+		// the current user making this request
+		notifications.send_by_postid(req.body.post_id, req.signedCookies.session.id)
+
 		res.json({result: 1})
 	}, (err) => {
 		res.json({result: 0, error: err})
