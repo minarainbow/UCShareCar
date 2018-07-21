@@ -1,5 +1,7 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -9,7 +11,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PostInfo {
+public class PostInfo implements Parcelable {
     private String TAG = "PostInfo";
 
     private Date posttime, departtime;
@@ -38,6 +40,10 @@ public class PostInfo {
     }
 
     PostInfo(JSONObject raw) throws JSONException {
+       loadFromJSON(raw);
+    }
+
+    private void loadFromJSON(JSONObject raw) throws JSONException {
         // First get fields that we know should be there
         this.id = raw.getString("_id"); // There should always be an _id in JSON we get from server
         this.posttime = new Date(raw.getLong("posttime"));
@@ -66,7 +72,6 @@ public class PostInfo {
             Log.w(TAG, "Could not get driver field from Post JSON object");
             this.driver = null;
         }
-
     }
 
     public JSONObject getJSON() throws JSONException {
@@ -108,6 +113,49 @@ public class PostInfo {
 
         this.passengers.add(passenger);
     }
+
+    /*
+     * Begin implementing parcelable.
+     *
+     * We're using a bit of a hack where we serialize it to JSON, write it to the parcel, and then
+     * deserialize the JSON from the parcel.
+     */
+
+    @Override
+    public int describeContents() {
+        return hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        try {
+            out.writeString(getJSON().toString());
+        } catch (JSONException e) {
+            Log.w(TAG, "Failed to write PostInfo parcel: "+e.toString());
+        }
+    }
+
+    public static final Parcelable.Creator<PostInfo> CREATOR = new Parcelable.Creator<PostInfo>() {
+        public PostInfo createFromParcel(Parcel in) {
+            return new PostInfo(in);
+        }
+
+        public PostInfo[] newArray(int size) {
+            return new PostInfo[size];
+        }
+    };
+
+    private PostInfo(Parcel in) {
+        try {
+            loadFromJSON(new JSONObject(in.readString()));
+        } catch (JSONException e) {
+            Log.w(TAG, "Failed to unparcel a PostInfo object: "+e.toString());
+        }
+    }
+
+    /*
+     * End parcelable stuff
+     */
 
     public String getUploader() {
         return uploader;
