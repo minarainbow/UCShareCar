@@ -10,124 +10,126 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:elevation="1dp">
 
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_height="match_parent"
             xmlns:tools="http://schemas.android.com/tools"
-            android:orientation="vertical"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/LinearLayoutQuestlist"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:orientation="vertical"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:context=".PostListActivity">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="3"
-                    android:text="Posts"
-                    android:background="@drawable/gradientbackground"
-                    android:textColor="#FFF"
-                    android:typeface="monospace"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerHorizontal="true"
-                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
+                    android:layout_weight="3"
+                    android:background="@drawable/gradientbackground"
+                    android:gravity="center"
                     android:paddingBottom="3dp"
-                    android:paddingTop="3dp"/>
+                    android:paddingTop="3dp"
+                    android:text="Posts"
+                    android:textColor="#FFF"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:typeface="monospace" />
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="350dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
-                android:layout_height="40dp">
+                android:layout_marginTop="20dp">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:hint="origin"
-                    android:textSize="20dp"
-                    />
+                    android:textSize="20dp" />
 
                 <TextView
                     android:layout_width="0dp"
-                    android:textSize="20dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:hint="destination"
-                    />
+                    android:textSize="20dp" />
             </LinearLayout>
 
 
             <LinearLayout
                 android:layout_width="380dp"
                 android:layout_height="50dp">
+
                 <Spinner
                     android:id="@+id/start_spinner"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:hint="Origin"
                     android:entries="@array/location"
-                    />
+                    android:hint="Origin" />
 
                 <Spinner
                     android:id="@+id/destination_spinner"
-                    android:layout_width="0dp"
+                    android:layout_width="55dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:hint="Destination"
                     android:entries="@array/location"
-                    />
+                    android:hint="Destination" />
 
                 <ImageButton
                     android:id="@+id/search"
-                    android:paddingTop="10dp"
-                    android:layout_gravity="right"
-                    android:src="@drawable/search"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="right"
                     android:background="@null"
-                    android:layout_width="wrap_content" />
+                    android:paddingTop="10dp"
+                    android:src="@drawable/search" />
 
             </LinearLayout>
 
 
             <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/scrollojt"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:id="@+id/scrollojt"
-                android:fillViewport="true" >
+                android:fillViewport="true">
 
                 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
                     xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
                     tools:context="com.cs496.project1.Bucketlist">
 
                     <android.support.v7.widget.RecyclerView
-                        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-
                         android:id="@+id/recycler_view"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="#FFFFFFFF"
                         android:cacheColorHint="#21B684"
                         android:divider="#21B684"
                         android:dividerHeight="1dp"
+                        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -136,7 +138,6 @@
                         app:layout_constraintVertical_bias="1.0">
 
                     </android.support.v7.widget.RecyclerView>
-
 
 
                 </FrameLayout>

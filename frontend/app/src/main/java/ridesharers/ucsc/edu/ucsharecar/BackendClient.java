@@ -488,10 +488,11 @@ public class BackendClient {
                              final Response.ErrorListener errorCallback) {
 
         // Build the request
-        GenericRequest<String> request = new GenericRequest<String>("/report/create",
+        GenericRequest<String> request = new GenericRequest<String>("/report",
                 Request.Method.POST, responseCallback, errorCallback) {
             void buildParameters(JSONObject args) throws JSONException {
                 args.put("report", report.getJSON());
+                Log.d("test", report.getJSON().toString());
             }
             String parseResponse(JSONObject response) throws JSONException {
                 return response.getString("report_id");

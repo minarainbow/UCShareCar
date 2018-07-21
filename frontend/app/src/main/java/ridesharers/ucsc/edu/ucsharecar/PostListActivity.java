@@ -2,6 +2,7 @@ package ridesharers.ucsc.edu.ucsharecar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -91,8 +92,13 @@ public class PostListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"clicked add_report button");
+                /*
                 Intent this_intent = new Intent(getApplicationContext(), CreateReportActivity.class);
                 startActivity(this_intent);
+                */
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                emailIntent.setData(Uri.parse("mailto:abc@gmail.com"));
+                startActivity(Intent.createChooser(emailIntent, "Send feedback"));
             }
         });
 

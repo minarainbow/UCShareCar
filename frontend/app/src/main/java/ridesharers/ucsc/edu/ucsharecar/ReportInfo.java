@@ -19,4 +19,5 @@ public class ReportInfo {
         res.put("body", body);
         return res;
     }
+
 }
