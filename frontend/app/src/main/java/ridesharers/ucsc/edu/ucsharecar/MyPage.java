@@ -62,10 +62,10 @@ public class MyPage extends AppCompatActivity {
                     Log.e("no_matches", noMatchArray.toString());
                     Log.e("matches", matchArray.toString());
                     for (int i = 0; i < noMatchArray.length(); i++) {
-                        matched.add(new PostInfo(noMatchArray.getJSONObject(i)));
+                        uploaded.add(new PostInfo(noMatchArray.getJSONObject(i)));
                     }
                     for (int i = 0; i < matchArray.length(); i++) {
-                        uploaded.add(new PostInfo(matchArray.getJSONObject(i)));
+                        matched.add(new PostInfo(matchArray.getJSONObject(i)));
                     }
                     uploadAdapter.notifyDataSetChanged();
                     matchedAdapter.notifyDataSetChanged();
