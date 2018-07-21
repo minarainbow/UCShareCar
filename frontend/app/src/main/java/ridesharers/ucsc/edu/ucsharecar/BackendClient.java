@@ -16,12 +16,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpCookie;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -352,16 +354,17 @@ public class BackendClient {
         request.run();
     }
 
-    public void getSearch(JSONObject start_end, final Response.Listener<ArrayList<PostInfo>> responseCallback,
+    public void getSearch(String start, String end, final Response.Listener<ArrayList<PostInfo>> responseCallback,
                             final Response.ErrorListener errorCallback) {
 
         String make_url = "/";
 
         try {
-            make_url += start_end.getString("start") + "/" + start_end.getString("end");
+            make_url += URLEncoder.encode(start, "UTF-8")
+                    + "/" + URLEncoder.encode(end, "UTF-8");
         }
-        catch(JSONException e) {
-
+        catch (UnsupportedEncodingException e) {
+            Log.w(TAG, "Failed to build arguments to search by location: "+e.toString());
         }
 
         GenericRequest<ArrayList<PostInfo>> request = new GenericRequest<ArrayList<PostInfo>>(

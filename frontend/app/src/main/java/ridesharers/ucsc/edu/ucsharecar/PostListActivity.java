@@ -111,11 +111,8 @@ public class PostListActivity extends AppCompatActivity {
                     Log.d(TAG, "clicked search button");
                     String origin = originSpinner.getSelectedItem().toString();
                     String destination = destinationSpinner.getSelectedItem().toString();
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("start", origin);
-                    jsonObject.put("end", destination);
 
-                    backend.getSearch(jsonObject, new Response.Listener<ArrayList<PostInfo>>() {
+                    backend.getSearch(origin, destination, new Response.Listener<ArrayList<PostInfo>>() {
                         @Override
                         public void onResponse(ArrayList<PostInfo> response) {
                             postList.clear();
