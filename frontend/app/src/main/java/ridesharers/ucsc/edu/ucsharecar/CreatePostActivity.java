@@ -1,5 +1,6 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -31,6 +32,9 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
     Context mContext;
     BackendClient backendClient;
     Spinner originSpinner, destinationSpinner, seatsSpinner;
+    private AlertDialog.Builder builder;
+    private AlertDialog popup;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,33 +97,54 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
             RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
             int radioSelected = radioGroup.getCheckedRadioButtonId();
 
-            Date postTime = new Date();
-            Date departTime = new Date();
-            String start = originSpinner.getSelectedItem().toString();
-            String dest = destinationSpinner.getSelectedItem().toString();
-            String memo = memo_text.getText().toString();
-            boolean driver_needed = (radioSelected == 0) ? false : true;
-            String driver = "";
-            String uploader = "";
-            ArrayList<String> passengers = new ArrayList<String>();
-            int totalSeats = Integer.parseInt(seatsSpinner.getSelectedItem().toString());
+            final Date postTime = new Date();
+            final Date departTime = new Date();
+            final String start = originSpinner.getSelectedItem().toString();
+            final String dest = destinationSpinner.getSelectedItem().toString();
+            final String memo = memo_text.getText().toString();
+            final boolean driver_needed = (radioSelected == 0) ? false : true;
+            final String driver = "";
+            final String uploader = "";
+            final ArrayList<String> passengers = new ArrayList<String>();
+            final int totalSeats = Integer.parseInt(seatsSpinner.getSelectedItem().toString());
 
-            backendClient.createPost(new PostInfo(postTime, departTime, start, dest, memo, driver_needed, driver, uploader, passengers, totalSeats),
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.e("sending post to server", "sending post to server");
-                            Intent refresh_page_intent = new Intent(getApplicationContext(), PostListActivity.class);
-                            startActivity(refresh_page_intent);
+            builder = new AlertDialog.Builder(CreatePostActivity.this);
+            View mView = getLayoutInflater().inflate(R.layout.post_upload_check,null);
+            Button yesButton = mView.findViewById(R.id.yes);
+            Button noButton = mView.findViewById(R.id.no);
+            builder.setView(mView);
+            popup = builder.create();
+            popup.show();
 
-                        }
+            yesButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    backendClient.createPost(new PostInfo(postTime, departTime, start, dest, memo, driver_needed, driver, uploader, passengers, totalSeats),
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Log.e("sending post to server", "sending post to server");
+                                    Intent refresh_page_intent = new Intent(getApplicationContext(), PostListActivity.class);
+                                    startActivity(refresh_page_intent);
 
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                                }
+
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                }
+            });
+
+            noButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view){
+                    popup.cancel();
+                }
+            });
+
         }
     });
 

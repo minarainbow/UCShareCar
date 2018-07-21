@@ -141,7 +141,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:hint="Available Seats"
+                android:text="Available Seats"
                 />
 
         </LinearLayout>
