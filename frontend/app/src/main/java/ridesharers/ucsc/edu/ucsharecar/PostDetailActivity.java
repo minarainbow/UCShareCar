@@ -38,64 +38,43 @@ public class PostDetailActivity extends AppCompatActivity {
         getIncomingIntent();
         backend = BackendClient.getSingleton(this);
 
-//        Button join = (Button) findViewById(R.id.fab);
-//        join.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                /*
-//                String start = startingLocation;
-//                String end = endingLocation;
-//                String departTime = departureTime;
-//                String passengers = names;
-//                String memo = memos;
-//                String numSeats = Integer.parseInt(seats);
-//                */
-//                backend.getPostById(post_id, Response.Listener<PostInfo> () {
-//                    @Override
-//                    public void onResponse (String response){
-//                        Log.e("joined""joined a post");
-//                    }
-//                }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.e(TAG, error.toString());
-//                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//
-//                final Response.ErrorListener errorCallback);
-//                if(driver_status) {
-//                    backend.addDriver(post_id, new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            Log.e("driver", "added well");
-//                        }
-//                    }, new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            Log.e(TAG, error.toString());
-//                            Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
-//                        }
-//                    });
-//                }
-//                else {
-//                    backend.addPassenger(post_id, new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            Log.e("passenger", "added well");
-//                        }
-//                    }, new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            Log.e(TAG, error.toString());
-//                            Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
-//                        }
-//                    });
-//                }
-//
-//                backend.updatePost(PostInfo());
-//            }
-//        });
+        Button join = (Button) findViewById(R.id.fab);
+        join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(driver_status) {
+                    backend.addDriver(post_id, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.e("driver", "added well");
+                            Toast.makeText(getApplicationContext(), "Successfully Added", Toast.LENGTH_SHORT).show();
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, error.toString());
+                            Toast.makeText(getApplicationContext(), "No seats available", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                else {
+                    backend.addPassenger(post_id, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.e("passenger", "added well");
+                            Toast.makeText(getApplicationContext(), "Successfully Added", Toast.LENGTH_SHORT).show();
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, error.toString());
+                            Toast.makeText(getApplicationContext(), "No seats available", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void getIncomingIntent(){
