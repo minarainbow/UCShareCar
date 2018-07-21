@@ -407,7 +407,7 @@ describe('server handlers', function() {
 	describe('rejects requests with no session', function() {
 		const agent = request.agent(app)
 		const validated_get_endpoints = [
-			'/users/by_id/5', '/posts/all', '/posts/by_start', '/posts/by_end',
+			'/users/by_id/5', '/posts/all', '/posts/search/:START/:END',
 		]
 		const validated_post_endpoints = [
 			'/users/logout', '/users/register', '/posts/create',
