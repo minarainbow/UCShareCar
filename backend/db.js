@@ -204,15 +204,15 @@ module.exports = {
 					else {
 						posts.forEach((post) => {
 							if(post.passengers.length === 0) {
-								if(post.uploader === user_id)
+								if(post.uploader == user_id)
 									no_matches.push(post)
 							}
 							else {
-								if(post.uploader === user_id)
+								if(post.uploader == user_id)
 									matches.push(post)
 								else {
 									post.passengers.forEach((passenger) => {
-										if(passenger === user_id) {
+										if(passenger == user_id) {
 											matches.push(post)
 										}
 									})	
