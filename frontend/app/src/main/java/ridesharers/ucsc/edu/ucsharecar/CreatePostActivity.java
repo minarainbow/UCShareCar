@@ -165,8 +165,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent back_intent = new Intent(getApplicationContext(), PostListActivity.class);
-                startActivity(back_intent);
+                onBackPressed();
             }
         });
     }
