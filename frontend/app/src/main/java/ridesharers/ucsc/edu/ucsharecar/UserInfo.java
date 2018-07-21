@@ -9,13 +9,13 @@ public class UserInfo {
 
     UserInfo(JSONObject raw) throws JSONException {
         email = raw.getString("email");
-        name = raw.getString("raw");
+        name = raw.getString("name");
         banned = raw.getBoolean("banned");
         if (raw.has("phnum")) {
             phoneNumber = raw.getString("phnum");
         }
         if (raw.has("_id")) {
-            id = raw.getString("id");
+            id = raw.getString("_id");
         }
     }
 

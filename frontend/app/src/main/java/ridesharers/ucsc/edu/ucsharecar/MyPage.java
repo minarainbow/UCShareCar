@@ -31,6 +31,8 @@ public class MyPage extends AppCompatActivity {
     private BackendClient backendClient;
     ListViewAdapter uploadAdapter, matchedAdapter;
 
+    private String TAG = "UCShareCar_MyPage";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +46,7 @@ public class MyPage extends AppCompatActivity {
         backendClient = BackendClient.getSingleton(this);
 
         setListView();
+        setUserInfo();
     }
 
     private void setListView() {
@@ -77,8 +80,24 @@ public class MyPage extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("haha", error.toString());
+                Log.e(TAG, error.toString());
                 Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void setUserInfo() {
+        backendClient.getUserById(backendClient.getUserId(), new Response.Listener<UserInfo>() {
+            @Override
+            public void onResponse(UserInfo response) {
+                // Put their username in the text box
+                TextView usernameText = findViewById(R.id.username);
+                usernameText.setText(response.getName());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.w(TAG, "Failed to set user's name: "+error.toString());
             }
         });
     }
