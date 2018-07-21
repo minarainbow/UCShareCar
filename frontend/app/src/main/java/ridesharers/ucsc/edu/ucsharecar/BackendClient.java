@@ -539,6 +539,24 @@ public class BackendClient {
         request.run();
     }
 
+    public void getMyPage(Response.Listener<JSONObject> responseCallback,
+                            Response.ErrorListener errorCallback) {
+
+        GenericRequest<JSONObject> request = new GenericRequest<JSONObject>(
+                "/posts/my_page", Request.Method.GET, responseCallback, errorCallback) {
+            @Override
+            void buildParameters(JSONObject args) throws JSONException {}
+
+            @Override
+            JSONObject parseResponse(JSONObject response) throws JSONException {
+                JSONObject post = response.getJSONObject("posts");
+                return post;
+            }
+        };
+
+        request.run();
+    }
+
     // GenericRequest attempts to make generic the code to write new requests.
     abstract class GenericRequest<T> {
         abstract void buildParameters(JSONObject args) throws JSONException;
