@@ -66,7 +66,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         post_holder.destination_text.setText(post_holder.destination);
         post_holder.departure_time_text.setText(post_holder.departure_time);
         if(post_holder.driver_status) {
-            post_holder.driver_status_text.setText("needed");
+            post_holder.driver_status_text.setText("Driver needed");
         }
         else {
             post_holder.driver_status_text.setText("");
