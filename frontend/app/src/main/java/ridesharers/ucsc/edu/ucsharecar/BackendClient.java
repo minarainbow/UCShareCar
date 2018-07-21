@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 // TODO this class should detect authorization errors and start the login window accordingly
 public class BackendClient {
@@ -52,6 +53,11 @@ public class BackendClient {
     // The userId field will be set when there is a successful log in request. It can be accessed
     // via the getUserId method. TODO does this make hasSession() redundant?
     private String userId = null;
+
+    // User information has to be fetched a lot when we show posts, and it rarely changes. So we
+    // will try to maintain a cache of UserInfo objects.
+    // Users will be stored by ObjectId (that's the String key), and will have an attached UserInfo
+    private HashMap<String, UserInfo> userCache = new HashMap<>();
 
     // The request that should be sent ASAP to register the user's push notifications.
     // If this is non-null, it should be called by onStartSession.
@@ -471,15 +477,26 @@ public class BackendClient {
     public void getUserById(String id, final Response.Listener<UserInfo> responseCallback,
                             final Response.ErrorListener errorCallback) {
 
+        // If we already have this user cached, just return that.
+        if (userCache.containsKey(id)) {
+            responseCallback.onResponse(userCache.get(id));
+            return;
+        }
+
         // Build the request. User id is URL argument.
-        GenericRequest<UserInfo> request = new GenericRequest<UserInfo>("/users/by_id"+id,
+        GenericRequest<UserInfo> request = new GenericRequest<UserInfo>("/users/by_id/"+id,
                 Request.Method.GET, responseCallback, errorCallback) {
             @Override
             void buildParameters(JSONObject args) throws JSONException {}
             @Override
             UserInfo parseResponse(JSONObject response) throws JSONException {
                 // User should be the field in the response object
-                return new UserInfo(response.getJSONObject("user"));
+                UserInfo result = new UserInfo(response.getJSONObject("user"));
+
+                // Cache the user for later
+                userCache.put(result.getId(), result);
+
+                return result;
             }
         };
 
