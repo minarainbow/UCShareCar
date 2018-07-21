@@ -3,8 +3,8 @@ module.exports = {
 	// in user. It also saves data about its start and expiration date in JSON
 	// along with the actual cookie expiration date.
 	create: (res, id, timeout) => {
-		// Default timeout will be 30 minutes (times 60 seconds/min times 1000 ms/s)
-		timeout = timeout || 30*60*1000
+		// Default timeout will be 24 hours (* 60 min/hr * 60 seconds/min * 1000 ms/s)
+		timeout = timeout || 24*60*60*1000
 		res.cookie('session', {
 				'id': id,
 				'start_time': Date.now(),
