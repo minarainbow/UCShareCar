@@ -94,7 +94,7 @@ module.exports = {
 			})
 		},
 
-		all_with_ids: (userids) => {
+		all_fcm_with_ids: (userids) => {
 			return User.find({"_id": {"$in": userids}}).then((docs) => {
 				return docs.map(doc => doc.fcm_token)
 			}, (err) => {

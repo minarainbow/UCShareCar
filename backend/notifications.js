@@ -27,7 +27,7 @@ function send(user_ids, post_id) {
 	}
 
 	console.log("Sending a notification to user array for post", post_id)
-	return db.user.all_with_ids(user_ids)
+	return db.user.all_fcm_with_ids(user_ids)
 		.then((tokens) => {
 			return admin.messaging().sendToDevice(tokens, {
 				data: {
