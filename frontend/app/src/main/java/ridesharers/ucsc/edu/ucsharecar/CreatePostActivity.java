@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,7 +47,6 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
         final EditText date_txt = (EditText) findViewById(R.id.in_date);
         final EditText time_txt = (EditText) findViewById(R.id.in_time);
 
-        Button upload_btn = (Button) findViewById(R.id.ok_editor);
 
         date_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,40 +85,50 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
             }
         });
 
+        Button upload_btn = (Button) findViewById(R.id.ok_editor);
         upload_btn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            EditText memo_text = (EditText) findViewById(R.id.details_editor);
+            RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+            int radioSelected = radioGroup.getCheckedRadioButtonId();
+
+            Date postTime = new Date();
+            Date departTime = new Date();
+            String start = originSpinner.getSelectedItem().toString();
+            String dest = destinationSpinner.getSelectedItem().toString();
+            String memo = memo_text.getText().toString();
+            boolean driver_needed = (radioSelected == 0) ? false : true;
+            String driver = "";
+            String uploader = "";
+            ArrayList<String> passengers = new ArrayList<String>();
+            int totalSeats = Integer.parseInt(seatsSpinner.getSelectedItem().toString());
+
+            backendClient.createPost(new PostInfo(postTime, departTime, start, dest, memo, driver_needed, driver, uploader, passengers, totalSeats),
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.e("sending post to server", "sending post to server");
+                            Intent refresh_page_intent = new Intent(getApplicationContext(), PostListActivity.class);
+                            startActivity(refresh_page_intent);
+
+                        }
+
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+    });
+
+        Button back_button = findViewById(R.id.no_editor);
+        back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText memo_text = (EditText) findViewById(R.id.details_editor);
-                RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-                int radioSelected = radioGroup.getCheckedRadioButtonId();
-
-                Date postTime = new Date();
-                Date departTime = new Date();
-                String start = originSpinner.getSelectedItem().toString();
-                String dest = destinationSpinner.getSelectedItem().toString();
-                String memo = memo_text.getText().toString();
-                boolean driver_needed = (radioSelected == 0) ? false : true;
-                String driver = "";
-                String uploader = "";
-                ArrayList<String> passengers = new ArrayList<String>();
-                int totalSeats = Integer.parseInt(seatsSpinner.getSelectedItem().toString());
-
-                backendClient.createPost(new PostInfo(postTime, departTime, start, dest, memo, driver_needed, driver, uploader, passengers, totalSeats),
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Log.e("sending post to server", "sending post to server");
-                                Intent refresh_page_intent = new Intent(getApplicationContext(), PostListActivity.class);
-                                startActivity(refresh_page_intent);
-
-                            }
-
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
-                            }
-                        });
+                Intent back_intent = new Intent(getApplicationContext(), PostListActivity.class);
+                startActivity(back_intent);
             }
         });
     }
