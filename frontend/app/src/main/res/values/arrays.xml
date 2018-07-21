@@ -3,7 +3,16 @@
     <string-array name="location">
         <item>College 9</item>
         <item>San Jose</item>
-        <item>Dridon Station</item>
+        <item>Diridon Station</item>
         <item>Seabright</item>
     </string-array>
+
+    <array name="avail_seats">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </array>
 </resources>

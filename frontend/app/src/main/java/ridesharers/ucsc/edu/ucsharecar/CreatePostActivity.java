@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import static java.lang.Integer.parseInt;
+
 public class CreatePostActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     Context mContext;
     BackendClient backendClient;
@@ -42,15 +44,23 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_create_post);
         mContext = this;
 
+        //Spinners
         originSpinner = findViewById(R.id.start_spinner);
         destinationSpinner = findViewById(R.id.destination_spinner);
         seatsSpinner = findViewById(R.id.seats_spinner);
+
+        ArrayAdapter<CharSequence> seatsAdapter = ArrayAdapter.createFromResource(this,
+                R.array.NumberOfSeats, android.R.layout.simple_spinner_item);
+        seatsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        seatsSpinner.setAdapter(seatsAdapter);
 
         Button date_btn = (Button) findViewById(R.id.btn_date);
         Button time_btn = (Button) findViewById(R.id.btn_time);
         final EditText date_txt = (EditText) findViewById(R.id.in_date);
         final EditText time_txt = (EditText) findViewById(R.id.in_time);
 
+        // Get the backend client singleton
+        backendClient = BackendClient.getSingleton(this);
 
         date_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,24 +99,16 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
             }
         });
 
+
+
         Button upload_btn = (Button) findViewById(R.id.ok_editor);
         upload_btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            EditText memo_text = (EditText) findViewById(R.id.details_editor);
+            final EditText memo_text = (EditText) findViewById(R.id.details_editor);
             RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-            int radioSelected = radioGroup.getCheckedRadioButtonId();
+            final int radioSelected = radioGroup.getCheckedRadioButtonId();
 
-            final Date postTime = new Date();
-            final Date departTime = new Date();
-            final String start = originSpinner.getSelectedItem().toString();
-            final String dest = destinationSpinner.getSelectedItem().toString();
-            final String memo = memo_text.getText().toString();
-            final boolean driver_needed = (radioSelected == 0) ? false : true;
-            final String driver = "";
-            final String uploader = "";
-            final ArrayList<String> passengers = new ArrayList<String>();
-            final int totalSeats = Integer.parseInt(seatsSpinner.getSelectedItem().toString());
 
             builder = new AlertDialog.Builder(CreatePostActivity.this);
             View mView = getLayoutInflater().inflate(R.layout.post_upload_check,null);
@@ -119,6 +121,17 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
             yesButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
+                    Date postTime = new Date();
+                    Date departTime = new Date();
+                    String start = originSpinner.getSelectedItem().toString();
+                    String dest = destinationSpinner.getSelectedItem().toString();
+                    String memo = memo_text.getText().toString();
+                    boolean driver_needed = (radioSelected == 0) ? false : true;
+                    String driver = null;
+                    String uploader = null;
+                    ArrayList<String> passengers = new ArrayList<String>();
+                    int totalSeats = Integer.parseInt(seatsSpinner.getSelectedItem().toString());
+
                     backendClient.createPost(new PostInfo(postTime, departTime, start, dest, memo, driver_needed, driver, uploader, passengers, totalSeats),
                             new Response.Listener<String>() {
                                 @Override
@@ -165,6 +178,9 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
 
         String destination = parent.getItemAtPosition(position).toString();
         Toast.makeText(parent.getContext(), destination, Toast.LENGTH_SHORT);
+
+        String seats = parent.getItemAtPosition(position).toString();
+        Toast.makeText(parent.getContext(), seats, Toast.LENGTH_SHORT);
     }
 
     @Override

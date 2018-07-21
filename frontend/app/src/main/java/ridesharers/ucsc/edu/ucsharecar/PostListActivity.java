@@ -97,7 +97,7 @@ public class PostListActivity extends AppCompatActivity {
                 startActivity(this_intent);
                 */
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                emailIntent.setData(Uri.parse("mailto:abc@gmail.com"));
+                emailIntent.setData(Uri.parse("mailto:pcalaima@gmail.com"));
                 startActivity(Intent.createChooser(emailIntent, "Send feedback"));
             }
         });

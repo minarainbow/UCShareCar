@@ -202,25 +202,23 @@ module.exports = {
 						reject(err)
 					}
 					else {
-						for(post in posts) {
+						posts.forEach((post) => {
 							if(post.passengers.length === 0) {
 								if(post.uploader === user_id)
 									no_matches.push(post)
-								else continue
 							}
 							else {
 								if(post.uploader === user_id)
 									matches.push(post)
 								else {
-									for(passenger in post.passengers) {
+									post.passengers.forEach((passenger) => {
 										if(passenger === user_id) {
 											matches.push(post)
-											break
 										}
-									}	
+									})	
 								}
 							}
-						}			
+						})			
 						resolve({no_matches : no_matches, matches : matches})
 					}
 				})
