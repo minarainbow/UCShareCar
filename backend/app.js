@@ -357,7 +357,7 @@ app.post('/report', (req, res) => {
 	//db.report.create_report(0x5b47e4068f0c2cf5fd5b785a, req.body).then((report) => {
 		res.json({result: 1, report_id: report._id})
 	}, (err) => {
-		res.json({result: 0})
+		res.json({result: 0, error: err})
 	})
 })
 
