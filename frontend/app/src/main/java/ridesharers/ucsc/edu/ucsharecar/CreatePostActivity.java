@@ -37,6 +37,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
     RadioButton driverButton;
     private AlertDialog.Builder builder;
     private AlertDialog popup;
+    int gYear, gMonth, gDay, gHour, gMinute;
 
 
     @Override
@@ -77,6 +78,10 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                     date_txt.setText(day + "-" + month + "-" + year);
+                    gYear = year;
+                    gMonth = month;
+                    gDay = day;
+
                     }
                 }, mYear, mMonth, mDay);
 
@@ -95,6 +100,8 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
                 @Override
                 public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                 time_txt.setText(hour + ":" + minute);
+                gHour = hour;
+                gMinute = minute;
                 }
             }, mHour, mMinute, false);
             timePickerDialog.show();
@@ -124,7 +131,10 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
                 @Override
                 public void onClick(View view) {
                 Date postTime = new Date();
-                Date departTime = new Date();
+                Date departTime = new Date(gYear, gMonth, gDay);
+                departTime.setHours(gHour);
+                departTime.setMinutes(gMinute);
+                Log.e("depart", departTime.toString());
                 String start = originSpinner.getSelectedItem().toString();
                 String dest = destinationSpinner.getSelectedItem().toString();
                 String memo = memo_text.getText().toString();
