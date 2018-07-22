@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:text="Scheduled at"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
             <TextView
                 android:id="@+id/leaving_time"

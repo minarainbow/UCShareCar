@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_height="match_parent" android:layout_width="match_parent"
+    android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="170dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="30dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="220dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:text="Please choose number      of  Available Seats"
+                android:textSize="20dp"
+                />
+            <Spinner
+                android:id="@+id/seats_spinner"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:entries="@array/avail_seats"/>
+        </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        >
+
+        <Button
+            android:id="@+id/ok_editor"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginTop="15dp"
+            android:text="join"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:background="@drawable/roundedbutton"/>
+
+        <Button
+            android:id="@+id/no_editor"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginTop="15dp"
+            android:text="back"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:background="@drawable/roundedbutton"/>
+
+    </LinearLayout>
+
+</LinearLayout>

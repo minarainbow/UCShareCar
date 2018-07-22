@@ -140,23 +140,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:gravity="center"
             android:orientation="horizontal"
             android:id="@+id/join_layout">
             <TextView
                 android:id="@+id/driver_status"
-                android:layout_width="wrap_content"
+                android:layout_width="250dp"
                 android:paddingLeft="10dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_toEndOf="@+id/notes" />
             <Button
                 android:id="@+id/fab"
-                android:layout_width="0dp"
+                android:layout_width="100dp"
                 android:layout_height="50dp"
-                android:layout_weight="1"
+                android:layout_gravity="right"
                 android:background="@drawable/roundedbutton"
                 android:text="JOIN"
                 android:textStyle="bold"
