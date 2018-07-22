@@ -155,7 +155,7 @@
 
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="100dp"
                     android:background="#FFFFFFFF"
                     android:cacheColorHint="#21B684"
                     android:divider="#21B684"

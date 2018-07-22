@@ -88,6 +88,7 @@
                 android:layout_height="wrap_content"
                 android:text="7/30 18:00"
                 android:textSize="20dp"
+                android:layout_margin="10dp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
@@ -137,14 +138,14 @@
             android:id="@+id/join_layout">
             <TextView
                 android:id="@+id/driver_status"
-                android:layout_width="250dp"
+                android:layout_width="240dp"
                 android:paddingLeft="10dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_toEndOf="@+id/notes" />
             <Button
                 android:id="@+id/fab"
-                android:layout_width="100dp"
+                android:layout_width="90dp"
                 android:layout_height="50dp"
                 android:layout_gravity="right"
                 android:background="@drawable/roundedbutton"

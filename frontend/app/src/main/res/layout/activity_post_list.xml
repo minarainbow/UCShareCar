@@ -55,20 +55,22 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
                 android:weightSum="1">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.45"
+                    android:layout_weight="0.4"
                     android:text="origin"
                     android:textSize="20dp" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_weight="0.45"
+                    android:layout_weight="0.4"
                     android:text="destination"
                     android:textSize="20dp" />
             </LinearLayout>
@@ -76,14 +78,16 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="20dp"
                 android:weightSum="1">
 
                 <Spinner
                     android:id="@+id/start_spinner"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.45"
+                    android:layout_weight="0.4"
                     android:entries="@array/location"
                     android:hint="Origin" />
 
@@ -91,7 +95,7 @@
                     android:id="@+id/destination_spinner"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.45"
+                    android:layout_weight="0.4"
                     android:entries="@array/location"
                     android:hint="Destination" />
 
@@ -100,9 +104,10 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:layout_weight="0.1"
+                    android:layout_weight="0.2"
                     android:background="@null"
                     android:paddingTop="10dp"
+                    android:layout_marginRight="10dp"
                     android:src="@drawable/search" />
 
             </LinearLayout>

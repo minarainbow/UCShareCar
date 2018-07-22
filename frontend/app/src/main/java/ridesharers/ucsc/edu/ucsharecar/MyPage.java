@@ -169,7 +169,7 @@ public class MyPage extends AppCompatActivity {
         }
 
         private ListViewAdapter(Context context, ArrayList<PostInfo> postInfos) {
-            super(context, R.layout.layout_listitem, postInfos);
+            super(context, R.layout.layout_mypageitem, postInfos);
             mContext = context;
             postInfoArrayList = postInfos;
         }
@@ -182,7 +182,7 @@ public class MyPage extends AppCompatActivity {
             if(convertView == null) {
                 viewHolder = new ViewHolder();
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                convertView = layoutInflater.inflate(R.layout.layout_listitem, parent, false);
+                convertView = layoutInflater.inflate(R.layout.layout_mypageitem, parent, false);
                 viewHolder.origin = (TextView) convertView.findViewById(R.id.origin);
                 viewHolder.destination = (TextView) convertView.findViewById(R.id.destination);
                 viewHolder.departure_time = (TextView) convertView.findViewById(R.id.departure_time);

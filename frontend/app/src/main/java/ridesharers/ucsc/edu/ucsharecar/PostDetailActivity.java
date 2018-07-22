@@ -190,7 +190,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     public void onResponse(UserInfo response) {
                         Log.e("response", response.toString());
                         if(position == 0 && !driver_status) {
-                            viewHolder.ucsc_id.setText("driver : " + response.getName());
+                            viewHolder.ucsc_id.setText("Driver :\n" + response.getName());
                         }
                         else {
                             viewHolder.ucsc_id.setText(response.getName());
