@@ -105,6 +105,7 @@ public class MyPage extends AppCompatActivity {
                 intent.putExtra("post_id", postInfo.getId());
                 intent.putStringArrayListExtra("passengers", postInfo.getPassengers());
                 intent.putExtra("join", true);
+                intent.putExtra("driver", postInfo.getDriver());
 
                 mContext.startActivity(intent);
             }
