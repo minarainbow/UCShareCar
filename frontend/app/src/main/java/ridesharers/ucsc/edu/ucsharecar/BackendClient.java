@@ -469,13 +469,15 @@ public class BackendClient {
                             final Response.ErrorListener errorCallback) {
 
         // Build the request. User id is URL argument.
-        GenericRequest<UserInfo> request = new GenericRequest<UserInfo>("/users/by_id"+id,
+        GenericRequest<UserInfo> request = new GenericRequest<UserInfo>("/users/by_id/"+id,
                 Request.Method.GET, responseCallback, errorCallback) {
             @Override
             void buildParameters(JSONObject args) throws JSONException {}
             @Override
             UserInfo parseResponse(JSONObject response) throws JSONException {
                 // User should be the field in the response object
+                Log.e("result", response.getInt("result") + "");
+                Log.e("user", response.getJSONObject("user").toString());
                 return new UserInfo(response.getJSONObject("user"));
             }
         };
