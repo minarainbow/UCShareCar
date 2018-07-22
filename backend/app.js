@@ -249,6 +249,9 @@ app.post('/posts/create', (req, res) => {
 	if(req.body.post.driverneeded) {
 		req.body.post.passengers.push(req.signedCookies.session.id)
 	}
+	else {
+		req.body.post.driver = req.signedCookies.session.id
+	}
 
 	db.post.create(req.body.post).then((id) => {
 		res.json({result: 1, post_id: id})

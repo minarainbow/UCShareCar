@@ -34,6 +34,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
     Context mContext;
     BackendClient backendClient;
     Spinner originSpinner, destinationSpinner, seatsSpinner;
+    RadioButton driverButton;
     private AlertDialog.Builder builder;
     private AlertDialog popup;
 
@@ -58,6 +59,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
         Button time_btn = (Button) findViewById(R.id.btn_time);
         final EditText date_txt = (EditText) findViewById(R.id.in_date);
         final EditText time_txt = (EditText) findViewById(R.id.in_time);
+        driverButton = findViewById(R.id.driver);
 
         // Get the backend client singleton
         backendClient = BackendClient.getSingleton(this);
@@ -126,7 +128,11 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
                     String start = originSpinner.getSelectedItem().toString();
                     String dest = destinationSpinner.getSelectedItem().toString();
                     String memo = memo_text.getText().toString();
-                    boolean driver_needed = (radioSelected == 0) ? false : true;
+                    Log.e("selected", "" + radioSelected);
+                    boolean driver_needed = driverButton.isChecked() ? false : true;
+                    if(!driver_needed) {
+                        Log.e("haha", "driver not needed");
+                    }
                     String driver = null;
                     String uploader = null;
                     ArrayList<String> passengers = new ArrayList<String>();

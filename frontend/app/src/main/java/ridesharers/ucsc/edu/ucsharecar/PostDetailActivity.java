@@ -152,9 +152,9 @@ public class PostDetailActivity extends AppCompatActivity {
 
             if(!driver_status) {
                 passengers.add(0, driver);
-                Log.e("driver", driver);
             }
 
+            Log.e("passengers", passengers.toString());
             listViewAdapter = new ListViewAdapter(mContext, passengers);
             listView.setAdapter(listViewAdapter);
         }
@@ -179,7 +179,6 @@ public class PostDetailActivity extends AppCompatActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             final ViewHolder viewHolder;
             String user_id = passengerList.get(position);
-            Log.e("user_id", user_id);
 
             if(convertView == null) {
                 viewHolder = new ViewHolder();
