@@ -64,7 +64,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         post_holder.origin_text.setText(post_holder.origin);
         post_holder.destination_text.setText(post_holder.destination);
-        post_holder.departure_time_text.setText(post_holder.departure_time);
+        post_holder.departure_time_text.setText(post_holder.departure_time.split("P")[0]);
         if(post_holder.driver_status) {
             post_holder.driver_status_text.setText("Driver needed");
         }
@@ -76,12 +76,14 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    int extra_pass = post_holder.totalseats - post_holder.passengers.size();
+                    extra_pass -= (post_holder.driver_status) ? 0 : 1;
                     Log.e("Hello", "" + position);
                     Intent intent = new Intent(mContext, PostDetailActivity.class);
                     intent.putExtra("starting_loc", post_holder.origin);
                     intent.putExtra("ending_loc", post_holder.destination);
                     intent.putExtra("leaving_time", post_holder.departure_time);
-                    intent.putExtra("avail_seats", post_holder.totalseats - post_holder.passengers.size());
+                    intent.putExtra("avail_seats", extra_pass);
                     intent.putExtra("notes", post_holder.memo);
                     intent.putExtra("driver_status", post_holder.driver_status);
                     intent.putExtra("post_id", postInfo.getId());

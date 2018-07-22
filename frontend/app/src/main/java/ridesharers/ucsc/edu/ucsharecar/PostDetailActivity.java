@@ -97,7 +97,6 @@ public class PostDetailActivity extends AppCompatActivity {
         Log.d(TAG,"getIncomingIntent: checking for incoming intents.");
         if(getIntent().hasExtra("starting_loc") &&
                 getIntent().hasExtra("ending_loc") &&
-                getIntent().hasExtra("leaving_time") &&
                 getIntent().hasExtra("avail_seats") &&
                 getIntent().hasExtra("notes")) {
 
@@ -105,7 +104,6 @@ public class PostDetailActivity extends AppCompatActivity {
             startingLocation = getIntent().getStringExtra("starting_loc");
             endingLocation = getIntent().getStringExtra("ending_loc");
             departureTime = getIntent().getStringExtra("leaving_time");
-            names = getIntent().getStringExtra("passenger_names");
             memos = getIntent().getStringExtra("notes");
             seats = getIntent().getIntExtra("avail_seats", 0);
             driver_status = getIntent().getBooleanExtra("driver_status", true);
@@ -128,7 +126,7 @@ public class PostDetailActivity extends AppCompatActivity {
         destination.setText(endingLocation);
 
         TextView leaving_time = findViewById(R.id.leaving_time);
-        leaving_time.setText(departureTime);
+        leaving_time.setText(departureTime.split("P")[0]);
 
         TextView avail_seats = findViewById(R.id.avail_seats);
         avail_seats.setText("" + seats);
