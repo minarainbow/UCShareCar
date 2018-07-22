@@ -1,5 +1,6 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -44,6 +46,9 @@ public class PostListActivity extends AppCompatActivity {
      * device.
      */
     //private boolean mTwoPane;
+
+    private AlertDialog.Builder builder;
+    private AlertDialog popup;
 
     private final String TAG = "UCShareCar_PostList";
 
@@ -91,14 +96,30 @@ public class PostListActivity extends AppCompatActivity {
         add_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"clicked add_report button");
-                /*
-                Intent this_intent = new Intent(getApplicationContext(), CreateReportActivity.class);
-                startActivity(this_intent);
-                */
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                emailIntent.setData(Uri.parse("mailto:pcalaima@gmail.com"));
-                startActivity(Intent.createChooser(emailIntent, "Send feedback"));
+                builder = new AlertDialog.Builder(PostListActivity.this);
+                View mView = getLayoutInflater().inflate(R.layout.report_upload_check,null);
+                Button yesButton = mView.findViewById(R.id.yes);
+                Button noButton = mView.findViewById(R.id.no);
+                builder.setView(mView);
+                popup = builder.create();
+                popup.show();
+
+                yesButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(TAG,"clicked add_report button");
+                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                        emailIntent.setData(Uri.parse("mailto:pcalaima@gmail.com"));
+                        startActivity(Intent.createChooser(emailIntent, "Send feedback"));
+                    }});
+                noButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view){
+                        popup.cancel();
+                    }
+                });
+
+
             }
         });
 
@@ -111,11 +132,8 @@ public class PostListActivity extends AppCompatActivity {
                     Log.d(TAG, "clicked search button");
                     String origin = originSpinner.getSelectedItem().toString();
                     String destination = destinationSpinner.getSelectedItem().toString();
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("start", origin);
-                    jsonObject.put("end", destination);
 
-                    backend.getSearch(jsonObject, new Response.Listener<ArrayList<PostInfo>>() {
+                    backend.getSearch(origin, destination, new Response.Listener<ArrayList<PostInfo>>() {
                         @Override
                         public void onResponse(ArrayList<PostInfo> response) {
                             postList.clear();

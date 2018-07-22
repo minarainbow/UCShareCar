@@ -141,10 +141,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:hint="Available Seats"
-                android:entries="@array/avail_seats"
-                />
-
+                android:text="Available Seats"
+                android:entries="@array/avail_seats"/>
         </LinearLayout>
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
