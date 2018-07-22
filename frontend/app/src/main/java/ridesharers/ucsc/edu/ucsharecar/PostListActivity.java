@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -111,6 +112,7 @@ public class PostListActivity extends AppCompatActivity {
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                         emailIntent.setData(Uri.parse("mailto:pcalaima@gmail.com"));
                         startActivity(Intent.createChooser(emailIntent, "Send feedback"));
+                        startActivity(Intent.createChooser(emailIntent, "Send feedback"));
                     }});
                 noButton.setOnClickListener(new View.OnClickListener(){
                     @Override
@@ -171,6 +173,13 @@ public class PostListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+//                layoutManager.getOrientation());
+//        recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.addItemDecoration(new DividerItemDecoration(PostListActivity.this,
+                DividerItemDecoration.VERTICAL));
+
+
 
         Log.d(TAG, "setupRecyclerView: init recycleview.");
 
