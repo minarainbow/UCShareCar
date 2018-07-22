@@ -76,7 +76,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
                 DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                        date_txt.setText(day + "-" + month + "-" + year);
+                    date_txt.setText(day + "-" + month + "-" + year);
                     }
                 }, mYear, mMonth, mDay);
 
@@ -87,17 +87,17 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
         time_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar calendar = Calendar.getInstance();
-                int mHour = calendar.get(Calendar.HOUR);
-                int mMinute = calendar.get(Calendar.MINUTE);
+            final Calendar calendar = Calendar.getInstance();
+            int mHour = calendar.get(Calendar.HOUR);
+            int mMinute = calendar.get(Calendar.MINUTE);
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-                        time_txt.setText(hour + ":" + minute);
-                    }
-                }, mHour, mMinute, false);
-                timePickerDialog.show();
+            TimePickerDialog timePickerDialog = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                time_txt.setText(hour + ":" + minute);
+                }
+            }, mHour, mMinute, false);
+            timePickerDialog.show();
             }
         });
 
@@ -123,37 +123,33 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
             yesButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
-                    Date postTime = new Date();
-                    Date departTime = new Date();
-                    String start = originSpinner.getSelectedItem().toString();
-                    String dest = destinationSpinner.getSelectedItem().toString();
-                    String memo = memo_text.getText().toString();
-                    Log.e("selected", "" + radioSelected);
-                    boolean driver_needed = driverButton.isChecked() ? false : true;
-                    if(!driver_needed) {
-                        Log.e("haha", "driver not needed");
-                    }
-                    String driver = null;
-                    String uploader = null;
-                    ArrayList<String> passengers = new ArrayList<String>();
-                    int totalSeats = Integer.parseInt(seatsSpinner.getSelectedItem().toString());
+                Date postTime = new Date();
+                Date departTime = new Date();
+                String start = originSpinner.getSelectedItem().toString();
+                String dest = destinationSpinner.getSelectedItem().toString();
+                String memo = memo_text.getText().toString();
+                boolean driver_needed = driverButton.isChecked() ? false : true;
+                String driver = null;
+                String uploader = null;
+                ArrayList<String> passengers = new ArrayList<String>();
+                int totalSeats = Integer.parseInt(seatsSpinner.getSelectedItem().toString());
 
-                    backendClient.createPost(new PostInfo(postTime, departTime, start, dest, memo, driver_needed, driver, uploader, passengers, totalSeats),
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    Log.e("sending post to server", "sending post to server");
-                                    Intent refresh_page_intent = new Intent(getApplicationContext(), PostListActivity.class);
-                                    startActivity(refresh_page_intent);
+                backendClient.createPost(new PostInfo(postTime, departTime, start, dest, memo, driver_needed, driver, uploader, passengers, totalSeats),
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.e("sending post to server", "sending post to server");
+                            Intent refresh_page_intent = new Intent(getApplicationContext(), PostListActivity.class);
+                            startActivity(refresh_page_intent);
 
-                                }
+                        }
 
-                            }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
-                                }
-                            });
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
             });
 
