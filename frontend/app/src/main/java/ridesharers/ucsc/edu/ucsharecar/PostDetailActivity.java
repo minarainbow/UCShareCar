@@ -1,11 +1,20 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
+import android.content.Context;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An activity representing a single Post detail screen. This
@@ -24,17 +34,23 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "PostDetailActivity";
 
-    String startingLocation, endingLocation, departureTime, names, memos, post_id;
+    String startingLocation, endingLocation, departureTime, names, memos, post_id, driver;
+    boolean driver_status, is_joined;
+    ListViewAdapter listViewAdapter;
+    ListView listView;
+    ArrayList<String> passengers;
+    BackendClient backend;
+    Context mContext;
     int seats;
-    boolean driver_status;
-    private BackendClient backend;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
+        mContext = this;
         Log.d(TAG, "onCreate: started.");
 
+        listView = findViewById(R.id.passengerList);
         getIncomingIntent();
         backend = BackendClient.getSingleton(this);
 
@@ -94,16 +110,17 @@ public class PostDetailActivity extends AppCompatActivity {
             seats = getIntent().getIntExtra("avail_seats", 0);
             driver_status = getIntent().getBooleanExtra("driver_status", true);
             post_id = getIntent().getStringExtra("post_id");
+            passengers = getIntent().getStringArrayListExtra("passengers");
+            is_joined = getIntent().getBooleanExtra("join", false);
+            driver = getIntent().getStringExtra("driver");
 
-            setPostDetails(startingLocation, endingLocation, departureTime, seats, names, memos, driver_status);
+            setPostDetails(startingLocation, endingLocation, departureTime, seats, names, memos, driver_status, passengers);
         }
     }
 
     private void setPostDetails(String startingLocation, String endingLocation,
                                 String departureTime, int seats, String names,
-                                String memos, boolean driver_status){
-        Log.d(TAG, "setPostDetails: setting the post details to widgets");
-
+                                String memos, boolean driver_status, ArrayList<String> passengers){
         TextView origin = findViewById(R.id.starting_loc);
         origin.setText(startingLocation);
 
@@ -116,9 +133,6 @@ public class PostDetailActivity extends AppCompatActivity {
         TextView avail_seats = findViewById(R.id.avail_seats);
         avail_seats.setText("" + seats);
 
-        //TextView passenger_names = findViewById(R.id.passenger_names);
-        //passenger_names.setText(names);
-
         TextView notes = findViewById(R.id.notes);
         notes.setText(memos);
 
@@ -128,6 +142,74 @@ public class PostDetailActivity extends AppCompatActivity {
         }
         else {
             driver_status_text.setText("Join as a passenger?");
+        }
+
+        if(is_joined) {
+            Log.e("passegners", passengers.toString());
+
+            LinearLayout joinLayout = (LinearLayout) findViewById(R.id.join_layout);
+            joinLayout.setVisibility(View.GONE);
+
+            if(!driver_status) {
+                passengers.add(0, driver);
+            }
+
+            Log.e("passengers", passengers.toString());
+            listViewAdapter = new ListViewAdapter(mContext, passengers);
+            listView.setAdapter(listViewAdapter);
+        }
+    }
+
+    private class ListViewAdapter extends ArrayAdapter<String> {
+        private ArrayList<String> passengerList;
+        private Context mContext;
+
+        private class ViewHolder {
+            TextView ucsc_id;
+            TextView phNum;
+        }
+
+        private ListViewAdapter(Context context, ArrayList<String> passengers) {
+            super(context, R.layout.contact_info, passengers);
+            mContext = context;
+            this.passengerList = passengers;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            final ViewHolder viewHolder;
+            String user_id = passengerList.get(position);
+
+            if(convertView == null) {
+                viewHolder = new ViewHolder();
+                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                convertView = layoutInflater.inflate(R.layout.contact_info, parent, false);
+                viewHolder.ucsc_id = convertView.findViewById(R.id.ucsc_id);
+                viewHolder.phNum = convertView.findViewById(R.id.phnum);
+
+                backend.getUserById(user_id, new Response.Listener<UserInfo>() {
+                    @Override
+                    public void onResponse(UserInfo response) {
+                        Log.e("response", response.toString());
+                        if(position == 0 && !driver_status) {
+                            viewHolder.ucsc_id.setText("driver : " + response.getName());
+                        }
+                        else {
+                            viewHolder.ucsc_id.setText(response.getName());
+                        }
+                        viewHolder.phNum.setText(response.getPhoneNumber());
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("user_info", error.toString());
+                    }
+                });
+
+                convertView.setTag(viewHolder);
+            }
+
+            return convertView;
         }
     }
 }

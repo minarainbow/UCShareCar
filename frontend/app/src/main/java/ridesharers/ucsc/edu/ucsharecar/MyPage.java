@@ -2,6 +2,7 @@ package ridesharers.ucsc.edu.ucsharecar;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -9,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +26,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyPage extends AppCompatActivity {
 
@@ -30,6 +34,7 @@ public class MyPage extends AppCompatActivity {
     private ArrayList<PostInfo> uploaded, matched;
     private BackendClient backendClient;
     ListViewAdapter uploadAdapter, matchedAdapter;
+    private Context mContext;
 
     private String TAG = "UCShareCar_MyPage";
 
@@ -37,6 +42,7 @@ public class MyPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
+        mContext = this;
 
         uploadedView = (ListView) findViewById(R.id.listView1);
         matchedView = (ListView) findViewById(R.id.listView2);
@@ -82,6 +88,46 @@ public class MyPage extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.toString());
                 Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        uploadedView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                PostInfo postInfo = (PostInfo) adapterView.getItemAtPosition(position);
+                Intent intent = new Intent(mContext, PostDetailActivity.class);
+                intent.putExtra("starting_loc", postInfo.getStart());
+                intent.putExtra("ending_loc", postInfo.getEnd());
+                intent.putExtra("leaving_time", postInfo.getDeparttime());
+                intent.putExtra("avail_seats", postInfo.getTotalseats() - postInfo.getPassengers().size());
+                intent.putExtra("notes", postInfo.getMemo());
+                intent.putExtra("driver_status", postInfo.isDriverneeded());
+                intent.putExtra("post_id", postInfo.getId());
+                intent.putStringArrayListExtra("passengers", postInfo.getPassengers());
+                intent.putExtra("join", true);
+
+                mContext.startActivity(intent);
+            }
+        });
+
+        matchedView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                PostInfo postInfo = (PostInfo) adapterView.getItemAtPosition(position);
+                Intent intent = new Intent(mContext, PostDetailActivity.class);
+                intent.putExtra("starting_loc", postInfo.getStart());
+                intent.putExtra("ending_loc", postInfo.getEnd());
+                intent.putExtra("leaving_time", postInfo.getDeparttime());
+                intent.putExtra("avail_seats", postInfo.getTotalseats() - postInfo.getPassengers().size());
+                intent.putExtra("notes", postInfo.getMemo());
+                intent.putExtra("driver_status", postInfo.isDriverneeded());
+                intent.putExtra("post_id", postInfo.getId());
+                intent.putStringArrayListExtra("passengers", postInfo.getPassengers());
+                intent.putExtra("join", true);
+                intent.putExtra("driver", postInfo.getDriver());
+
+                mContext.startActivity(intent);
+
             }
         });
     }

@@ -1,5 +1,7 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,6 +10,7 @@ public class UserInfo {
     private boolean banned;
 
     UserInfo(JSONObject raw) throws JSONException {
+        Log.e("raw", raw.toString());
         email = raw.getString("email");
         name = raw.getString("name");
         banned = raw.getBoolean("banned");
