@@ -86,6 +86,8 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     intent.putExtra("driver_status", post_holder.driver_status);
                     intent.putExtra("post_id", postInfo.getId());
                     intent.putStringArrayListExtra("passengers", postInfo.getPassengers());
+                    intent.putExtra("driver", "");
+
 
                     mContext.startActivity(intent);
                 }

@@ -34,7 +34,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "PostDetailActivity";
 
-    String startingLocation, endingLocation, departureTime, names, memos, post_id;
+    String startingLocation, endingLocation, departureTime, names, memos, post_id, driver;
     boolean driver_status, is_joined;
     ListViewAdapter listViewAdapter;
     ListView listView;
@@ -112,6 +112,7 @@ public class PostDetailActivity extends AppCompatActivity {
             post_id = getIntent().getStringExtra("post_id");
             passengers = getIntent().getStringArrayListExtra("passengers");
             is_joined = getIntent().getBooleanExtra("join", false);
+            driver = getIntent().getStringExtra("driver");
 
             setPostDetails(startingLocation, endingLocation, departureTime, seats, names, memos, driver_status, passengers);
         }
@@ -147,7 +148,12 @@ public class PostDetailActivity extends AppCompatActivity {
             Log.e("passegners", passengers.toString());
 
             LinearLayout joinLayout = (LinearLayout) findViewById(R.id.join_layout);
-            joinLayout.setVisibility(View.INVISIBLE);
+            joinLayout.setVisibility(View.GONE);
+
+            if(!driver_status) {
+                passengers.add(0, driver);
+                Log.e("driver", driver);
+            }
 
             listViewAdapter = new ListViewAdapter(mContext, passengers);
             listView.setAdapter(listViewAdapter);
@@ -170,7 +176,7 @@ public class PostDetailActivity extends AppCompatActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             final ViewHolder viewHolder;
             String user_id = passengerList.get(position);
             Log.e("user_id", user_id);
@@ -186,7 +192,12 @@ public class PostDetailActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(UserInfo response) {
                         Log.e("response", response.toString());
-                        viewHolder.ucsc_id.setText(response.getName());
+                        if(position == 0 && !driver_status) {
+                            viewHolder.ucsc_id.setText("driver : " + response.getName());
+                        }
+                        else {
+                            viewHolder.ucsc_id.setText(response.getName());
+                        }
                         viewHolder.phNum.setText(response.getPhoneNumber());
                     }
                 }, new Response.ErrorListener() {
