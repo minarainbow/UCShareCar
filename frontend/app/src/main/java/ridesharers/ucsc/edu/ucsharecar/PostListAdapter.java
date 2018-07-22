@@ -77,7 +77,6 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View view) {
                     int extra_pass = post_holder.totalseats - post_holder.passengers.size();
-                    extra_pass -= (post_holder.driver_status) ? 0 : 1;
                     Log.e("Hello", "" + position);
                     Intent intent = new Intent(mContext, PostDetailActivity.class);
                     intent.putExtra("starting_loc", post_holder.origin);

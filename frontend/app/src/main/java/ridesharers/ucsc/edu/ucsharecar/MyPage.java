@@ -101,7 +101,6 @@ public class MyPage extends AppCompatActivity {
 
                 Intent intent = new Intent(mContext, PostDetailActivity.class);
                 int extra = postInfo.getTotalseats() - postInfo.getPassengers().size();
-                extra -= (postInfo.isDriverneeded()) ? 0 : 1;
                 intent.putExtra("starting_loc", postInfo.getStart());
                 intent.putExtra("ending_loc", postInfo.getEnd());
                 intent.putExtra("leaving_time", depart_time);
@@ -124,7 +123,6 @@ public class MyPage extends AppCompatActivity {
                 String depart_time = postInfo.getDeparttime().toString();
                 Intent intent = new Intent(mContext, PostDetailActivity.class);
                 int extra = postInfo.getTotalseats() - postInfo.getPassengers().size();
-                extra -= (postInfo.isDriverneeded()) ? 0 : 1;
 
                 intent.putExtra("starting_loc", postInfo.getStart());
                 intent.putExtra("ending_loc", postInfo.getEnd());
