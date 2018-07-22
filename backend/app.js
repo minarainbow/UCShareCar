@@ -246,6 +246,9 @@ app.post('/posts/create', (req, res) => {
 
 	// Set the uploader of this post
 	req.body.post.uploader = req.signedCookies.session.id
+	if(req.body.post.driverneeded) {
+		req.body.post.passengers.push(req.signedCookies.session.id)
+	}
 
 	db.post.create(req.body.post).then((id) => {
 		res.json({result: 1, post_id: id})
