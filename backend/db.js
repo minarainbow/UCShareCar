@@ -148,8 +148,10 @@ module.exports = {
 				var same_val = [ ]
 				var start_val = [ ]
 				var end_val = [ ]
+				var start = start_end.start.replace(' ', '_')
+				var end = start_end.end.replace(' ', '_')
 
-				Post.find({"$and" : [{start : start_end.start}, {end : start_end.end}]}).sort(timeSort).exec((err, posts) => {
+				Post.find({"$and" : [{start : start}, {end : end}]}).sort(timeSort).exec((err, posts) => {
 					if(err) {
 						console.log("Could not get all posts")
 						console.log(err)
@@ -157,7 +159,7 @@ module.exports = {
 					}
 					else {
 						same_val = posts
-						Post.find({"$and" : [{start : start_end.start}, {end : {"$ne" : start_end.end}}]}).sort(timeSort).exec((err, posts) => {
+						Post.find({"$and" : [{start : start}, {end : {"$ne" : end}}]}).sort(timeSort).exec((err, posts) => {
 							if(err) {
 								console.log("Could not get all posts")
 								console.log(err)
@@ -165,7 +167,7 @@ module.exports = {
 							}
 							else {
 								start_val = posts
-								Post.find({"$and" : [{start : {"$ne" : start_end.start}}, {end : start_end.end}]}).sort(timeSort).exec((err, posts) => {
+								Post.find({"$and" : [{start : {"$ne" : start}}, {end : end}]}).sort(timeSort).exec((err, posts) => {
 									if(err) {
 										console.log("Could not get all posts")
 										console.log(err)

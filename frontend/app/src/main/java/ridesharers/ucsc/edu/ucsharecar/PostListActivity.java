@@ -131,16 +131,18 @@ public class PostListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    Log.d(TAG, "clicked search button");
+                    Log.e(TAG, "clicked search button");
                     String origin = originSpinner.getSelectedItem().toString();
                     String destination = destinationSpinner.getSelectedItem().toString();
 
                     backend.getSearch(origin, destination, new Response.Listener<ArrayList<PostInfo>>() {
                         @Override
                         public void onResponse(ArrayList<PostInfo> response) {
-                            postList.clear();
-                            postList.addAll(response);
-                            adapter.notifyDataSetChanged();
+                            if(response.size() != 0) {
+                                postList.clear();
+                                postList.addAll(response);
+                                adapter.notifyDataSetChanged();
+                            }
                         }
                     }, new Response.ErrorListener() {
                         @Override

@@ -363,15 +363,9 @@ public class BackendClient {
     public void getSearch(String start, String end, final Response.Listener<ArrayList<PostInfo>> responseCallback,
                             final Response.ErrorListener errorCallback) {
 
-        String make_url = "/";
+        String make_url = "/" + start.replace(' ', '_') + "/" + end.replace(' ', '_');
 
-        try {
-            make_url += URLEncoder.encode(start, "UTF-8")
-                    + "/" + URLEncoder.encode(end, "UTF-8");
-        }
-        catch (UnsupportedEncodingException e) {
-            Log.w(TAG, "Failed to build arguments to search by location: "+e.toString());
-        }
+        Log.e("make_url", make_url);
 
         GenericRequest<ArrayList<PostInfo>> request = new GenericRequest<ArrayList<PostInfo>>(
                 "/posts/search" + make_url, Request.Method.GET, responseCallback, errorCallback) {
