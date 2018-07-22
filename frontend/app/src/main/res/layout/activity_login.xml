@@ -8,13 +8,17 @@
     tools:context=".LoginActivity"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_marginTop="100dp"
-        android:id="@+id/imageView"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/main_logo"/>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="100dp"
+            android:background="@drawable/round_corner"
+            android:outlineProvider="background"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:src="@drawable/main_logo"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/login_button"

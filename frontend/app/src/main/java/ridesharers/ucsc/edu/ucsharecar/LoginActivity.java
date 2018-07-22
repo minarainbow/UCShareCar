@@ -4,10 +4,12 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -28,10 +30,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private GoogleSignInClient mGoogleSignInClient;
     private BackendClient backend;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        ImageView logo = findViewById(R.id.imageView);
+//        logo.setClipToOutline(true);
 
         // Make the google login button bigger
         SignInButton signInButton = findViewById(R.id.login_button);
