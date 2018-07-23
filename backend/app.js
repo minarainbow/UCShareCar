@@ -1,3 +1,39 @@
+/*
+ * app.js
+ *
+ * This file defines all of the handlers for the server. It exports the
+ * expressjs object as "app".
+ *
+ * The handlers have a number of dependencies. Some are initialized elsewhere and
+ * so can be mocked out easily. These include:
+ *	- The database (db.js)
+ *	- The notification service (notifications.js)
+ * Note that if these are not initialized before starting the server, it is an
+ * error.
+ * 
+ * Some other dependencies do not have to be initialized. They should still be
+ * mocked out, however, to avoid side effects while unit testing. These include:
+ *  - Google login (google_login.js)
+ *  - Session cookie helpers (session_helpers.js)
+ *
+ * The server does not have a constructor, so there is no explicit dependency
+ * injection.  The dependencies are all implicitly defined. This means that we
+ * can take advantage of dynamic typing to mock things out for testing.
+ *
+ * Handler Results
+ * All responses come as JSON. They should all have a "result" field which will
+ * be 0 for failure and 1 for success. If the result is 1, there should always
+ * be an "error" field that reports why the handler failed. The rest of the JSON
+ * object is up to the discretion of each handler (see individual comments). The
+ * exception to the "result" rule is the login handlers, which use "success",
+ * which we are not going to change to avoid regression issues.
+ *
+ * Lastly, note that this file does not contain any code for actually running
+ * the server. It simply defines all the handlers and returns the expressjs
+ * app object. This means that whatever file imports this has to run the server
+ * itself, and it then has more control over what it sets up (potentially
+ * injecting dependencies) before starting the server.
+ */
 const secrets = require('./secrets')
 
 // Express
@@ -14,15 +50,10 @@ const sessions = require('./session_helpers')
 const db = require('./db.js')
 const notifications = require('./notifications')
 
-
+// For checking that the server is running.
 app.get('/', (req, res) => {
 	console.log('Requested index')
 	res.json({result: 1})
-})
-
-// GET request for users
-app.get('/users', (req, res) => {
-	res.json('This is where users will be GET')
 })
 
 /*

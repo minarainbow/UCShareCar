@@ -1,3 +1,9 @@
+/*
+ * index.js
+ *
+ * This simply sets up all the required components to run the server, and then
+ * does so. See all the other files require()'d below.
+ */
 const app = require('./app')
 const db = require('./db')
 const notifications = require('./notifications')

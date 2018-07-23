@@ -2,6 +2,8 @@
  * This file sends a notification manually to a user by email address.
  * Usage:
  * node manual_notification.js [email address here]
+ *
+ * This is purely for testing purposes.
  */
 
 const db = require('./db')
