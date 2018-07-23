@@ -1,9 +1,11 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -12,9 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +43,8 @@ public class PostDetailActivity extends AppCompatActivity {
     ListViewAdapter listViewAdapter;
     ListView listView;
     ArrayList<String> passengers;
+    AlertDialog.Builder builder;
+    AlertDialog popup;
     BackendClient backend;
     Context mContext;
     int seats;
@@ -58,19 +64,42 @@ public class PostDetailActivity extends AppCompatActivity {
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if(driver_status) {
-                    backend.addDriver(post_id, new Response.Listener<String>() {
+                    Log.e("add", "driver");
+                    builder = new AlertDialog.Builder(mContext);
+                    View mView = getLayoutInflater().inflate(R.layout.activity_driver_join, null);
+                    final EditText input = mView.findViewById(R.id.input_seats);
+                    Button joinButton = mView.findViewById(R.id.confirm);
+                    Button noJoinButton = mView.findViewById(R.id.no_join);
+                    builder.setView(mView);
+                    builder.create().show();
+
+                    joinButton.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onResponse(String response) {
-                            Log.e("driver", "added well");
-                            Toast.makeText(getApplicationContext(), "Successfully Added", Toast.LENGTH_SHORT).show();
+                        public void onClick(View view) {
+                            String availString = input.getText().toString();
+                            int avail = Integer.parseInt(availString);
+                            backend.addDriver(post_id, avail, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Log.e("driver", "added well");
+                                    Toast.makeText(getApplicationContext(), "Successfully Added", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e(TAG, error.toString());
+                                    Toast.makeText(getApplicationContext(), "No seats available", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
-                    }, new Response.ErrorListener() {
+                    });
+
+                    noJoinButton.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, error.toString());
-                            Toast.makeText(getApplicationContext(), "No seats available", Toast.LENGTH_LONG).show();
+                        public void onClick(View view) {
+                            popup.cancel();
                         }
                     });
                 }
@@ -80,11 +109,12 @@ public class PostDetailActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             Log.e("passenger", "added well");
                             Toast.makeText(getApplicationContext(), "Successfully Added", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, error.toString());
+//                            Log.e(TAG, error.toString());
                             Toast.makeText(getApplicationContext(), "No seats available", Toast.LENGTH_LONG).show();
                         }
                     });

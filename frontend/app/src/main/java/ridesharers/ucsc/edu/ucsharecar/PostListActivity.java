@@ -138,17 +138,15 @@ public class PostListActivity extends AppCompatActivity {
                     backend.getSearch(origin, destination, new Response.Listener<ArrayList<PostInfo>>() {
                         @Override
                         public void onResponse(ArrayList<PostInfo> response) {
-                            if(response.size() != 0) {
-                                postList.clear();
-                                postList.addAll(response);
-                                adapter.notifyDataSetChanged();
-                            }
+                        postList.clear();
+                        postList.addAll(response);
+                        adapter.notifyDataSetChanged();
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, error.toString());
-                            Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+                        Log.e(TAG, error.toString());
+                        Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
                         }
                     });
                 }

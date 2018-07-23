@@ -517,7 +517,7 @@ public class BackendClient {
         request.run();
     }
 
-    public void addDriver(final String post_id, final Response.Listener<String> responseCallback,
+    public void addDriver(final String post_id, final int avail_seats, final Response.Listener<String> responseCallback,
                           final Response.ErrorListener errorCallback) {
 
         // Build the request
@@ -525,6 +525,7 @@ public class BackendClient {
                 Request.Method.POST, responseCallback, errorCallback) {
             void buildParameters(JSONObject args) throws JSONException {
                 args.put("post_id", post_id);
+                args.put("avail", avail_seats);
             }
             String parseResponse(JSONObject response) throws JSONException {
                 return "" + response.getInt("result");

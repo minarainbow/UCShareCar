@@ -77,7 +77,8 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
                 DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    date_txt.setText(day + "-" + month + "-" + year);
+                    int fake_month = month + 1;
+                    date_txt.setText(day + "-" + fake_month + "-" + year);
                     gYear = year;
                     gMonth = month;
                     gDay = day;
