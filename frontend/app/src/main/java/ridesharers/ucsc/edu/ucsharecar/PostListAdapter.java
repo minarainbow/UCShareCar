@@ -17,6 +17,8 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context mContext;
     private ArrayList<PostInfo> postList = new ArrayList<>();
 
+    private String TAG = "UCShareCar_PostList";
+
     public class PostListViewHolder extends RecyclerView.ViewHolder {
         public TextView origin_text, destination_text, departure_time_text, driver_status_text;
         public String origin, destination, departure_time, posttime, memo, driver, uploader;
@@ -48,7 +50,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final PostInfo postInfo = postList.get(position);
-        Log.e("HIHI", "" + position);
+        Log.e(TAG, "" + position);
         final PostListViewHolder post_holder = (PostListViewHolder) holder;
 
         post_holder.origin = postInfo.getStart().toString();
