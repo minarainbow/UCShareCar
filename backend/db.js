@@ -296,7 +296,7 @@ module.exports = {
 					throw new Error("No driver, cannot add passenger")
 				}
 				// If the passengers + 1 driver exceed seats, fail
-				if (post.passengers.length+1 >= post.totalseats) {
+				if (post.passengers.length == post.totalseats) {
 					console.log("Not enough seats to add", user_id, "to", post_id)
 					throw new Error("Not enough seats to add passenger")
 				}

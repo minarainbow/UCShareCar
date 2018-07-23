@@ -107,7 +107,7 @@ public class PostInfo implements Parcelable {
         if (this.driverneeded) {
             throw new IllegalStateException("Cannot add passenger before a driver is added");
         }
-        if (this.passengers.size() >= this.totalseats) {
+        if (this.passengers.size() > this.totalseats) {
             throw new IllegalStateException("No space for more passengers");
         }
 

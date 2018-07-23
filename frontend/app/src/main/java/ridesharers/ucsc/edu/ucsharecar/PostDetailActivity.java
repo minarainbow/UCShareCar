@@ -215,27 +215,32 @@ public class PostDetailActivity extends AppCompatActivity {
                 viewHolder.ucsc_id = convertView.findViewById(R.id.ucsc_id);
                 viewHolder.phNum = convertView.findViewById(R.id.phnum);
 
-                backend.getUserById(user_id, new Response.Listener<UserInfo>() {
-                    @Override
-                    public void onResponse(UserInfo response) {
-                        Log.e("response", response.toString());
-                        if(position == 0 && !driver_status) {
-                            viewHolder.ucsc_id.setText("Driver :\n" + response.getName());
-                        }
-                        else {
-                            viewHolder.ucsc_id.setText(response.getName());
-                        }
-                        viewHolder.phNum.setText(response.getPhoneNumber());
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("user_info", error.toString());
-                    }
-                });
+
 
                 convertView.setTag(viewHolder);
             }
+            else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+
+            backend.getUserById(user_id, new Response.Listener<UserInfo>() {
+                @Override
+                public void onResponse(UserInfo response) {
+                    Log.e("response", response.toString());
+                    if(position == 0 && !driver_status) {
+                        viewHolder.ucsc_id.setText("Driver :\n" + response.getName());
+                    }
+                    else {
+                        viewHolder.ucsc_id.setText(response.getName());
+                    }
+                    viewHolder.phNum.setText(response.getPhoneNumber());
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("user_info", error.toString());
+                }
+            });
 
             return convertView;
         }
