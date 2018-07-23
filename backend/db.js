@@ -233,7 +233,7 @@ module.exports = {
 							// another person. Otherwise, they go in no_matches.
 							if ((post.driver && post.driver != user_id)
 								|| post.passengers.length > 1
-								|| (post.passengers > 0 && !post.passengers.includes(user_id))) {
+								|| (post.passengers.length > 0 && !post.passengers.includes(user_id))) {
 								matches.push(post)
 							}
 							else {
