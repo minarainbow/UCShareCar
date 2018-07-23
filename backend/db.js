@@ -146,7 +146,7 @@ module.exports = {
 	post: {
 
 		// Returns all posts in the db now
-		find_all: () => {
+		find_all: (user_id) => {
 			return new Promise((resolve, reject) => {
 				const result = [ ]
 				const timeSort = {departtime : 1}
@@ -158,7 +158,7 @@ module.exports = {
 					}
 					else {
 						posts.forEach((post) => {
-							if((post.totalseats > post.passengers.length) || (post.driver == undefined)) {
+							if(((post.totalseats > post.passengers.length) || (post.driver == undefined)) && (post.driver != user_id) && !(post.passengers.includes(user_id)) {
 								result.push(post)
 							}
 						})

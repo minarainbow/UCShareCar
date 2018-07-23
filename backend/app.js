@@ -202,7 +202,7 @@ app.post('/users/register_fcm', (req, res) => {
 app.get('/posts/all', (req, res) => {
 	if (!sessions.validate(req, res)) return
 
-	db.post.find_all().then((posts) => {
+	db.post.find_all(req.signedCookies.session.id).then((posts) => {
 		res.json({result: 1, posts: posts})
 	}, (err) => {
 		return res.status(500).send({result: 0, error : 'database failure'})
