@@ -159,7 +159,8 @@ module.exports = {
 					}
 					else {
 						same_val = posts
-						Post.find({"$and" : [{start : start}, {end : {"$ne" : end}}]}).sort(timeSort).exec((err, posts) => {
+						Post.find({"$or" : [{"$and" : [{start : start}, {end : {"$ne" : end}}]}, {"$and" : [{start : {"$ne" : start}}, {end : end}]}]}).sort(timeSort).exec((err, posts) => {
+
 							if(err) {
 								console.log("Could not get all posts")
 								console.log(err)
@@ -167,17 +168,7 @@ module.exports = {
 							}
 							else {
 								start_val = posts
-								Post.find({"$and" : [{start : {"$ne" : start}}, {end : end}]}).sort(timeSort).exec((err, posts) => {
-									if(err) {
-										console.log("Could not get all posts")
-										console.log(err)
-										reject(err)
-									}
-									else {
-										end_val = posts
-										resolve({same : same_val, start : start_val, end : end_val})
-									}
-								})
+								resolve({same : same_val, start : start_val, end : end_val})
 							}
 						})
 					}
