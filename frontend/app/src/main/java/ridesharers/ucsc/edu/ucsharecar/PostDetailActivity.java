@@ -215,13 +215,15 @@ public class PostDetailActivity extends AppCompatActivity {
                 viewHolder.ucsc_id = convertView.findViewById(R.id.ucsc_id);
                 viewHolder.phNum = convertView.findViewById(R.id.phnum);
 
-
-
                 convertView.setTag(viewHolder);
             }
             else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
+
+            // Blank out the text while we wait for the server
+            viewHolder.ucsc_id.setText("");
+            viewHolder.phNum.setText("");
 
             backend.getUserById(user_id, new Response.Listener<UserInfo>() {
                 @Override
