@@ -50,6 +50,7 @@ public class NotificationService extends FirebaseMessagingService {
         Log.d(TAG, "Sending notification with postId="+postId);
 
         Intent intent = new Intent(this, MyPage.class);
+        intent.putExtra("post_id", postId);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
