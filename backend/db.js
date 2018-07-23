@@ -158,11 +158,7 @@ module.exports = {
 							"$or": [
 								{
 									// There is space for passengers
-									"totalseats": {
-										"$gt": {
-											"$size": "$passengers"
-										}
-									}
+									"$where": "this.totalseats > this.passengers.length"
 								},
 								{
 									// There is a driver needed
