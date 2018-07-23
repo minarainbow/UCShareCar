@@ -158,7 +158,7 @@ module.exports = {
 					}
 					else {
 						posts.forEach((post) => {
-							if (((post.totalseats > post.passengers.length) || (post.driver == undefined)) && (post.driver != user_id) && !(post.passengers.includes(user_id))) {
+							if ((post.totalseats > post.passengers.length || post.driver == undefine) && post.driver != user_id && !(post.passengers.includes(user_id))) {
 								result.push(post)
 							}
 						})
