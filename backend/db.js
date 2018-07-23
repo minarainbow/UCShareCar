@@ -38,7 +38,7 @@ module.exports = {
 	 * (hopefully over loopback.)
 	 * Both arguments are optional.
 	 *  - "url" can be the url to connect to (useful for testing purposes, if
-	 *    you want to use a different DB). 
+	 *    you want to use a different DB).
 	 *  - "callback" will be called when the connection is either complete or
 	 *    failed. Useful for waiting to start tests or before starting some
 	 *    computation with the db.
@@ -145,24 +145,50 @@ module.exports = {
 
 	post: {
 
-		// Returns all posts in the db now
+		// Returns all posts in the db that do not currently have the user in
+		// them. The user only wants to see posts they are not involved in on
+		// the landing page.
 		find_all: (user_id) => {
 			return new Promise((resolve, reject) => {
-				const result = [ ]
+				const result = []
 				const timeSort = {departtime : 1}
-				Post.find().sort(timeSort).exec((err, posts) => {
+				Post.find({
+					"$and": [
+						{
+							"$or": [
+								{
+									// There is space for passengers
+									"totalseats": { "$gt": "passengers.length" }
+								},
+								{
+									// There is a driver needed
+									"driverneeded": true
+								}
+							]
+						},
+						{
+							// The driver is not the user
+							"driver": {
+								"$ne": user_id
+							}
+						},
+						{
+							// The passengers do not include the user
+							"passengers": {
+								"$not": {
+									"$all": [user_id]
+								}
+							}
+						},
+					]
+				}).sort(timeSort).exec((err, posts) => {
 					if(err) {
 						console.log("Could not get all posts")
 						console.log(err)
 						reject(err)
 					}
 					else {
-						posts.forEach((post) => {
-							if(((post.totalseats > post.passengers.length) || (post.driver == undefined)) && (post.driver != user_id) && !(post.passengers.includes(user_id)) {
-								result.push(post)
-							}
-						})
-						resolve(result)
+						resolve(posts)
 					}
 				})
 			})
@@ -253,7 +279,7 @@ module.exports = {
 						reject(err)
 					})
 			})
-		},	
+		},
 
 		// Create new post
 		create: (post_data) => {
