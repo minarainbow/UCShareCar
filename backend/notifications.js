@@ -1,3 +1,14 @@
+/*
+ * notifications.js
+ *
+ * This module manages sending notifications using Firebase Cloud Messaging to
+ * the Android app. FCM always stands for Firebase Cloud Messaging.
+ *
+ * This module must be initialized with Firebase using the fn initialize.
+ * There are two methods exported to send a notification. The more useful one is
+ * send_by_postid(), which allows you to notify everyone connected to a post
+ * (except one person, optionally).
+ */
 const admin = require('firebase-admin')
 const secrets = require('./secrets')
 const db = require('./db')
@@ -30,6 +41,9 @@ function send(user_ids, post_id) {
 	return db.user.all_fcm_with_ids(user_ids)
 		.then((tokens) => {
 			return admin.messaging().sendToDevice(tokens, {
+				// The FCM Service on the Android app is only spawned to deal
+				// with data messages. "Notification" messages get handled by
+				// the OS for some reason.
 				data: {
 					post_id: post_id,
 				}

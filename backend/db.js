@@ -1,3 +1,26 @@
+/*
+ * db.js
+ *
+ * This file defines a number of helper functions to get or change data in the
+ * database. The exported modules are structured to introduce an almost fluent
+ * notation By defining the object like so:
+ *   db: {
+ *     user: {
+ *       create: function(...) {},
+ *       ...
+ *     },
+ *     ...
+ *   }
+ * We can create a user with db.user.create(...). All the other methods should
+ * be named expressively like this.
+ *
+ * All of these functions should not return actual results, but a promise that
+ * will send the results of the database work via callback. See individual
+ * comments for what data will be sent.
+ *
+ * This module has to be initialized with db.connect(). See below.
+ */
+
 // Set up mongoose
 const mongoose = require('mongoose')
 
@@ -10,6 +33,16 @@ const Report = require('./models/report')
 
 module.exports = {
 
+	/*
+	 * connect connects the database object to the actual MongoDB process
+	 * (hopefully over loopback.)
+	 * Both arguments are optional.
+	 *  - "url" can be the url to connect to (useful for testing purposes, if
+	 *    you want to use a different DB). 
+	 *  - "callback" will be called when the connection is either complete or
+	 *    failed. Useful for waiting to start tests or before starting some
+	 *    computation with the db.
+	 */
 	connect: (url, callback) => {
 		url = url || 'mongodb://localhost:27017/ucsharecar'
 		mongoose.connect(url, { useNewUrlParser : true} )
@@ -69,6 +102,7 @@ module.exports = {
 			})
 		},
 
+		// Finds user by id and sends the resulting user object via promise.
 		find_with_id: (userid) => {
 			return User.findById(userid).then((doc) => {
 				if (!doc) {
@@ -83,6 +117,8 @@ module.exports = {
 			})
 		},
 
+		// Sets the Firebase Cloud Messaging token for a user with a given id.
+		// Resulting promise is a result of Mongoose save() fn.
 		set_fcm_token: (userid, token) => {
 			return User.findById(userid).then((doc) => {
 				doc.fcm_token = token
@@ -94,6 +130,8 @@ module.exports = {
 			})
 		},
 
+		// Accepts a list of user ids. Finds the FCM token of all those users
+		// and returns it via promise as an array of string tokens.
 		all_fcm_with_ids: (userids) => {
 			return User.find({"_id": {"$in": userids}}).then((docs) => {
 				return docs.map(doc => doc.fcm_token)

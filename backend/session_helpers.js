@@ -1,3 +1,16 @@
+/*
+ * session_helpers.js
+ *
+ * This module exports helper methods that enable setting session cookies on the
+ * client, and verifying session cookies to allow users into the app.
+ *
+ * These cookies are technically signed by the server. However, since cookies
+ * are not encrypted over HTTPS, a MITM could still attack our app if run over
+ * HTTP.
+ *
+ * Cookie invalidation is mainly handled by cookies expiring.
+ */
+
 module.exports = {
 	// Create sets up a signed cookie that saves the id of the currently logged
 	// in user. It also saves data about its start and expiration date in JSON

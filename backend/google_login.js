@@ -1,3 +1,14 @@
+/*
+ * google_login.js
+ *
+ * Nearly all of this code is straight from Google. The only things changed were
+ *  1. Making the code block until the Google result is received. TODO fix
+ *  2. Sending the full payload as a result
+ *  3. Checking for a UCSC email address
+ *
+ *  Check out https://developers.google.com/identity/sign-in/android/backend-auth
+ */
+
 module.exports = {
 	verify: verify,
 }
