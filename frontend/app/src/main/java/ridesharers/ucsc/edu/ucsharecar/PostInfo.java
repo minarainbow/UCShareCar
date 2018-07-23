@@ -157,6 +157,23 @@ public class PostInfo implements Parcelable {
      * End parcelable stuff
      */
 
+    public boolean containsUser(String user) {
+        // If the driver is the questionable user, they are in it
+        if (driver.equals(user)) {
+            return true;
+        }
+
+        // If any of the passengers are the user, they are in it
+        for (String passenger : passengers) {
+            if (passenger.equals(user)) {
+                return true;
+            }
+        }
+
+        // Otherwise the user is not in the post.
+        return false;
+    }
+
     public String getUploader() {
         return uploader;
     }

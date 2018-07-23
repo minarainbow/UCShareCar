@@ -97,20 +97,9 @@ public class MyPage extends AppCompatActivity {
                 Log.e("upload", "clicked");
 
                 PostInfo postInfo = (PostInfo) adapterView.getItemAtPosition(position);
-                String depart_time = postInfo.getDeparttime().toString();
 
                 Intent intent = new Intent(mContext, PostDetailActivity.class);
-                int extra = postInfo.getTotalseats() - postInfo.getPassengers().size();
-                intent.putExtra("starting_loc", postInfo.getStart());
-                intent.putExtra("ending_loc", postInfo.getEnd());
-                intent.putExtra("leaving_time", depart_time);
-                intent.putExtra("avail_seats", extra);
-                intent.putExtra("notes", postInfo.getMemo());
-                intent.putExtra("driver_status", postInfo.isDriverneeded());
-                intent.putExtra("post_id", postInfo.getId());
-                intent.putStringArrayListExtra("passengers", postInfo.getPassengers());
-                intent.putExtra("join", true);
-                intent.putExtra("driver", postInfo.getDriver());
+                intent.putExtra("post", postInfo);
 
                 mContext.startActivity(intent);
             }
@@ -120,20 +109,9 @@ public class MyPage extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 PostInfo postInfo = (PostInfo) adapterView.getItemAtPosition(position);
-                String depart_time = postInfo.getDeparttime().toString();
-                Intent intent = new Intent(mContext, PostDetailActivity.class);
-                int extra = postInfo.getTotalseats() - postInfo.getPassengers().size();
 
-                intent.putExtra("starting_loc", postInfo.getStart());
-                intent.putExtra("ending_loc", postInfo.getEnd());
-                intent.putExtra("leaving_time", depart_time);
-                intent.putExtra("avail_seats", extra);
-                intent.putExtra("notes", postInfo.getMemo());
-                intent.putExtra("driver_status", postInfo.isDriverneeded());
-                intent.putExtra("post_id", postInfo.getId());
-                intent.putStringArrayListExtra("passengers", postInfo.getPassengers());
-                intent.putExtra("join", true);
-                intent.putExtra("driver", postInfo.getDriver());
+                Intent intent = new Intent(mContext, PostDetailActivity.class);
+                intent.putExtra("post", postInfo);
 
                 mContext.startActivity(intent);
 

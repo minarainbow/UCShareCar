@@ -80,16 +80,8 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 public void onClick(View view) {
                     int extra_pass = post_holder.totalseats - post_holder.passengers.size();
                     Intent intent = new Intent(mContext, PostDetailActivity.class);
-                    intent.putExtra("starting_loc", post_holder.origin);
-                    intent.putExtra("ending_loc", post_holder.destination);
-                    intent.putExtra("leaving_time", post_holder.departure_time);
-                    intent.putExtra("avail_seats", extra_pass);
-                    intent.putExtra("notes", post_holder.memo);
-                    intent.putExtra("driver_status", post_holder.driver_status);
-                    intent.putExtra("post_id", postInfo.getId());
-                    intent.putStringArrayListExtra("passengers", postInfo.getPassengers());
-                    intent.putExtra("driver", "");
 
+                    intent.putExtra("post", postInfo);
 
                     mContext.startActivity(intent);
                 }
