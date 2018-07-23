@@ -183,21 +183,20 @@ public class MyPage extends AppCompatActivity {
                 viewHolder = new ViewHolder();
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
                 convertView = layoutInflater.inflate(R.layout.layout_mypageitem, parent, false);
-                viewHolder.origin = (TextView) convertView.findViewById(R.id.origin);
-                viewHolder.destination = (TextView) convertView.findViewById(R.id.destination);
-                viewHolder.departure_time = (TextView) convertView.findViewById(R.id.departure_time);
-                viewHolder.driver_status = (TextView) convertView.findViewById(R.id.driver_status);
-
-                viewHolder.origin.setText(postInfo.getStart());
-                viewHolder.destination.setText(postInfo.getEnd());
-                viewHolder.departure_time.setText(postInfo.getDeparttime().toString().split("P")[0]);
-
                 convertView.setTag(viewHolder);
             }
             else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
+            viewHolder.origin = (TextView) convertView.findViewById(R.id.origin);
+            viewHolder.destination = (TextView) convertView.findViewById(R.id.destination);
+            viewHolder.departure_time = (TextView) convertView.findViewById(R.id.departure_time);
+            viewHolder.driver_status = (TextView) convertView.findViewById(R.id.driver_status);
+
+            viewHolder.origin.setText(postInfo.getStart());
+            viewHolder.destination.setText(postInfo.getEnd());
+            viewHolder.departure_time.setText(postInfo.getDeparttime().toString().split("P")[0]);
 
             return convertView;
         }
