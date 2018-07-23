@@ -148,8 +148,8 @@ module.exports = {
 				var same_val = [ ]
 				var start_val = [ ]
 				var end_val = [ ]
-				var start = start_end.start.replace(' ', '_')
-				var end = start_end.end.replace(' ', '_')
+				var start = start_end.start.replace('_', ' ')
+				var end = start_end.end.replace('_', ' ')
 
 				Post.find({"$and" : [{start : start}, {end : end}]}).sort(timeSort).exec((err, posts) => {
 					if(err) {
