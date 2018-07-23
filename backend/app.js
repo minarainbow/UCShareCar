@@ -277,6 +277,9 @@ app.post('/posts/create', (req, res) => {
 
 	// Set the uploader of this post
 	req.body.post.uploader = req.signedCookies.session.id
+	
+	// Set the first person in the post. If the client sent driverneeded, they
+	// become a passenger, otherwise a driver.
 	if(req.body.post.driverneeded) {
 		req.body.post.passengers.push(req.signedCookies.session.id)
 	}
