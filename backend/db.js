@@ -244,9 +244,10 @@ module.exports = {
 			})
 		},
 
-		add_driver: (post_id, user_id) => {
+		add_driver: (post_id, avail, user_id) => {
 			return Post.findByIdAndUpdate(post_id, {
 				driver: user_id,
+				totalSeats: avail,
 				driverneeded: false,
 			}).then(() => {
 				console.log("Successfully added driver", user_id, "to", post_id)

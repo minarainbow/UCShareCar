@@ -329,7 +329,7 @@ app.post('/posts/add_driver', (req, res) => {
 		return
 	}
 
-	db.post.add_driver(req.body.post_id, req.signedCookies.session.id).then(() => {
+	db.post.add_driver(req.body.post_id, req.body.avail, req.signedCookies.session.id).then(() => {
 		// Post was successful, we want to send an update to everyone except for
 		// the current user making this request
 		notifications.send_by_postid(req.body.post_id, req.signedCookies.session.id)
