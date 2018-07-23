@@ -226,33 +226,26 @@ module.exports = {
 				var no_matches = [ ]
 				var matches = [ ]
 
-				Post.find().sort(timeSort).exec((err, posts) => {
-					if(err) {
-						console.log("Could not get all posts")
-						console.log(err)
-						reject(err)
-					}
-					else {
+				Post.find({"$or": [ {passengers: user_id}, {driver: user_id} ] }).sort(timeSort)
+					.then((posts) => {
 						posts.forEach((post) => {
-							if(post.passengers.length === 0) {
-								if(post.uploader == user_id)
-									no_matches.push(post)
+							// Matches will contain all posts that have the user AND
+							// another person. Otherwise, they go in no_matches.
+							if ((post.driver && post.driver != user_id)
+								|| post.passengers.length > 1
+								|| (post.passengers > 0 && !post.passengers.includes(user_id))) {
+								matches.push(post)
 							}
 							else {
-								if(post.uploader == user_id)
-									matches.push(post)
-								else {
-									post.passengers.forEach((passenger) => {
-										if(passenger == user_id) {
-											matches.push(post)
-										}
-									})	
-								}
+								no_matches.push(post)
 							}
-						})			
+						})
 						resolve({no_matches : no_matches, matches : matches})
-					}
-				})
+					}, (err) => {
+						console.log("Could not get posts for mypage")
+						console.log(err)
+						reject(err)
+					})
 			})
 		},	
 
