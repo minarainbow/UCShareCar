@@ -110,7 +110,7 @@ public class PostListActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         Log.d(TAG,"clicked add_report button");
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                        emailIntent.setData(Uri.parse("mailto:pcalaima@ucsc.com"));
+                        emailIntent.setData(Uri.parse("mailto:pcalaima@ucsc.edu"));
                         startActivity(Intent.createChooser(emailIntent, "Send feedback"));
                         startActivity(Intent.createChooser(emailIntent, "Send feedback"));
                     }});
