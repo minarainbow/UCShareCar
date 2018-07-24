@@ -146,7 +146,7 @@ module.exports = {
 	post: {
 
 		// Returns all posts in the db now
-		find_all: (user_id) => {
+		find_all: () => {
 			return new Promise((resolve, reject) => {
 				const timeSort = {departtime : 1}
 				Post.find().sort(timeSort).exec((err, posts) => {
