@@ -188,7 +188,6 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private class ListViewAdapter extends ArrayAdapter<String> {
-        private ArrayList<String> userList;
         private Context mContext;
 
         private class ViewHolder {
@@ -199,15 +198,15 @@ public class PostDetailActivity extends AppCompatActivity {
         private ListViewAdapter(Context context, ArrayList<String> users) {
             super(context, R.layout.contact_info, users);
             mContext = context;
-            userList = users;
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        @NonNull
+        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder viewHolder;
-            String user_id = userList.get(position);
+            String user_id = getItem(position);
 
-            if(convertView == null) {
+            if (convertView == null) {
                 viewHolder = new ViewHolder();
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
                 convertView = layoutInflater.inflate(R.layout.contact_info, parent, false);
@@ -221,13 +220,13 @@ public class PostDetailActivity extends AppCompatActivity {
             }
 
             // Blank out the text while we wait for the server
-            viewHolder.ucsc_id.setText("");
-            viewHolder.phNum.setText("");
+            viewHolder.ucsc_id.setText("Loading...");
+            viewHolder.phNum.setText("Loading...");
 
             backend.getUserById(user_id, new Response.Listener<UserInfo>() {
                 @Override
                 public void onResponse(UserInfo response) {
-                    Log.e("response", response.toString());
+                    Log.d(TAG, "Got user "+response.getName()+ " for position "+position);
                     if(position == 0 && !postInfo.isDriverneeded()) {
                         viewHolder.ucsc_id.setText("Driver :\n" + response.getName());
                     }
