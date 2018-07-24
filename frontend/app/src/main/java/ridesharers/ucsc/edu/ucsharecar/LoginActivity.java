@@ -37,7 +37,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         ImageView logo = findViewById(R.id.imageView);
-//        logo.setClipToOutline(true);
 
         // Make the google login button bigger
         SignInButton signInButton = findViewById(R.id.login_button);

@@ -10,25 +10,25 @@ import android.widget.TextView;
 
 import ridesharers.ucsc.edu.ucsharecar.dummy.DummyContent;
 
-/**
+/*
  * A fragment representing a single Post detail screen.
  * This fragment is either contained in a {@link PostListActivity}
  * in two-pane mode (on tablets) or a {@link PostDetailActivity}
  * on handsets.
  */
 public class PostDetailFragment extends Fragment {
-    /**
+    /*
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
 
-    /**
+    /*
      * The dummy content this fragment is presenting.
      */
     private DummyContent.DummyItem mItem;
 
-    /**
+    /*
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */

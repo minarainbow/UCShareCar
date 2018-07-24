@@ -32,7 +32,7 @@ import ridesharers.ucsc.edu.ucsharecar.dummy.RecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
+/*
  * An activity representing a list of Posts. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
@@ -42,7 +42,7 @@ import java.util.Date;
  */
 public class PostListActivity extends AppCompatActivity {
 
-    /**
+    /*
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
