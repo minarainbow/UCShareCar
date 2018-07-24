@@ -1,7 +1,9 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -30,7 +32,7 @@ import java.util.ArrayList;
  */
 public class PostDetailActivity extends AppCompatActivity {
 
-    private static final String TAG = "PostDetailActivity";
+    private static final String TAG = "UCShareCar_PostDetail";
 
     ListViewAdapter listViewAdapter;
     ListView listView;
@@ -117,9 +119,32 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private void getIncomingIntent(){
-        Log.d(TAG, "getIncomingIntent: found intent extras.");
-        postInfo = getIntent().getParcelableExtra("post");
-        setPostDetails();
+        Log.d(TAG, "getIncomingIntent: parsing intent extras.");
+        Intent intent = getIntent();
+
+        if (intent.hasExtra("post")) {
+            Log.d(TAG, "Received a full post object to post detail");
+            postInfo = intent.getParcelableExtra("post");
+            setPostDetails();
+        }
+        else if (intent.hasExtra("post_id")) {
+            Log.d(TAG, "Received a post id, sending a request to populate the page");
+
+            backend.getPostById(intent.getStringExtra("post_id"), new Response.Listener<PostInfo>() {
+                @Override
+                public void onResponse(PostInfo response) {
+                    postInfo = response;
+                    setPostDetails();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.w(TAG, "Failed to get the post!");
+                    Log.e(TAG, error.toString());
+                    Toast.makeText(getApplicationContext(), "Could not get post details", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     private void setPostDetails(){
