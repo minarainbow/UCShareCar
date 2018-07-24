@@ -125,7 +125,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:text="This space is for Memo. You can write whatever you want :) I want some Icecream I want some Icecream If the Memo is long enough, you can scroll it down."
+                    android:text="Memo text"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
             </LinearLayout>
         </ScrollView>
@@ -156,15 +156,15 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/passengers"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/passengers">
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
 
             <ListView
                 android:id="@+id/passengerList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="fill_parent">
 
             </ListView>
         </LinearLayout>

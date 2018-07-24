@@ -73,6 +73,7 @@ public class PostListActivity extends AppCompatActivity {
         backend = BackendClient.getSingleton(this);
         setupRecyclerView();
 
+        //Button click for MyPage
         ImageButton my_page = findViewById(R.id.my_page);
         my_page.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +84,7 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
 
+        //Button click for Create Post button
         ImageButton add_post = findViewById(R.id.add_post);
         add_post.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +95,7 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
 
+        //Button click for Report button
         ImageButton add_report = findViewById(R.id.add_report);
         add_report.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,13 +108,13 @@ public class PostListActivity extends AppCompatActivity {
                 popup = builder.create();
                 popup.show();
 
+                //Button click for "yes" button
                 yesButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
                         Log.d(TAG,"clicked add_report button");
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                        emailIntent.setData(Uri.parse("mailto:pcalaima@gmail.com"));
-                        startActivity(Intent.createChooser(emailIntent, "Send feedback"));
+                        emailIntent.setData(Uri.parse("mailto:pcalaima@ucsc.edu"));
                         startActivity(Intent.createChooser(emailIntent, "Send feedback"));
                     }});
                 noButton.setOnClickListener(new View.OnClickListener(){
@@ -121,11 +124,10 @@ public class PostListActivity extends AppCompatActivity {
                     }
                 });
 
-
             }
         });
 
-
+        //Button click for search button
         ImageButton search = findViewById(R.id.search);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,17 +140,15 @@ public class PostListActivity extends AppCompatActivity {
                     backend.getSearch(origin, destination, new Response.Listener<ArrayList<PostInfo>>() {
                         @Override
                         public void onResponse(ArrayList<PostInfo> response) {
-                            if(response.size() != 0) {
-                                postList.clear();
-                                postList.addAll(response);
-                                adapter.notifyDataSetChanged();
-                            }
+                        postList.clear();
+                        postList.addAll(response);
+                        adapter.notifyDataSetChanged();
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, error.toString());
-                            Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
+                        Log.e(TAG, error.toString());
+                        Toast.makeText(getApplicationContext(), (String) error.toString(), Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -175,9 +175,6 @@ public class PostListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-//                layoutManager.getOrientation());
-//        recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.addItemDecoration(new DividerItemDecoration(PostListActivity.this,
                 DividerItemDecoration.VERTICAL));
 

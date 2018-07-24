@@ -6,6 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UserInfo {
+
+    //This class extracts user information from the backend.
+
     private String email, name, phoneNumber = null, id = null;
     private boolean banned;
 

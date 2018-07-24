@@ -1,3 +1,26 @@
+/*
+ * db.js
+ *
+ * This file defines a number of helper functions to get or change data in the
+ * database. The exported modules are structured to introduce an almost fluent
+ * notation By defining the object like so:
+ *   db: {
+ *     user: {
+ *       create: function(...) {},
+ *       ...
+ *     },
+ *     ...
+ *   }
+ * We can create a user with db.user.create(...). All the other methods should
+ * be named expressively like this.
+ *
+ * All of these functions should not return actual results, but a promise that
+ * will send the results of the database work via callback. See individual
+ * comments for what data will be sent.
+ *
+ * This module has to be initialized with db.connect(). See below.
+ */
+
 // Set up mongoose
 const mongoose = require('mongoose')
 
@@ -10,6 +33,16 @@ const Report = require('./models/report')
 
 module.exports = {
 
+	/*
+	 * connect connects the database object to the actual MongoDB process
+	 * (hopefully over loopback.)
+	 * Both arguments are optional.
+	 *  - "url" can be the url to connect to (useful for testing purposes, if
+	 *    you want to use a different DB). 
+	 *  - "callback" will be called when the connection is either complete or
+	 *    failed. Useful for waiting to start tests or before starting some
+	 *    computation with the db.
+	 */
 	connect: (url, callback) => {
 		url = url || 'mongodb://localhost:27017/ucsharecar'
 		mongoose.connect(url, { useNewUrlParser : true} )
@@ -69,6 +102,7 @@ module.exports = {
 			})
 		},
 
+		// Finds user by id and sends the resulting user object via promise.
 		find_with_id: (userid) => {
 			return User.findById(userid).then((doc) => {
 				if (!doc) {
@@ -83,6 +117,8 @@ module.exports = {
 			})
 		},
 
+		// Sets the Firebase Cloud Messaging token for a user with a given id.
+		// Resulting promise is a result of Mongoose save() fn.
 		set_fcm_token: (userid, token) => {
 			return User.findById(userid).then((doc) => {
 				doc.fcm_token = token
@@ -94,6 +130,8 @@ module.exports = {
 			})
 		},
 
+		// Accepts a list of user ids. Finds the FCM token of all those users
+		// and returns it via promise as an array of string tokens.
 		all_fcm_with_ids: (userids) => {
 			return User.find({"_id": {"$in": userids}}).then((docs) => {
 				return docs.map(doc => doc.fcm_token)
@@ -108,7 +146,7 @@ module.exports = {
 	post: {
 
 		// Returns all posts in the db now
-		find_all: () => {
+		find_all: (user_id) => {
 			return new Promise((resolve, reject) => {
 				const timeSort = {departtime : 1}
 				Post.find().sort(timeSort).exec((err, posts) => {
@@ -148,8 +186,8 @@ module.exports = {
 				var same_val = [ ]
 				var start_val = [ ]
 				var end_val = [ ]
-				var start = start_end.start.replace(' ', '_')
-				var end = start_end.end.replace(' ', '_')
+				var start = start_end.start.replace('_', ' ')
+				var end = start_end.end.replace('_', ' ')
 
 				Post.find({"$and" : [{start : start}, {end : end}]}).sort(timeSort).exec((err, posts) => {
 					if(err) {
@@ -159,7 +197,8 @@ module.exports = {
 					}
 					else {
 						same_val = posts
-						Post.find({"$and" : [{start : start}, {end : {"$ne" : end}}]}).sort(timeSort).exec((err, posts) => {
+						Post.find({"$or" : [{"$and" : [{start : start}, {end : {"$ne" : end}}]}, {"$and" : [{start : {"$ne" : start}}, {end : end}]}]}).sort(timeSort).exec((err, posts) => {
+
 							if(err) {
 								console.log("Could not get all posts")
 								console.log(err)
@@ -167,17 +206,7 @@ module.exports = {
 							}
 							else {
 								start_val = posts
-								Post.find({"$and" : [{start : {"$ne" : start}}, {end : end}]}).sort(timeSort).exec((err, posts) => {
-									if(err) {
-										console.log("Could not get all posts")
-										console.log(err)
-										reject(err)
-									}
-									else {
-										end_val = posts
-										resolve({same : same_val, start : start_val, end : end_val})
-									}
-								})
+								resolve({same : same_val, start : start_val, end : end_val})
 							}
 						})
 					}
@@ -197,33 +226,26 @@ module.exports = {
 				var no_matches = [ ]
 				var matches = [ ]
 
-				Post.find().sort(timeSort).exec((err, posts) => {
-					if(err) {
-						console.log("Could not get all posts")
-						console.log(err)
-						reject(err)
-					}
-					else {
+				Post.find({"$or": [ {passengers: user_id}, {driver: user_id} ] }).sort(timeSort)
+					.then((posts) => {
 						posts.forEach((post) => {
-							if(post.passengers.length === 0) {
-								if(post.uploader == user_id)
-									no_matches.push(post)
+							// Matches will contain all posts that have the user AND
+							// another person. Otherwise, they go in no_matches.
+							if ((post.driver && post.driver != user_id)
+								|| post.passengers.length > 1
+								|| (post.passengers.length > 0 && !post.passengers.includes(user_id))) {
+								matches.push(post)
 							}
 							else {
-								if(post.uploader == user_id)
-									matches.push(post)
-								else {
-									post.passengers.forEach((passenger) => {
-										if(passenger == user_id) {
-											matches.push(post)
-										}
-									})	
-								}
+								no_matches.push(post)
 							}
-						})			
+						})
 						resolve({no_matches : no_matches, matches : matches})
-					}
-				})
+					}, (err) => {
+						console.log("Could not get posts for mypage")
+						console.log(err)
+						reject(err)
+					})
 			})
 		},	
 
@@ -244,9 +266,10 @@ module.exports = {
 			})
 		},
 
-		add_driver: (post_id, user_id) => {
+		add_driver: (post_id, avail, user_id) => {
 			return Post.findByIdAndUpdate(post_id, {
 				driver: user_id,
+				totalseats: avail,
 				driverneeded: false,
 			}).then(() => {
 				console.log("Successfully added driver", user_id, "to", post_id)
@@ -266,7 +289,7 @@ module.exports = {
 					throw new Error("No driver, cannot add passenger")
 				}
 				// If the passengers + 1 driver exceed seats, fail
-				if (post.passengers.length+1 >= post.totalseats) {
+				if (post.passengers.length == post.totalseats) {
 					console.log("Not enough seats to add", user_id, "to", post_id)
 					throw new Error("Not enough seats to add passenger")
 				}

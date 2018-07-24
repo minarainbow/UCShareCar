@@ -62,6 +62,7 @@ public class MyPage extends AppCompatActivity {
         uploadedView.setAdapter(uploadAdapter);
         matchedView.setAdapter(matchedAdapter);
 
+        //Update MyPage adapter lists
         backendClient.getMyPage(new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -91,49 +92,29 @@ public class MyPage extends AppCompatActivity {
             }
         });
 
+        //Button click to view detail for uploaded post
         uploadedView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Log.e("upload", "clicked");
 
                 PostInfo postInfo = (PostInfo) adapterView.getItemAtPosition(position);
-                String depart_time = postInfo.getDeparttime().toString();
 
                 Intent intent = new Intent(mContext, PostDetailActivity.class);
-                int extra = postInfo.getTotalseats() - postInfo.getPassengers().size();
-                intent.putExtra("starting_loc", postInfo.getStart());
-                intent.putExtra("ending_loc", postInfo.getEnd());
-                intent.putExtra("leaving_time", depart_time);
-                intent.putExtra("avail_seats", extra);
-                intent.putExtra("notes", postInfo.getMemo());
-                intent.putExtra("driver_status", postInfo.isDriverneeded());
-                intent.putExtra("post_id", postInfo.getId());
-                intent.putStringArrayListExtra("passengers", postInfo.getPassengers());
-                intent.putExtra("join", true);
-                intent.putExtra("driver", postInfo.getDriver());
+                intent.putExtra("post", postInfo);
 
                 mContext.startActivity(intent);
             }
         });
 
+        //Button click to view detail for matched post
         matchedView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 PostInfo postInfo = (PostInfo) adapterView.getItemAtPosition(position);
-                String depart_time = postInfo.getDeparttime().toString();
-                Intent intent = new Intent(mContext, PostDetailActivity.class);
-                int extra = postInfo.getTotalseats() - postInfo.getPassengers().size();
 
-                intent.putExtra("starting_loc", postInfo.getStart());
-                intent.putExtra("ending_loc", postInfo.getEnd());
-                intent.putExtra("leaving_time", depart_time);
-                intent.putExtra("avail_seats", extra);
-                intent.putExtra("notes", postInfo.getMemo());
-                intent.putExtra("driver_status", postInfo.isDriverneeded());
-                intent.putExtra("post_id", postInfo.getId());
-                intent.putStringArrayListExtra("passengers", postInfo.getPassengers());
-                intent.putExtra("join", true);
-                intent.putExtra("driver", postInfo.getDriver());
+                Intent intent = new Intent(mContext, PostDetailActivity.class);
+                intent.putExtra("post", postInfo);
 
                 mContext.startActivity(intent);
 
@@ -183,21 +164,20 @@ public class MyPage extends AppCompatActivity {
                 viewHolder = new ViewHolder();
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
                 convertView = layoutInflater.inflate(R.layout.layout_mypageitem, parent, false);
-                viewHolder.origin = (TextView) convertView.findViewById(R.id.origin);
-                viewHolder.destination = (TextView) convertView.findViewById(R.id.destination);
-                viewHolder.departure_time = (TextView) convertView.findViewById(R.id.departure_time);
-                viewHolder.driver_status = (TextView) convertView.findViewById(R.id.driver_status);
-
-                viewHolder.origin.setText(postInfo.getStart());
-                viewHolder.destination.setText(postInfo.getEnd());
-                viewHolder.departure_time.setText(postInfo.getDeparttime().toString().split("P")[0]);
-
                 convertView.setTag(viewHolder);
             }
             else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
+            viewHolder.origin = (TextView) convertView.findViewById(R.id.origin);
+            viewHolder.destination = (TextView) convertView.findViewById(R.id.destination);
+            viewHolder.departure_time = (TextView) convertView.findViewById(R.id.departure_time);
+            viewHolder.driver_status = (TextView) convertView.findViewById(R.id.driver_status);
+
+            viewHolder.origin.setText(postInfo.getStart());
+            viewHolder.destination.setText(postInfo.getEnd());
+            viewHolder.departure_time.setText(postInfo.getDeparttime().toString().split("P")[0]);
 
             return convertView;
         }

@@ -334,6 +334,8 @@ describe('server handlers', function() {
 				.send({post: {
 					memo: 'We should never get passengers w/o a driver',
 					totalseats: 1,
+					driverneeded: true,
+					passengers: [],
 				}})
 				.set('Accept', 'application/json')
 				.expect(200)
@@ -357,8 +359,8 @@ describe('server handlers', function() {
 										if (err) return done(err)
 										if (res.body.result !== 1)
 											return done(new Error("Result was not 1 when checking post"))
-										if (res.body.post.passengers.length !== 0)
-											return done(new Error("Amount of passengers is not 0, got "+
+										if (res.body.post.passengers.length !== 1)
+											return done(new Error("Amount of passengers is not 1, got "+
 												res.body.post.passengers.length))
 										done()
 									})

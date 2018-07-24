@@ -7,7 +7,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="170dp"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="30dp"
             android:layout_height="wrap_content">
@@ -18,12 +18,10 @@
                 android:text="Please choose number      of  Available Seats"
                 android:textSize="20dp"
                 />
-            <Spinner
-                android:id="@+id/seats_spinner"
+            <EditText
+                android:id="@+id/input_seats"
                 android:layout_width="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_height="wrap_content"
-                android:entries="@array/avail_seats"/>
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
 
@@ -37,7 +35,7 @@
         >
 
         <Button
-            android:id="@+id/ok_editor"
+            android:id="@+id/confirm"
             android:layout_width="80dp"
             android:layout_height="50dp"
             android:layout_weight="1"
@@ -49,7 +47,7 @@
             android:background="@drawable/roundedbutton"/>
 
         <Button
-            android:id="@+id/no_editor"
+            android:id="@+id/no_join"
             android:layout_width="80dp"
             android:layout_height="50dp"
             android:layout_weight="1"

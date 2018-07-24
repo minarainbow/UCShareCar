@@ -132,8 +132,9 @@ describe('database stores and retrieves posts', function() {
 			departtime: Date.now(),
 			totalseats: 5,
 			memo: 'Yet another post 2',
+			driverneeded: true,
 		}).then((id) => {
-			return db.post.find_all()
+			return db.post.find_all("5b4a39ff74a2d138b93b2273")
 		}, (err) => {
 			done(err)
 		}).then((posts) => {
@@ -157,7 +158,7 @@ describe('database stores and retrieves posts', function() {
 			memo: 'Yet another post 2',
 		}).then((id) => {
 			created_id = id
-			return db.post.add_driver(id, driver_added)
+			return db.post.add_driver(id, 4, driver_added)
 		}, (err) => {
 			done(err)
 		}).then(() => {

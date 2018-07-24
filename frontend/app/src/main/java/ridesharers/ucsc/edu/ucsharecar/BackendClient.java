@@ -28,8 +28,56 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-// TODO this class should detect authorization errors and start the login window accordingly
+/*
+ * BackendClient owns almost all interaction with the NodeJS server. It is
+ * intended to be the only "client" to the "backend" to make writing new
+ * functionality in other activities simple.
+ *
+ * BackendClient is a singleton. Each activity that would like to use it must
+ * retrieve the singleton, and then use that as it sees fit. This is necessary
+ * because a lot of what the object does requires a Context. The BackendClient
+ * inherits the Context of the first Activity or Service that uses it. I do not
+ * know if this introduces issues. See the comment where the object is
+ * constructed.
+ *
+ * The full list of responsibilities BackendClient owns is:
+ * 1. Sending GET and POST requests to all server endpoints.
+ *	a. Processing errors at that step and making sure the caller knows there was
+ *	   an error
+ *	b. Processing the result. No JSON objects are sent out. BackendClient tries
+ *	   hard to not pass the dynamic types buck. Everything that comes out should
+ *	   be statically typed and verifiable.
+ * 2. Remembering the currently logged in user, saving their ID and session
+ *    cookie.
+ * 3. Restoring the logged in user's session across restarts.
+ * 4. Caching user lookups. Post lookups are not cached because they change
+ *    frequently, but user info should not change. BackendClient keeps a hashmap
+ *    of that info internally.
+ * 5. Making CERTAIN that the Firebase Cloud Messaging token is not lost.
+ *    BackendClient makes public a method that the NotificationService calls
+ *    when it receives a new token. We only get that new token *once* for new
+ *    installs, so it's critical that we hold on to it. BackendClient caches it
+ *    just in case. It tries to send it to the server. If the user is not logged
+ *    in, then BackendClient is smart enough to queue up that registration until
+ *    the user does get a session going.
+ *
+ * Things that need to be persisted across restarts are stored in
+ * SharedPreferences. Unimportant caching is done with a HashMap in memory.
+ *
+ * To send requests, I wrote a GenericRequest class that can build any request
+ * compatible with the server we wrote. Almost all handlers should use that.
+ * Some of the login handlers do not because the server handlers are
+ * nonstandard, which we are not fixing to avoid regression issues. For new
+ * methods, GenericRequest should dramatically simplify code.
+ *
+ * All methods that get data accept a "happy path" callback and an error
+ * callback. It should always be the case that the happy path callback is called
+ * for ONLY a valid result, and anything else goes to the error. See individual
+ * comments for more information on specific endpoints.
+ */
 public class BackendClient {
+
+	// TODO this class should detect authorization errors and start the login window accordingly
 
     private static final String TAG = "UCShareCar_BackendCli";
     private static final String URL = "http://18.220.253.162:8000";
@@ -517,7 +565,7 @@ public class BackendClient {
         request.run();
     }
 
-    public void addDriver(final String post_id, final Response.Listener<String> responseCallback,
+    public void addDriver(final String post_id, final int avail_seats, final Response.Listener<String> responseCallback,
                           final Response.ErrorListener errorCallback) {
 
         // Build the request
@@ -525,6 +573,7 @@ public class BackendClient {
                 Request.Method.POST, responseCallback, errorCallback) {
             void buildParameters(JSONObject args) throws JSONException {
                 args.put("post_id", post_id);
+                args.put("avail", avail_seats);
             }
             String parseResponse(JSONObject response) throws JSONException {
                 return "" + response.getInt("result");

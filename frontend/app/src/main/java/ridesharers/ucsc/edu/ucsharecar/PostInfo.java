@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class PostInfo implements Parcelable {
+
+    // This class stores lets the information for
+    // users to be stored in post form
+
     private String TAG = "PostInfo";
 
     private Date posttime, departtime;
@@ -107,7 +111,7 @@ public class PostInfo implements Parcelable {
         if (this.driverneeded) {
             throw new IllegalStateException("Cannot add passenger before a driver is added");
         }
-        if (this.passengers.size() >= this.totalseats) {
+        if (this.passengers.size() > this.totalseats) {
             throw new IllegalStateException("No space for more passengers");
         }
 
@@ -156,6 +160,23 @@ public class PostInfo implements Parcelable {
     /*
      * End parcelable stuff
      */
+
+    public boolean containsUser(String user) {
+        // If the driver is the questionable user, they are in it
+        if (driver != null && driver.equals(user)) {
+            return true;
+        }
+
+        // If any of the passengers are the user, they are in it
+        for (String passenger : passengers) {
+            if (passenger.equals(user)) {
+                return true;
+            }
+        }
+
+        // Otherwise the user is not in the post.
+        return false;
+    }
 
     public String getUploader() {
         return uploader;
