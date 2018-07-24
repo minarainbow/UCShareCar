@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class PostInfo implements Parcelable {
+
+    // This class stores lets the information for
+    // users to be stored in post form
+
     private String TAG = "PostInfo";
 
     private Date posttime, departtime;

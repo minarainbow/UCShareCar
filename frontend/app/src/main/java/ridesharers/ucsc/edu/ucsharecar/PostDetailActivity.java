@@ -55,6 +55,7 @@ public class PostDetailActivity extends AppCompatActivity {
         listView = findViewById(R.id.passengerList);
         getIncomingIntent();
 
+        //Button click for join button
         Button join = (Button) findViewById(R.id.fab);
         join.setOnClickListener(new View.OnClickListener() {
             @Override

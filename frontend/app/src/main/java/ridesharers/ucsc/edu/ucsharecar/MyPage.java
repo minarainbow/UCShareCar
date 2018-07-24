@@ -62,6 +62,7 @@ public class MyPage extends AppCompatActivity {
         uploadedView.setAdapter(uploadAdapter);
         matchedView.setAdapter(matchedAdapter);
 
+        //Update MyPage adapter lists
         backendClient.getMyPage(new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -91,6 +92,7 @@ public class MyPage extends AppCompatActivity {
             }
         });
 
+        //Button click to view detail for uploaded post
         uploadedView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -105,6 +107,7 @@ public class MyPage extends AppCompatActivity {
             }
         });
 
+        //Button click to view detail for matched post
         matchedView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {

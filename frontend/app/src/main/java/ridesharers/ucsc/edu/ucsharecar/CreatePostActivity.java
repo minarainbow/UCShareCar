@@ -51,11 +51,13 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
         destinationSpinner = findViewById(R.id.destination_spinner);
         seatsSpinner = findViewById(R.id.seats_spinner);
 
+        // Adapters
         ArrayAdapter<CharSequence> seatsAdapter = ArrayAdapter.createFromResource(this,
                 R.array.NumberOfSeats, android.R.layout.simple_spinner_item);
         seatsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         seatsSpinner.setAdapter(seatsAdapter);
 
+        //Buttons and EditTexts
         Button date_btn = (Button) findViewById(R.id.btn_date);
         Button time_btn = (Button) findViewById(R.id.btn_time);
         final EditText date_txt = (EditText) findViewById(R.id.in_date);
@@ -65,6 +67,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
         // Get the backend client singleton
         backendClient = BackendClient.getSingleton(this);
 
+        // Button click for setting date
         date_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,6 +93,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
             }
         });
 
+        //Button click for setting time
         time_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,8 +113,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
             }
         });
 
-
-
+        // Button click for uploading post
         Button upload_btn = (Button) findViewById(R.id.ok_editor);
         upload_btn.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -128,6 +131,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
             popup = builder.create();
             popup.show();
 
+            // Button click for "yes" button
             yesButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
@@ -173,7 +177,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
 
         }
     });
-
+        //Button click for back button
         Button back_button = findViewById(R.id.no_editor);
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,6 +188,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
     }
 
     @Override
+    //Button Clicks for spinners (origin and destination pickers)
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String origin = parent.getItemAtPosition(position).toString();
         Toast.makeText(parent.getContext(), origin, Toast.LENGTH_SHORT).show();

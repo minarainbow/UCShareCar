@@ -14,6 +14,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    //This class updates the list of posts.
+
     private Context mContext;
     private ArrayList<PostInfo> postList = new ArrayList<>();
 

@@ -13,6 +13,8 @@ import com.android.volley.VolleyError;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    //This class allows new users to register.
+
     private static final String TAG = "UCShareCar_Register";
 
     private static BackendClient backend;

@@ -73,6 +73,7 @@ public class PostListActivity extends AppCompatActivity {
         backend = BackendClient.getSingleton(this);
         setupRecyclerView();
 
+        //Button click for MyPage
         ImageButton my_page = findViewById(R.id.my_page);
         my_page.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +84,7 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
 
+        //Button click for Create Post button
         ImageButton add_post = findViewById(R.id.add_post);
         add_post.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +95,7 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
 
+        //Button click for Report button
         ImageButton add_report = findViewById(R.id.add_report);
         add_report.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +108,7 @@ public class PostListActivity extends AppCompatActivity {
                 popup = builder.create();
                 popup.show();
 
+                //Button click for "yes" button
                 yesButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
@@ -123,7 +127,7 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
 
-
+        //Button click for search button
         ImageButton search = findViewById(R.id.search);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,9 +175,6 @@ public class PostListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-//                layoutManager.getOrientation());
-//        recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.addItemDecoration(new DividerItemDecoration(PostListActivity.this,
                 DividerItemDecoration.VERTICAL));
 

@@ -37,11 +37,13 @@ public class CreateReportActivity extends AppCompatActivity {
 
         //Get backend object
         backend = BackendClient.getSingleton(this);
-        //Get Report fields
+
+        //EditTexts
         final EditText title_text = findViewById(R.id.title);
         final EditText details_text = findViewById(R.id.details);
         final EditText contact_text = findViewById(R.id.contact);
 
+        //Button click for upload button
         Button upload_button = findViewById(R.id.ok_editor);
         upload_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +54,7 @@ public class CreateReportActivity extends AppCompatActivity {
                 builder.setView(mView);
                 popup = builder.create();
 
-
+                //Button click for upload report button
                 yesButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
@@ -62,6 +64,7 @@ public class CreateReportActivity extends AppCompatActivity {
                         String contact = contact_text.getText().toString();
                         final ReportInfo myReport = new ReportInfo(contact, title, details);
 
+                        //Email extension
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                                 "mailto","abc@gmail.com", null));
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
@@ -84,7 +87,7 @@ public class CreateReportActivity extends AppCompatActivity {
                             }
         });
 
-
+        //Button click for back button
         Button back_button = findViewById(R.id.no_editor);
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
