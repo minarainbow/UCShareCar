@@ -1,5 +1,6 @@
 package ridesharers.ucsc.edu.ucsharecar;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -42,6 +43,9 @@ public class PostDetailActivity extends AppCompatActivity {
     BackendClient backend;
     Context mContext;
     int seats;
+    private AlertDialog.Builder builder;
+    private AlertDialog popup;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +63,21 @@ public class PostDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(driver_status) {
+                builder = new AlertDialog.Builder(PostDetailActivity.this);
+                View mView = getLayoutInflater().inflate(R.layout.activity_driver_join,null);
+                Button yesButton = mView.findViewById(R.id.yes);
+                Button noButton = mView.findViewById(R.id.no);
+                builder.setView(mView);
+                popup = builder.create();
+                popup.show();
+
+                yesButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                });
+
+                        if(driver_status) {
                     backend.addDriver(post_id, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
