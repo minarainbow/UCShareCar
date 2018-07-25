@@ -39,6 +39,9 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
     private AlertDialog popup;
     int gYear, gMonth, gDay, gHour, gMinute;
 
+    // This is the year the world started in Java
+    private final int EPOCH_YEAR = 1900;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +139,7 @@ public class CreatePostActivity extends AppCompatActivity implements AdapterView
                 @Override
                 public void onClick(View view) {
                 Date postTime = new Date();
-                Date departTime = new Date(gYear, gMonth, gDay);
+                Date departTime = new Date(gYear-EPOCH_YEAR, gMonth, gDay);
                 departTime.setHours(gHour);
                 departTime.setMinutes(gMinute);
                 Log.e("depart", departTime.toString());
